@@ -1,0 +1,332 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<h1>Area: Group Project (Group 18)</h1>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+    
+<h2 id="int">Introduction</h2>
+
+<p>In a plane, a closed curve is a curve with no endpoints and which completely encloses an area.<a href="bibliography.html#ref8">[8]</a><a href="bibliography.html#ref9">[9]</a> If the curve $C$ is formed by a number of line segments, then it is also can be called as polygon. Area of polygon can be considered as the double integral of $1$ over the region of polygon $D$, and by Green's theorem<a href="bibliography.html#ref11">[11]</a> $$\oint_Cf \ dx+g \ dy=\iint_D\left(\frac{\partial g}{\partial x}-\frac{\partial f}{\partial y}\right)dA.$$ We want the right hand side $\frac{\partial g}{\partial x}-\frac{\partial f}{\partial y}$ to be $1$, so let $g(x,y)=x$ and $ \ f(x,y)=0$, then $$A = \oint_Cx \ dy.$$ Which is the line integral on a closed curve $C$. In our case, $C$ is the line segments that form the polygon.</p>
+    
+<p>If we can break the curve $C$ into many pieces of segments $C_1, C_2, ..., C_n,$ since the integration has the additive properties over a continuous region, then we have $$\oint_Cx \ dy = \oint_{C_1}x \ dy + \oint_{C_2}x \ dy + ... + \oint_{C_n}x \ dy.$$</p>
+    
+<p>In the case of polygon, each segments is the edge of the polygon, then we can find out the line equation of $C_i$ in vector form, which is the $i$-th edge of the polygon. Assume that the coordinates of the $i$-th vertex is $(x_i,y_i)$, then $$\mathbf{r} = \begin{pmatrix} 
+x_i \\
+y_i 
+\end{pmatrix} + t\begin{pmatrix} 
+x_{i+1}-x_i \\
+y_{i+1}-y_i 
+\end{pmatrix},$$ where $t$ is the parameter and $0 \leq t \leq 1$.</p>
+    
+<p>Then we can see $x(t) = x_i + t\ (x_{i+1}-x_i)$ and $y(t) = y_i + t\ (y_{i+1}-y_i)$.</p>
+
+<p>By line integral, $$\oint_{C_i}x \ dy= \int_{0}^{1} (x_i + t\ (x_{i+1}-x_i)) \ \frac{dy}{dt} \ dt = \int_{0}^{1} (t\ (x_{i+1}-x_i) + x_i)(y_{i+1}-y_i) \ dt = \frac{(x_{i+1}+x_i)(y_{i+1}-y_i)}{2}.$$ Hence $$A = \oint_Cx \ dy  = \sum_{i=1}^{n} \frac{(x_{i+1}+x_i)(y_{i+1}-y_i)}{2} =\frac{1}{2} \sum_{i=1}^{n} \det\begin{pmatrix} 
+x_i & x_{i+1} \\
+y_i & y_{i+1}
+\end{pmatrix} $$ where $x_{n+1}:= x_1$, $y_{n+1}:=y_1$.</p>
+    
+<p>Notice that this is also the formula we used in the mini project 2. Also, this formula is not always working with the self-intersecting polygon.</p>
+
+<p>This formula is widely known as Shoelace formula or Surveyor's area formula<a href="bibliography.html#ref10">[10]</a>, it is a special case of the Green's theorem. Apart from using the Green's theorem, there are many ways to get this formula, but using the Green's theorem is one of the easiest ways to get this formula.</p>
+    
+<p>Instead of using Shoelace formula, we can also apply the Monte Carlo method to estimate the area of the polygon. Although it is not as fast as Shoelace formula for simple polygon, as it requires to generate a number of points, it can be used to estimate all kind of polygons, including the self-intersecting one. As the only thing we need to know is, whether a point is inside the polygon or not. If there is a suitable algorithm for all kind of polygons, then we can find the area of them by the Monte Carlo method.</p>
+    
+<p>The main research topic of this Group Project, is to use the programming method to check whether a point is inside the polygon or not, and therefore estimate the area of the polygon by Monte Carlo method. Also including Monte Carlo integration, the usage of Pick's Theorem, randomly generate a convex polygon, etc.</p>
+    
+<p>The main programming language uses in this project is R and the default unit of angle is radian. Explanation of the code might not always in the code.</p>
+    
+<p>For the best experience, it is recommended to set the Math Renderer of the MathJax to Common HTML. Simply just right click the MathJax equation.</p>
+    
+<figure align="center">
+  <img src="randerer.png" alt="graphy" style="width:50%">
+    <figcaption>Figure 1.1: MathJax Configuration</figcaption>
+</figure>
+    
+<p>If the size of the browser window changes, it is also recommended to refresh the website in order to resize the MathJax equation.</p>
+    
+<p>This website also adpot dark mode in macOS Mojave 10.14.4 or higher. If the appearance is already in dark mode, then the website will look dark, else it will look light. The default colour theme is dark, unless the system appearance is in light mode, it will always in dark theme.</p>
+    
+<figure align="center">
+  <img src="macos.png" alt="graphy" style="width:50%">
+    <figcaption>Figure 1.2: macOS System Preferences</figcaption>
+</figure>
+    
+<h2>Classification of the polygon</h2>   
+    
+<p>Polygon is a flat shape with three or more straight sides, and can be classified by the kind of angles and the convexity:</p>
+    
+<ul>
+<li>Simple: a polygon is neither self-intersecting nor crossed.</li>
+<li>Convex: a simple polygon with all interior angles are less or equal to $\pi$.</li>
+<li>Concave: a polygon with at least one interior angle is more than $\pi$.</li>
+<li>Regular: a convex polygon with all interior angles and all side lengths are the same.</li>
+</ul>
+    
+<h2 id="monte">What is Monte Carlo method?</h2>
+    
+<p>Monte Carlo method is a kind of algorithms that repeatedly using random sample value to estimate the actual result, and it can be extended to Monte Carlo integration<a href="bibliography.html#ref19">[19]</a>, which is a statistical method to estimate the integral. </p>
+    
+<figure align="center">
+  <img src="area_mc.jpeg"alt="graphy" style="width:50%">
+    <figcaption>Figure 1.3: Monte Carlo estimation</figcaption>
+</figure>
+    
+<p>Figure 1.3 shows the function $f(x) = \frac{1}{10}x^{5}-\frac{1}{4}x^{4}-\frac{1}{3}x^{3}+x^{2}$. The integral $\int_{0}^{2} f(x)\  dx$ can be considered as the area under the curve between $[0,2]$. Instead of doing the integration, consider the rectangle that has the same base length and area. We can use the Monte Carlo method to estimate the height of the rectangle, such that the area is approximately the same as the area under the curve.</p>
+    
+<p>Let $p(x)$ be a function and we want to find out the area $$\int_{a}^{b} p(x)\  dx.$$ If there is a random variable $X$ with density $f(x)$, then the expected value of $Z = p(X)$ will be $$ E[p(X)] = \int_{-\infty}^{\infty} p(x)f(x)\  dx.$$</p>
+    
+<p>If we generate a random sample from the distribution of $X$, then an unbiased estimator of $E[p(X)]$ is the sample mean.</p>
+    
+<p>In this case, the expect value will be the height of the rectangle that the area of rectangle is the same as the integral.<a href="bibliography.html#ref19">[14]</a></p>
+    
+<p>Also, if we want to estimate the area $\alpha = \int_{a}^{b} p(x)\  dx$, and $X_1, X_2,...,X_n$ is a uniform $U[a,b]$ distribution sample, then $$\hat{p} = \overline{p(X_n)} =\frac{1}{n} \sum_{i=1}^{n} p(X_i)$$ and $$\hat{\alpha} = (b-a)\  \hat{p}.$$ The unbiased estimate of area $\alpha$ is the area of the rectangle, which is $(b-a)\frac{1}{n} \sum_{i=1}^{n} p(X_i)$.</p>
+    
+<p><b><i>Example 1.1</i></b> &nbsp; If we want to estimate the $\pi$ by the Monte Carlo method, first we uniformly generate a number of points on the square $[0,1]^2$. Which is the same thing as, let $X, Y$ be the coordinate of $x$ and $y$, and they have the i.i.d. uniform distribution $ X, Y \overset{\text{i.i.d.}}{\sim} U[0,1]$.</p>    
+    
+<p>The probability that a random point is inside the quarter circle is: $$P(\text{point in the quarter circle}) = \frac{\text{area of the quarter circle}}{\text{area of the unit square}} = \frac{\pi}{4}.$$</p>
+
+<p>Therefore, $$\pi = 4\cdot P(\text{point in the quarter circle}).$$</p>
+    
+<p>Then we can estimate the probability by the Monte Carlo method, and $\pi$ is four times the estimation.</p>
+    
+<p>Below is an example of how to estimate $\pi$ by the Monte Carlo method:</p>
+    
+<div align="center">
+<iframe width='80%' height='100%' src='https://rdrr.io/snippets/embed/?code=library(scales)%20%23%20Adjust%20the%20alpha%20value%20of%20background%20colour%0Ax%20%3C-%20runif(10000%2C%20min%20%3D%200%2C%20max%20%3D%201)%20%23%20Generate%2010000%20points%20in%20a%20square%0Ay%20%3C-%20runif(10000%2C%20min%20%3D%200%2C%20max%20%3D%201)%0Acount%20%3C-%200%0Afor%20(i%20in%201%3A10000)%20%7B%0A%20%20if%20(x%5Bi%5D%5E2%20%2B%20y%5Bi%5D%5E2%20%3C%3D%201)%20%23%20Count%20the%20number%20of%20points%20inside%20the%20quarter%20circle%0A%20%20count%20%3C-%20count%20%2B%201%0A%7D%0Api_estimate%20%3C-%204*count%2F10000%20%23%20Pi%20is%204%20times%20the%20area%20of%20the%20quarter%20circle%0Acat(%22Pi%20is%20approximately%20%22%2C%20pi_estimate)%0A%0Aquarter.circle%20%3C-%20function(x%2Cy%2Cr%2Ck%3D250)%20%7B%0A%20%20t%20%3C-%20seq(0%2Cpi%2F2%2Clen%3Dk)%20%0A%20%20x_t%20%3C-%20x%2Br*cos(t)%20%0A%20%20y_t%20%3C-%20y%2Br*sin(t)%0A%20%20x_t%20%3C-%20c(x_t%2Cx)%20%23%20Back%20to%20the%20centre%20of%20the%20given%20circle%0A%20%20y_t%20%3C-%20c(y_t%2Cy)%0A%20%20polygon(x_t%2Cy_t%2Ccol%20%3D%20alpha(%22blue%22%2C%200.4))%0A%7D%20%0A%0Aplot(x%2Cy%2Cpch%3D%22.%22%2Casp%3D1)%0Apolygon(c(0%2C1%2C1%2C0)%2Cc(0%2C0%2C1%2C1)%2Ccol%20%3D%20alpha(%22red%22%2C%200.2))%0Aquarter.circle(0%2C0%2C1)'></iframe>
+</div>
+
+<p>That was also a part of homework of the Lab Class 3.</p>
+
+<p>We count the number of points inside the quarter circle, and estimate $p = P(\text{point in the quarter circle})$ by $$\hat{p}= \frac{\text{number of points in the quarter circle}}{\text{total number of points}},$$ and $\pi$ is four times the estimation.</p>
+    
+<p>By the Strong Law of Large Numbers, the estimation converges to the real $p$, which leads to the real $\pi$.</p>
+    
+<p><b><i>Example 1.2</i></b>&nbsp;  If we want to estimate the $\pi$ by the Monte Carlo integration, we first estimate the area of a quarter unit circle. Let $X_1, X_2, ... , X_{10000}$ be a uniform $U[0,1]$ distribution sample, then $\hat{\alpha} = \frac{1}{10000} \sum_{i=1}^{n} \sqrt{1-X_i^2}$ and $\hat{\pi} = 4 \cdot \hat{\alpha}$. We can test it with the following code:</p>  
+
+<div align="center">
+<iframe width='80%' height='60%' src='https://rdrr.io/snippets/embed/?code=n%20%3C-%2010000%20%23%20Number%20of%20points%0Ax%20%3C-%20runif(n)%20%23%20Uniform%20distribution%20in%20%5B0%2C1%5D%0Aarea%20%3C-%20mean(sqrt(1-x%5E2))%20%23%20Area%20of%20quarter%20circle%0Api%20%3C-%204*area%0Acat(%22Pi%20is%20approximately%20%22%2C%20pi)' frameborder='0'></iframe>
+</div>
+    
+<p>Using Monte Carlo integration looks faster and easier, but that's because we can find the upper bound of the quarter circle easily. If we want to apply this method to a random polygon, then it will be a huge challange to determine the bounds, or just impossible to find a good definition.</p>
+    
+<p>However, it is still possible to determine to upper and lower bounds of the convex polygon, which will be introduced in the Monte Carlo Part 1.</p>
+
+<p>Generally, to estimate the area of convex polygon, we apply the Monte Carlo method in this way:  </p>
+    
+<div>
+    <ol>
+        <li>Draw a convex polygon</li>
+        <li>Find and draw the rectangle that exactly enclose the polygon</li>
+        <li>Uniformly generate a given number of points over the rectangle</li>
+        <li>Count the number of points inside the polygon</li>
+        <li>Calculate the ratio of the inside and total number of points, and multiple by the area of the rectangle.</li>
+    </ol>
+</div>
+
+<p>If the coordinates of a n-side polygon are $(x_i,y_i)$ where $i=1,2,...,n.$ Then the vertices of the smallest rectangle that enclose the polygon are:</p>
+
+<p>$$(\min(x_i),\min(y_i)), (\max(x_i),\min(y_i)), (\max(x_i),\max(y_i)), (\min(x_i),\max(y_i)).$$</p>
+
+<p>See Figure 1.4.</p>
+
+<figure align="center">
+  <img src="nanogon.png" alt="graphy" style="width:65%">
+  <figcaption text-align="center">Figure 1.4: Nonagon with ordered vertices</figcaption>
+</figure>
+
+<p>Figure above is a nonagon with rectangle that exactly enclose it.</p>
+
+<p>Then we can apply the Monte Carlo method, uniformly generate same points over the rectangle and so on.</p>
+
+<h2 id="functions">Some useful functions</h2>
+
+<p>Before next stage, it is better to build some functions first, which will simplify the code later.</p>
+
+<pre class="r"><code class="hljs">norm &lt;- <span class="hljs-keyword">function</span>(x) sqrt(sum(x^<span class="hljs-number">2</span>)) <span class="hljs-comment"># Magnitude of a vector, norn</span>
+
+start_from_miny &lt;- <span class="hljs-keyword">function</span>(x,y) { <span class="hljs-comment"># Reorder the given value of x and y</span>
+  new_x &lt;- c()
+  new_y &lt;- c()
+  n &lt;- length(x)
+  x &lt;- c(x, x)
+  y &lt;- c(y, y)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    new_x[i] &lt;- x[match(min(y),y) + i - <span class="hljs-number">1</span>]
+    new_y[i] &lt;- y[match(min(y),y) + i - <span class="hljs-number">1</span>]
+  }
+  <span class="hljs-keyword">return</span>(list(x = new_x, y = new_y)) <span class="hljs-comment"># It will return a list of two vectors, one is new_x and another is new_y</span>
+}
+
+start_from_minx &lt;- <span class="hljs-keyword">function</span>(x,y) { <span class="hljs-comment"># Reorder the vertices by x position, converse to the above</span>
+  new_x &lt;- c()
+  new_y &lt;- c()
+  n &lt;- length(x)
+  x &lt;- c(x, x)
+  y &lt;- c(y, y)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    new_x[i] &lt;- x[match(min(x),x) + i - <span class="hljs-number">1</span>]
+    new_y[i] &lt;- y[match(min(x),x) + i - <span class="hljs-number">1</span>]
+  }
+  <span class="hljs-keyword">return</span>(list(x = new_x, y = new_y))
+}
+
+anti_rot &lt;- <span class="hljs-keyword">function</span>(x,y) { <span class="hljs-comment"># Change the rotation order of the given points</span>
+  n &lt;- length(x)
+  x1 &lt;- x[<span class="hljs-number">1</span>]
+  y1 &lt;- y[<span class="hljs-number">1</span>]
+  x1 &lt;- c(x1, rev(x[-<span class="hljs-number">1</span>]))
+  y1 &lt;- c(y1, rev(y[-<span class="hljs-number">1</span>]))
+  <span class="hljs-keyword">return</span>(list(x = x1, y = y1))
+}
+
+gradient &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  grad &lt;- c()
+  n &lt;- length(x)
+  x[n+<span class="hljs-number">1</span>] &lt;- x[<span class="hljs-number">1</span>]
+  y[n+<span class="hljs-number">1</span>] &lt;- y[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    grad[i] &lt;- (y[i+<span class="hljs-number">1</span>] - y[i])/(x[i+<span class="hljs-number">1</span>] - x[i]) <span class="hljs-comment"># Gradient bewteen any two consecutive points</span>
+  }
+  <span class="hljs-keyword">return</span>(grad)
+}
+
+vector_rot90 &lt;- <span class="hljs-keyword">function</span>(x) {
+  <span class="hljs-keyword">return</span>(c(-x[<span class="hljs-number">2</span>],x[<span class="hljs-number">1</span>]))
+}
+
+perpdot &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  n &lt;- length(x)
+  x[n+<span class="hljs-number">1</span>] &lt;- x[<span class="hljs-number">1</span>]
+  y[n+<span class="hljs-number">1</span>] &lt;- y[<span class="hljs-number">1</span>]
+  direction &lt;- list()
+  perpdot &lt;- c()
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    direction &lt;- c(direction,list((c(x[i+<span class="hljs-number">1</span>],y[i+<span class="hljs-number">1</span>]) - c(x[i],y[i]))))
+  }
+  direction[n+<span class="hljs-number">1</span>] &lt;- direction[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    perpdotproduct &lt;- vector_rot90(direction[[i]]) %*% direction[[i+<span class="hljs-number">1</span>]]
+    perpdot &lt;- c(perpdot,perpdotproduct)
+  }
+  reorder &lt;- c()
+  reorder &lt;- c(reorder, perpdot[n])
+  reorder &lt;- c(reorder, perpdot[<span class="hljs-number">1</span>:(n-<span class="hljs-number">1</span>)])
+  <span class="hljs-keyword">return</span>(reorder)
+}</code>
+</pre>
+
+<ul>
+<li>
+<code>norn</code> will return the magnitude of a vector <code>x</code>
+</li>
+<li>
+<code>start_from_miny</code> requires the coordinates of polygon and will return a list with member <code>x</code> and <code>y</code>. Those are the reordered vertices, and the first vertex will have the minimum $y$ coordinate.
+</li>
+<li>
+<code>start_from_minx</code> is simliar to <code>start_from_miny</code>, the only difference is the first vertex will have the minimum $x$ coordinate.
+</li>
+<li>
+<code>anti_rot</code> will reverse the order of the vertices
+</li>
+<li>
+<code>gradient</code> will return the gradient of the edges of the input polygon. i.e. <code>gradient(x,y)[1]</code> is the gradient of the line connected the points <code>(x[1],y[1])</code> and <code>(x[2],y[2])</code>
+</li>
+<li>
+<code>vector_rot90</code> will anticlockwise rotate the input vector $\frac{\pi}{2}$ radians.
+</li>
+<li>
+<code>perpdot</code> is simliar to <code>gradient</code>, expect it will return the perp dot product of the edge before and the edge after of a vertex. The idea of perp dot product will be introduced later in Monte Carlo (Part 1).
+</li>
+</ul>
+
+<p>With all the preparations, now we can start to identify the type of polygon.</p>
+<h4 style="text-align:left;"> <span style="float:right;"><a href="type_of_polygon.html">→ Section: Identify the type of polygon</a></span></h4>
+   
+<p><span id="lblCopyRight">© Group 18</span></p>
+</body>
+</html>
