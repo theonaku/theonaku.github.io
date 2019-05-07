@@ -1,0 +1,258 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<h1>Area: Group Project (Group 18)</h1>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+    
+<h2>Pick's Theorem</h2>
+    
+<p>The area $A$ of a simple polygon in 2D with integer coordinates can be computed by Pick's theorem<a href="bibliography.html#ref16">[16]</a>, which is a simple method and just need to know the number of integer coordinates points on the boundary, $B$; and number of integer coordinates points inside the polygon, $I$. Then $$A = I + \frac{1}{2}B -1.$$</p>
+    
+<p>Also, such polygon is known as lattice polygon, and such points are lattice points.</p>
+
+<p>By Pick's theorem, the area of polygon in Figure 6.1 is $A = 20 + 6 - 1 = 25$.</p>    
+
+<figure align="center">
+  <img src="pick1.jpeg" alt="graphy" style="width:50%">
+  <figcaption>Figure 6.1: Convex polygon with $B = 12$, $I = 20$</figcaption>
+</figure>
+    
+<p>Also, by Monte Carlo method:</p>
+    
+<pre class="r"><code class="hljs">x &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">9</span>,<span class="hljs-number">8</span>,<span class="hljs-number">2</span>)
+y &lt;- c(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">3</span>,<span class="hljs-number">0</span>)
+area_mc_method_v4(x,y,typepoly = <span class="hljs-literal">FALSE</span>, plotpoly = <span class="hljs-literal">FALSE</span>, point_method = <span class="hljs-string">"wind"</span>, mc_method = <span class="hljs-string">"antithetic"</span>)</code></pre>
+    
+<pre><code class="hljs">## [1] 25.0008</code></pre>
+    
+<p>which shows that Pick's theorem return the right answer for the given convex polygon.</p>
+    
+<p>Pick's theorem also works for polygon with holes, as the area only depends on the number of lattice points.</p>
+ 
+<p>A proof of Pick's theorem can be found <a href="http://www.geometer.org/mathcircles/pick.ps">here</a> by Tom Davis.</p>
+    
+<p>It is also possible to imply Pick's theorem into a R function, as we have a function to test whether a point is inside the polygon or not, we just need to test all lattice points within the minimum rectangle that cover the polygon. But the point in polygon function might not work well for the points on the boundary, because in the Monte Carlo method we don't actually care about a few points on the boundary.</p>
+    
+<p>But still, we can first work out the point on the boundary by using the line equation method: check whether a point lies on the domain of the line equation that forms the edge, and get rid of them from the set of lattice points. Then we can test the rest points with the point in polygon function, and count the number that inside the polygon, also count the point on the boundary in previous stage.</p>
+    
+<p>Before we start, let's write a function that will get rid of the redundant point of a polygon. That is, if there is three or more points in a line, it will remove the point in-between.</p>
+    
+<pre class="r"><code class="hljs">start_from_minx_v2 &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  x1 &lt;- start_from_minx(x,y)$x
+  y1 &lt;- start_from_minx(x,y)$y
+  n &lt;- length(x)
+  index &lt;- c()
+  grad &lt;- gradient(x1,y1)
+  grad[n+<span class="hljs-number">1</span>] &lt;- grad[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    <span class="hljs-keyword">if</span> (grad[i] == grad[i+<span class="hljs-number">1</span>]) {
+      index &lt;- c(index,(i+<span class="hljs-number">1</span>))
+      repeats &lt;- <span class="hljs-literal">TRUE</span>
+    }
+    <span class="hljs-keyword">else</span> repeats &lt;- <span class="hljs-literal">FALSE</span>
+  }
+  <span class="hljs-keyword">if</span> (repeats) <span class="hljs-keyword">return</span>(list(x = x1[-index],y = y1[-index])) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(list(x = x1,y = y1))
+}</code></pre>
+    
+<p>If that is the case, then the gradient will be the same between those points, which allow us to allocate such points.</p>
+    
+<p>The only problem is, if a point is the vertex, then it lies on two edges, and we might have the repeat result. But that's also fine, just collect the index of the points on the boundary, and remove the duplicate. Infinity gradient is not even an issue: remember in Monte Carlo (Part 2), there is a function to find the line equation that in the form of $x = f(y)$. Another possible problem is the stability of the point in polygon function, but it works perfectly well with most of the polygons, so that should not be a problem in this case.</p>
+    
+<p>Below is the code in R:</p>
+
+<pre class="r"><code class="hljs">picks_theorem &lt;- <span class="hljs-keyword">function</span>(x,y,gridplot = <span class="hljs-literal">TRUE</span>) {
+  x1 &lt;- start_from_minx_v2(x,y)$x <span class="hljs-comment"># Against three or more points in one of more line(s)</span>
+  y1 &lt;- start_from_minx_v2(x,y)$y
+  <span class="hljs-keyword">if</span> (type_of_polygon_v2(x1,y1) == <span class="hljs-string">"Self-intersecting"</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Error: Self-intersecting polygon"</span>)
+  n &lt;- length(x1)
+  grad &lt;- gradient(x1,y1);grad[n+<span class="hljs-number">1</span>] &lt;- grad[<span class="hljs-number">1</span>]
+  xi &lt;- min(x1):max(x1);yi &lt;- min(y1):max(y1);xj &lt;- c();yj &lt;- c()
+  x2 &lt;- x1;x2[n+<span class="hljs-number">1</span>] &lt;- x2[<span class="hljs-number">1</span>];y2 &lt;- y1;y2[n+<span class="hljs-number">1</span>] &lt;- y2[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:length(xi)) {
+    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:length(yi)) {
+      yj &lt;- c(yj,yi[j]);xj &lt;- c(xj,xi[i])
+    }
+  }
+  m &lt;- length(xj)
+  boundi &lt;- c()
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:m) {
+    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+      <span class="hljs-keyword">if</span> (!is.infinite(grad[j])) {
+        <span class="hljs-keyword">if</span> (linen_equ(x1,y1,j)(xj[i]) == yj[i]) {
+          <span class="hljs-keyword">if</span> (xj[i] &lt;= max(x2[j],x2[j+<span class="hljs-number">1</span>]) &amp;&amp; xj[i] &gt;= min(x2[j],x2[j+<span class="hljs-number">1</span>])) {
+            boundi &lt;- c(boundi,i)
+          }
+        }
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (linen_equy(x1,y1,j)(yj[i]) == xj[i]) {
+          <span class="hljs-keyword">if</span> (yj[i] &lt;= max(y2[j],y2[j+<span class="hljs-number">1</span>]) &amp;&amp; yj[i] &gt;= min(y2[j],y2[j+<span class="hljs-number">1</span>])) {
+            boundi &lt;- c(boundi,i)
+          }
+        }
+      }
+    }
+  }
+  boundary &lt;- boundi[!duplicated(boundi)]
+  xnb &lt;- xj[-boundary];ynb &lt;- yj[-boundary]
+  k &lt;- length(xnb)
+  inside &lt;- c()
+  <span class="hljs-keyword">if</span> (k != <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">for</span> (a <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+      <span class="hljs-keyword">if</span> (point_inside_v2(x1,y1,xnb[a],ynb[a],<span class="hljs-string">"wind"</span>) == <span class="hljs-number">1</span>) {
+        inside &lt;- c(inside,a)
+      }
+    }
+  }
+  b &lt;- length(boundary)
+  i &lt;- length(inside)
+  area &lt;- i + b/<span class="hljs-number">2</span> - <span class="hljs-number">1</span>
+  <span class="hljs-keyword">if</span> (gridplot) {
+    plot(x,y,pch=<span class="hljs-string">""</span>)
+    polygon(x,y)
+    points(xj,yj)
+    points(xj[boundary],yj[boundary],col=<span class="hljs-string">"yellow"</span>,pch=<span class="hljs-number">19</span>)
+    <span class="hljs-keyword">if</span> (i != <span class="hljs-number">0</span>) points(xnb[inside],ynb[inside],col=<span class="hljs-string">"purple"</span>,pch=<span class="hljs-number">19</span>)
+  }
+  <span class="hljs-keyword">return</span>(area)
+}</code></pre>
+
+<p>Now try it with the polygon at the beginning:</p>
+    
+<pre class="r"><code class="hljs">x &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">9</span>,<span class="hljs-number">8</span>,<span class="hljs-number">2</span>)
+y &lt;- c(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">3</span>,<span class="hljs-number">0</span>)
+picks_theorem(x,y)</code></pre>
+    
+<figure align="center">
+  <img src="pick2.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 6.2: Convex polygon with $B = 12$, $I = 20$</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 25</code></pre>
+    
+<p>It also works well with a simple rectangle:</p>
+    
+<pre class="r"><code class="hljs">x &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)
+y &lt;- c(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">4</span>,<span class="hljs-number">4</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>)
+picks_theorem(x,y)</code></pre>
+    
+<figure align="center">
+  <img src="pick4.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 6.3: Convex polygon with $B = 16$, $I = 9$</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 16</code></pre>
+    
+<p>By the way, Monte Carlo method is working as usual:</p>
+    
+<pre class="r"><code class="hljs">area_mc_method_v4(x,y,typepoly = <span class="hljs-literal">FALSE</span>, plotpoly = <span class="hljs-literal">FALSE</span>)</code></pre>
+
+<pre><code class="hljs">## [1] 16</code></pre>
+    
+<p>Sometimes complicate function might not be working as usual for those basic polygons, so it is worth to test on them.</p>
+    
+<p>Let's see one more example:</p>
+
+<pre class="r"><code class="hljs">xe7 &lt;- c(<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">6</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
+ye7 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>)
+picks_theorem(xe7,ye7)</code></pre>
+    
+<figure align="center">
+  <img src="pick3.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 6.4: Concave polygon with $B = 20$, $I = 3$</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 12</code></pre>
+    
+<h4 id="pickend">You can test the function at <a href="code_7.html">here</a>.</h4>
+    
+<h4 style="text-align:left;"><span style="float:right;"><a href="determinants.html"><span>&#8594;</span>Section: Areas and Determinants</a></span></h4>
+
+<p><span id="lblCopyRight">© Group 18</span></p>
+    
+</body>
+</html>

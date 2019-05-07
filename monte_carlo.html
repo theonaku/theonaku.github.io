@@ -1,0 +1,808 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<h1>Area: Group Project (Group 18)</h1>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+
+<h2 id="classify">Classify the vertices: Bound</h2>
+<p>If a point is inside a convex polygon, then there exists an upper bound and a lower bound, and the $y$-coordinate of the point is within the bounds.</p>
+    
+<figure align="center">
+  <img src="bounds.jpeg" alt="graphy" style="width:65%">
+  <figcaption>Figure 3.1: Lower bound and Upper bound</figcaption>
+</figure>
+
+<p>In Figure 3.1, red lines indicate the upper bound and blue lines indicate the lower bound. Notice that line $AB$ can be part of both upper bound and lower bound, depends on the order of the coordinates. If start from $A$ and end at $G$, then line $AB$ is the part of upper bound.</p>
+    
+<p>Let's summarise it to the definition of the upper and lower vertex.</p>
+    
+<div class="definition">
+<p><span id="thm:pyth" class="definition"><strong>Definition 3.1  (Upper Vertex) </strong></span>In a convex polygon, starting from the vertex with minimum $x$-coordinate in clockwise direction and ending at the vertex with maximum $x$-coordinate, the vertices in-between are upper vertices.</p>
+</div>
+
+<div class="definition">
+<p><span id="thm:pyth" class="definition"><strong>Definition 3.2  (Lower Vertex) </strong></span>In a convex polygon, starting from the vertex with minimum $x$-coordinate in anticlockwise direction and ending at the vertex with maximum $x$-coordinate, the vertices in-between are lower vertices.</p>
+</div>
+
+<div class="definition">
+<p><span id="thm:pyth" class="definition"><strong>Definition 3.3  (Bounded Vertex) </strong></span>In a convex polygon, if a vertex has the minimum or maximum $x$ value among all vertices, then it is a bounded vertex.</p>
+</div>
+
+<p>But how the minimum $x$-coordinate to be well-defined if there exists two vertices with the same $x$-coordinate and both are minimum? Like in Figure 3.1, vertex $A$ and vertex $B$ both have the same $x$-coordinate. Then it depends on the order of the vertices.</p>
+
+<p>Now then convert the definiton into a function:</p>
+    
+<pre class="r"><code class="hljs">classify &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  min_index &lt;- match(min(x),x)
+  max_index &lt;- match(max(x),x)
+  grad &lt;- gradient(start_from_minx(x,y)$x,start_from_minx(x,y)$y)
+  n &lt;- length(x)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> c(<span class="hljs-number">1</span>,n)) {
+    <span class="hljs-keyword">if</span> (grad[i] == -<span class="hljs-literal">Inf</span>) grad[i] &lt;- <span class="hljs-literal">Inf</span>
+  }
+  upper_index &lt;- c()
+  lower_index &lt;- c()
+  bounded_index &lt;- sort(c(min_index,max_index))
+  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &lt; grad[n]) {
+    <span class="hljs-keyword">if</span> (min_index &gt; max_index) {
+      upper_index &lt;- c((max_index+<span class="hljs-number">1</span>):(min_index-<span class="hljs-number">1</span>))
+      <span class="hljs-keyword">if</span> (min_index == n) {
+        <span class="hljs-keyword">if</span> (max_index == <span class="hljs-number">1</span>) lower_index &lt;- c(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> lower_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>))
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (max_index == <span class="hljs-number">1</span>) lower_index &lt;- c((min_index+<span class="hljs-number">1</span>):n) 
+        <span class="hljs-keyword">else</span> lower_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>),(min_index+<span class="hljs-number">1</span>):n)
+      } 
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (min_index &lt; max_index) {
+      lower_index &lt;- c((min_index+<span class="hljs-number">1</span>):(max_index-<span class="hljs-number">1</span>))
+      <span class="hljs-keyword">if</span> (max_index == n) {
+        <span class="hljs-keyword">if</span> (min_index == <span class="hljs-number">1</span>) upper_index &lt;- c(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> upper_index &lt;- c(<span class="hljs-number">1</span>:(min_index-<span class="hljs-number">1</span>))
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (min_index == <span class="hljs-number">1</span>) upper_index &lt;- c((max_index+<span class="hljs-number">1</span>):n) 
+        <span class="hljs-keyword">else</span> upper_index &lt;- c(<span class="hljs-number">1</span>:(min_index-<span class="hljs-number">1</span>),(max_index+<span class="hljs-number">1</span>):n)
+      } 
+    }
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &gt; grad[n]) {
+    <span class="hljs-keyword">if</span> (min_index &gt; max_index) {
+      lower_index &lt;- c((max_index+<span class="hljs-number">1</span>):(min_index-<span class="hljs-number">1</span>))
+      <span class="hljs-keyword">if</span> (min_index == n) {
+        <span class="hljs-keyword">if</span> (max_index == <span class="hljs-number">1</span>) upper_index &lt;- c(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> upper_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>))
+      } <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span> (max_index == <span class="hljs-number">1</span>) upper_index &lt;- c((min_index+<span class="hljs-number">1</span>):n) 
+        <span class="hljs-keyword">else</span> upper_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>),(min_index+<span class="hljs-number">1</span>):n)
+      } 
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (min_index &lt; max_index) {
+      upper_index &lt;- c((min_index+<span class="hljs-number">1</span>):(max_index-<span class="hljs-number">1</span>))
+      <span class="hljs-keyword">if</span> (max_index == n) {
+        <span class="hljs-keyword">if</span> (min_index == <span class="hljs-number">1</span>) lower_index &lt;- c(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> lower_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>))
+      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (min_index == <span class="hljs-number">1</span>) lower_index &lt;- c((max_index+<span class="hljs-number">1</span>):n) 
+        <span class="hljs-keyword">else</span> lower_index &lt;- c(<span class="hljs-number">1</span>:(min_index-<span class="hljs-number">1</span>),(max_index+<span class="hljs-number">1</span>):n)
+    }
+  }
+  <span class="hljs-keyword">return</span>(list(ui = upper_index, li = lower_index, bi = bounded_index))
+}</code></pre>
+    
+<p>If there is no lower vertex or upper vertex, then the function will return <code>0</code> instead.</p>
+    
+<p>Also, we can now write a function to reorder the vertices, not just start from minimum of $x$, but also in anticlockwise direction.</p>
+
+<pre class="r"><code class="hljs">anticlockwise_order_minx &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  n &lt;- length(x)
+  grad &lt;- gradient(start_from_minx(x,y)$x,start_from_minx(x,y)$y)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> c(<span class="hljs-number">1</span>,n)) {
+    <span class="hljs-keyword">if</span> (grad[i] == -<span class="hljs-literal">Inf</span>) grad[i] &lt;- <span class="hljs-literal">Inf</span>
+  }
+  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &lt; grad[n]) <span class="hljs-keyword">return</span>(list(x = start_from_minx(x,y)$x, y = start_from_minx(x,y)$y))
+  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &gt; grad[n]) <span class="hljs-keyword">return</span>(list(x = start_from_minx(rev(x),rev(y))$x, y = start_from_minx(rev(x),rev(y))$y))
+}</code></pre>
+
+<h2 id="avoid">Polygon with three or more vertices in line</h2>
+    
+<p>To avoid the error happens in this case, notice that the type of polygon and area will not be affected if only the start point and the end point of the line remained. That means we can remove those vertices first before we apply the other methods.</p>
+
+<pre class="r"><code class="hljs">start_from_minx_v2 &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  x1 &lt;- start_from_minx(x,y)$x
+  y1 &lt;- start_from_minx(x,y)$y
+  n &lt;- length(x)
+  index &lt;- c()
+  grad &lt;- gradient(x1,y1)
+  grad[n+<span class="hljs-number">1</span>] &lt;- grad[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    <span class="hljs-keyword">if</span> (grad[i] == grad[i+<span class="hljs-number">1</span>]) {
+      index &lt;- c(index,(i+<span class="hljs-number">1</span>))
+      repeats &lt;- <span class="hljs-literal">TRUE</span>
+    }
+    <span class="hljs-keyword">else</span> repeats &lt;- <span class="hljs-literal">FALSE</span>
+  }
+  <span class="hljs-keyword">if</span> (repeats) <span class="hljs-keyword">return</span>(list(x = x1[-index],y = y1[-index])) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(list(x = x1,y = y1))
+}</code></pre>
+    
+<p>and combine with the function <code>anticlockwise_order_minx</code>:</p>
+    
+<pre class="r"><code class="hljs">anticlockwise_order_minx &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  n &lt;- length(x)
+  grad &lt;- gradient(start_from_minx_v2(x,y)$x,start_from_minx_v2(x,y)$y)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> c(<span class="hljs-number">1</span>,n)) {
+    <span class="hljs-keyword">if</span> (grad[i] == -<span class="hljs-literal">Inf</span>) grad[i] &lt;- <span class="hljs-literal">Inf</span>
+  }
+  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &lt; grad[n]) <span class="hljs-keyword">return</span>(list(x = start_from_minx(x,y)$x, y = start_from_minx(x,y)$y))
+  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &gt; grad[n]) <span class="hljs-keyword">return</span>(list(x = start_from_minx(rev(x),rev(y))$x, y = start_from_minx(rev(x),rev(y))$y))
+}</code></pre>
+    
+<p>But generally, please avoid to enter such polygon.</p>
+    
+<h2 id="bounds">Upper and Lower bounds</h2>
+    
+<p>Now we classify the vertices, and have a function to reorder the polygon in anticlockwise direction and start from minimum $x$. Then we can find the lower and upper bounds. Lower bound of a convex polygon, is a set of the line equations that constructed the lower half of the polygon, starting from the minimum of $x$ to the maximum of $x$. Which is:</p>
+    
+<pre class="r"><code class="hljs">lower_bound &lt;- <span class="hljs-keyword">function</span>(x,y,x0) {
+  x1 &lt;- anticlockwise_order_minx(x,y)$x
+  y1 &lt;- anticlockwise_order_minx(x,y)$y
+  x_max &lt;- match(max(x1),x1)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:(x_max-<span class="hljs-number">1</span>)) {
+    <span class="hljs-keyword">if</span> (x0 &lt;= x1[i+<span class="hljs-number">1</span>] &amp;&amp; x0 &gt;= x1[i]) <span class="hljs-keyword">return</span>(linen_equ(x1,y1,i)(x0))
+  }
+}</code></pre>
+    
+<p>Similarly, the upper bound is:</p>
+    
+<pre class="r"><code class="hljs">upper_bound &lt;- <span class="hljs-keyword">function</span>(x,y,x0) {
+  x2 &lt;- anticlockwise_order_minx(x,y)$x
+  y2 &lt;- anticlockwise_order_minx(x,y)$y
+  grad &lt;- gradient(x2,y2)
+  x_max &lt;- match(max(x2),x2)
+  n &lt;- length(x2)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> x_max:n) {
+    <span class="hljs-keyword">if</span> (i == n) {
+      <span class="hljs-keyword">if</span> (x0 &gt;= x2[<span class="hljs-number">1</span>] &amp;&amp; x0 &lt;= x2[n]) {
+        <span class="hljs-keyword">if</span> (abs(grad[n]) == <span class="hljs-literal">Inf</span>) <span class="hljs-keyword">return</span>(y2[n]) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(linen_equ(x2,y2,n)(x0))
+      }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (i == x_max) {
+        <span class="hljs-keyword">if</span> (x0 &gt;= x2[i+<span class="hljs-number">1</span>] &amp;&amp; x0 &lt;= x2[i]) {
+          <span class="hljs-keyword">if</span>(abs(grad[x_max]) == <span class="hljs-literal">Inf</span>) <span class="hljs-keyword">return</span>(y2[x_max + <span class="hljs-number">1</span>]) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(linen_equ(x2,y2,i)(x0))
+        }
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">if</span> (x0 &gt;= x2[i+<span class="hljs-number">1</span>] &amp;&amp; x0 &lt;= x2[i]) {
+        <span class="hljs-keyword">return</span>(linen_equ(x2,y2,i)(x0))
+      }
+    }
+  }
+}</code></pre>
+
+<h2 id="pointin1">Point in the Polygon: Convex</h2>
+
+<p>If a point $(x_0,y_0)$ is inside the polygon, then at $x_0$, $y_0$ must between the lower and upper bounds. Hence:</p>
+
+<pre class="r"><code class="hljs">point_inside &lt;- <span class="hljs-keyword">function</span>(x,y,x0,y0) {
+  <span class="hljs-keyword">if</span> (x0 &lt; min(x) || x0 &gt; max(x) || y0 &lt; min(y) || y0 &gt; max(y)) <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>) 
+  <span class="hljs-keyword">if</span> (y0 &lt;= upper_bound(x,y,x0) &amp;&amp; y0 &gt;= lower_bound(x,y,x0)) <span class="hljs-keyword">return</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>)
+}</code></pre>
+    
+<p>Also the point should inside the circumscribe rectangle, if not then it is not inside the polygon.</p>
+    
+<p>If a point is inside the polygon, then the function will return <code>1</code>, else <code>0</code>.</p>
+    
+<h2 id="mcm1">Monte Carlo Method, Version 1</h2>
+
+<p>Now we can start to randomly generate a number of points, can apply the Monte Carlo method. There is also a function to create the point within the rectangle that exactly cover the polygon:</p>
+    
+<pre class="r"><code class="hljs">generate_k_random_point &lt;- <span class="hljs-keyword">function</span>(x,y,k) {
+  random_x &lt;- runif(k,min(x), max(x))
+  random_y &lt;- runif(k,min(y), max(y))
+  <span class="hljs-keyword">return</span>(list(x = random_x, y = random_y))
+}</code></pre>
+
+<p>Then apply Monte Carlo method:</p>
+    
+<pre class="r"><code class="hljs">area_mc_method &lt;- <span class="hljs-keyword">function</span>(x,y,k = <span class="hljs-number">2000</span>, concave = <span class="hljs-literal">FALSE</span>, plotpoly = <span class="hljs-literal">TRUE</span>) { <span class="hljs-comment"># Special concave as example 4</span>
+  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
+  <span class="hljs-keyword">if</span> (concave) {
+    type &lt;- type_of_polygon_v2(x,y)
+    <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
+      print(<span class="hljs-string">"Convex Polygon"</span>) 
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
+      <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Self-intersecting Polygon"</span>)
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
+      print(<span class="hljs-string">"Concave Polygon"</span>)
+    }
+  } <span class="hljs-keyword">else</span> {
+    type &lt;- type_of_polygon(x,y)
+    <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
+      print(<span class="hljs-string">"Convex Polygon"</span>) 
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Non-convex"</span>) {
+      <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Non-convex Polygon"</span>)
+    }
+  }
+  count &lt;- <span class="hljs-number">0</span>
+  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
+  random_x &lt;- generate_k_random_point(x,y,k)$x
+  random_y &lt;- generate_k_random_point(x,y,k)$y
+  inside &lt;- c()
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+    count &lt;- count + point_inside(x,y,random_x[i],random_y[i])
+    <span class="hljs-keyword">if</span> (point_inside(x,y,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
+  }
+  approximate_area &lt;- count/k*rectangle_area
+  <span class="hljs-keyword">if</span> (plotpoly) {
+    plot(x,y,pch=<span class="hljs-string">""</span>)
+    polygon(x,y)
+    polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
+    points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
+    points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>) 
+  }
+  <span class="hljs-keyword">return</span>(approximate_area)
+}</code></pre>
+
+<p>Actually, some special concave polygon can also find the upper bound and lower bound, like the one in the Example 3.1.</p>
+
+<p><b><i>Example 3.1</i></b>&nbsp; Compute the area of bounded concave polygon with coordinates $(1,1),(3,4),(4,8),(7,5),(6,3),(4,5)$ by Monte Carlo method with point in polygon method is the bounds algorithm.</p>
+    
+<pre class="r"><code class="hljs">xe3 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">4</span>)
+ye3 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">8</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>)
+area_mc_method(xe3,ye3,concave=<span class="hljs-literal">TRUE</span>)</code></pre>
+    
+<pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
+
+<figure align="center">
+  <img src="concave4.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 3.2: Monte Carlo Concave Polygon</figcaption>
+</figure>    
+
+<pre><code class="hljs">## [1] 9.471</code></pre>
+    
+<p>That's because both upper and lower bounds can be considered as two functions if it is not one-to-more. If we can not define the bound , the result would be wrong, like the next example.</p>
+    
+<p><b><i>Example 3.2</i></b> &nbsp; Compute the area of the concave polygon with coordinates $(1,1),(3,6),(5,4),(4,3),(5,2),(3,3),(2,3)$ by Monte Carlo method with point in polygon method is the bounds algorithm.</p>
+    
+<pre class="r"><code class="hljs">xe5 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
+ye5 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">6</span>,<span class="hljs-number">4</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">3</span>)
+area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span class="hljs-comment"># Wrong result</span></code></pre>
+
+<pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
+
+<figure align="center">
+  <img src="concave5.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 3.3: Monte Carlo Concave Polygon with wrong result</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 4.94</code></pre>
+    
+<p>The actual area is 6, because the "upper bound" is not a function, so the <code>area_mc_method</code> function ignores some regions.</p>
+    
+<p>The <code>area_mc_method</code> function works well for all convex polygon, and some bounded concave polygons.</p>
+    
+<p>However, there should be a way to find out the area of all simple polygons, not just some special concave polygons.</p>
+    
+<h4 id="mcm1end">You can test the function at <a href="code_2.html">here</a>.</h4>
+    
+<h2 id="perp">Perp Dot Product</h2>
+    
+<p>Perp Dot Product, or just Perp Product, can be defined for two vectors $\mathbf{u}$ and $\mathbf{v}$ by $$\mathbf{u}\bot\mathbf{v} = \mathbf{u^\bot} \cdot \mathbf{v} = |\mathbf{u}||\mathbf{v}|\sin{\theta},$$ where $\theta$ is the angle between $\mathbf{u}$ and $\mathbf{v}$, and $|\mathbf{u^\bot}|$ is the magnitude. $\mathbf{u^\bot}$ is a vector perpendicular to $\mathbf{u}$, obtained by rotating $\mathbf{u}$ $\frac{\pi}{2}$ rad anticlockwise.<a href="bibliography.html#ref4">[4]</a></p>
+    
+<p>Think about Perp Dot Product in a plane, if $
+      \begin{align}
+    \mathbf{u} &= \begin{bmatrix}
+           u_{x} \\
+           u_{y}
+         \end{bmatrix}
+  \end{align}$ then $
+    \begin{align}
+    \mathbf{u^\bot} &= \begin{bmatrix}
+           0 & -1 \\           
+           1 & 0
+          \end{bmatrix}
+          \begin{bmatrix}
+           u_{x} \\
+           u_{y} 
+         \end{bmatrix} = 
+    \begin{bmatrix}
+          - u_{y} \\
+           u_{x} 
+         \end{bmatrix}
+
+  \end{align}.$ Also if $
+      \begin{align}
+    \mathbf{v} &= \begin{bmatrix}
+           v_{x} \\
+           v_{y}
+         \end{bmatrix}
+  \end{align}$ then $$\mathbf{u^\bot} \cdot \mathbf{v} = u_{x}v_{y} - u_{y}v_{x},$$ whereas $$\mathbf{u} \cdot \mathbf{v} = u_{x}v_{x} + u_{y}v_{y}.$$ </p>
+    
+<p>The scalar projection of $\mathbf{u^\bot}$ in the direction of $\mathbf{v}$ is $|\mathbf{u^\bot}| \sin{\theta} = |\mathbf{u}| \sin{\theta}$, therefore $\mathbf{u^\bot} \cdot \mathbf{v} = |\mathbf{u}||\mathbf{v}|\sin{\theta}$.<a href="bibliography.html#ref1">[1]</a></p>
+
+<p>The usage of perp dot product in this topic is, if we define the direction vector $\mathbf{v_i}=\mathbf{x_{i+1}}-\mathbf{x_i}$, where $\mathbf{x_i}$ is the vertices of the $n$-side simple polygon, then a simple polygon is convex if and only if $\mathbf{v_i}\bot\mathbf{v_{i+1}}$ has the same sign for all $i$.<a href="bibliography.html#ref5">[5]</a></p>
+    
+<p>WIth this idea, we can also write a function to classify the simple polygon:</p>
+
+<pre class="r"><code class="hljs">type_of_polygon_v3 &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  n &lt;- length(x)
+  perpd &lt;- perpdot(x,y)
+  cp &lt;- <span class="hljs-number">0</span>
+  cn &lt;- <span class="hljs-number">0</span>
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    <span class="hljs-keyword">if</span> (perpd[i] &gt; <span class="hljs-number">0</span>) cp &lt;- cp + <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (perpd[i] &lt; <span class="hljs-number">0</span>) cn &lt;- cn + <span class="hljs-number">1</span>
+  }
+  <span class="hljs-keyword">if</span> (cn == n || cp == n) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-string">"Concave"</span>)
+}</code></pre>
+    
+<p>But it is no better than the version 2, as the polygon must be simple first.</p>
+
+<h2 id="ang">Classify the vertices: Angle</h2>    
+    
+<p>For a concave polygon, there always exists a circumscribe convex polygon that cover the polygon. For example:</p>
+
+<figure align="center">
+  <img src="concave6.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 3.4: Concave polygon with circumscribe convex polygon</figcaption>
+</figure>    
+
+<p>In Figure 3.4, polygon $ACDEG$ is the circumscribe convex polygon of polygon $ABCDEFG$.</p>
+    
+<p>Before we start, we can also define the vertices of the simple polygon by the correspoinging angles.<a href="bibliography.html#ref5">[6]</a></p>
+    
+<div class="definition">
+<p><span id="thm:pyth" class="definition"><strong>Definition 3.4  (Convex Vertex) </strong></span>For a vertex of the simple polygon, if the angle formed by the two edges at the vertex is less or equal to $\pi/2$, then it is a convex vertex.</p>
+</div>
+
+<div class="definition">
+<p><span id="thm:pyth" class="definition"><strong>Definition 3.5  (Concave Vertex) </strong></span>For a vertex of the simple polygon, if the angle formed by the two edges at the vertex is larger than $\pi/2$, then it is a concave vertex.</p>
+</div>
+
+<p>Vertices $A,C,D,E,G$ are convex and vertices $B,F$ are concave in Figure 3.4.</p>
+    
+<p>The circumscripe convex polygon of the concave polygon, also known as the convex hull of the given points. Convex hull of a set of points $\mathbf{x_i}$ in 2D can be understood as the largest polygon that contain all the points.</p>
+    
+<p>One simple way to find the circumscripe polygon, is to connect the convex vertices in the polygon. But sometimes the circumscribe polygon might not be the convex polygon, so we can repeat the process again and again, eventually we will get the circumscribe convex polygon, or the convex hull.</p>
+    
+<p>But first, let's classify the vertices:</p>
+    
+<pre class="r"><code class="hljs">ang_classify &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  n &lt;- length(x)
+  <span class="hljs-keyword">if</span> (type_of_polygon(x,y) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(list(convex = <span class="hljs-number">1</span>:n, concave = <span class="hljs-number">0</span>))
+  xs &lt;- start_from_minx(x,y)$x
+  ys &lt;- start_from_minx(x,y)$y
+  perpdot &lt;- perpdot(x,y)
+  perpdot_minx &lt;- perpdot(xs,ys)
+  cox &lt;- c() <span class="hljs-comment"># Convex</span>
+  coa &lt;- c() <span class="hljs-comment"># Concave</span>
+  gneg &lt;- c()
+  gpos &lt;- c()
+  <span class="hljs-keyword">if</span> (perpdot_minx[<span class="hljs-number">1</span>] &lt; <span class="hljs-number">0</span>) {
+    neg_cox &lt;- <span class="hljs-literal">TRUE</span>
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (perpdot_minx[<span class="hljs-number">1</span>] &gt; <span class="hljs-number">0</span>) {
+    neg_cox &lt;- <span class="hljs-literal">FALSE</span>
+  }
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    <span class="hljs-keyword">if</span> (perpdot[i] &lt; <span class="hljs-number">0</span>) gneg &lt;- c(gneg,i) <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (perpdot[i] &gt; <span class="hljs-number">0</span>) gpos &lt;- c(gpos,i)
+  }
+  <span class="hljs-keyword">if</span> (neg_cox) {
+    cox &lt;- gneg
+    coa &lt;- gpos
+  } <span class="hljs-keyword">else</span> {
+    cox &lt;- gpos
+    coa &lt;- gneg
+  }
+  <span class="hljs-keyword">return</span>(list(convex = sort(cox), concave = sort(coa)))
+}</code></pre>
+    
+<p>If the type of polygon is convex, then there is no concave vertex.</p>
+    
+<p>If there exists $i$ such that the perp dot product of direction vectors $\mathbf{v_i}\bot\mathbf{v_{i+1}}$ has different signs, then the simple polygon is not convex and there exists some concave vertices as there is at least one angle larger than $\frac{\pi}{2}$. Like if a concave polygon have 6 convex vertices and 4 concave vertices, than the perp dot products of the two edges at the convex vertices are either positive or negative, and the perp dot products of the two edges at the concave vertices have the different sign.</p>
+
+<p>So the key problem is, which is positive and which is negative.</p>
+    
+<p>Notice that the vertex with minimum of $x$-coordinate should be convex. If not, then it is concave, but there's no vertex with smaller $x$-coordinate than that vertex, which is contradiction. By proof of contradiction, the minimum $x$-coordinate vertex is convex.</p>
+    
+<p>The idea is, if the perp dot product of the vertex with minimum $x$ coordinate is negative, then the vertices with negative perp dot product are all convex or vice versa. The function <code>ang_classify</code> uses this idea and it works well.</p>
+    
+<p>Since we can classify the convex and concave vertices, now it is the time to find the convex hull of the concave polygon.</p>
+    
+<pre class="r"><code class="hljs">outbound_convex_index &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  c1c &lt;- ang_classify(x,y)$convex
+  <span class="hljs-keyword">while</span> (type_of_polygon(x[c1c],y[c1c]) != <span class="hljs-string">"Convex"</span>) {
+    c1c &lt;- c1c[ang_classify(x[c1c],y[c1c])$convex]
+  }
+  <span class="hljs-keyword">if</span> (type_of_polygon(x[c1c],y[c1c]) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(c1c)
+}</code></pre>
+    
+<p>Or a function return the vertices instead of the index of the convex hull:</p>
+    
+<pre class="r"><code class="hljs">outbound_convex &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  c1c &lt;- ang_classify(x,y)$convex
+  <span class="hljs-keyword">while</span> (type_of_polygon(x[c1c],y[c1c]) != <span class="hljs-string">"Convex"</span>) {
+    c1c &lt;- c1c[ang_classify(x[c1c],y[c1c])$convex]
+  }
+  <span class="hljs-keyword">if</span> (type_of_polygon(x[c1c],y[c1c]) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(list(x = x[c1c],y = y[c1c]))
+}</code></pre>
+
+<p>The only problem is, sometimes if the convex vertices are connceted, there could be a self-intersecting polygon. Later there will be a better method to determine a point is in or out, but now assume all the circumscribe polygons are concave or convex.</p>
+
+<p>After we find the index of the convex hull, it is also possible to find the index of the vertices that's not on the convex hull. Just take out the index from <code>1:n</code>, where <code>n</code> is the number of vertices. So it would be <code>c((1:length(x))[-outbound_convex_index(x,y)])</code>, where <code>x</code> is the $x$-coordinate of the vertices, same as y.</p>
+
+<figure align="center">
+  <img src="concave7.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 3.5: Another concave polygon with convex hull</figcaption>
+</figure>
+    
+<p>If the first index of the vertices which is not on the convex hull is <code>1</code>, then we can reorder the vertices and make sure the first one is on the convex hull.</p>
+    
+<pre class="r"><code class="hljs">start_from_convex &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  <span class="hljs-keyword">if</span> (c(<span class="hljs-number">1</span>:length(x))[-outbound_convex_index(x,y)][<span class="hljs-number">1</span>] == <span class="hljs-number">1</span>) {
+    order &lt;- c(outbound_convex_index(x,y)[<span class="hljs-number">1</span>]:length(x),<span class="hljs-number">1</span>:(outbound_convex_index(x,y)[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>))
+    <span class="hljs-keyword">return</span>(list(x = x[order], y = y[order]))
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(list(x = x, y = y))
+}</code></pre>
+    
+<p>In Figure 3.5, vertices $B$, $D$ and $F$ are not on the convex hull, as they are not adjacent to each other, there must be three polygons between the convex hull and the polygon $ABCDEFG$, which are $\triangle{ABC}$, $\triangle{CDE}$ and $\triangle{EFG}$. What happens if there exist two or more vertices not on the convex hull? Then they will form a polygon with the vertices next to them on the convex hull. For example:</p>
+
+<figure align="center">
+  <img src="concave8.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 3.6: One more concave polygon with convex hull</figcaption>
+</figure>
+
+<p>In Figure 3.6, vertices $D$, $E$ are not on the convex hull, and they form a quadrilateral with the nearby vertices $C$ and $F$ which is between the convex hull and the polygon $ABCDEFG$. Also notice that vertex $A$ is not on the convex hull, if we apply the <code>start_from_convex</code> function then the polygon will change the order to $BCDEFGA$.</p>
+
+<p>In the reordered polygon, the index of $A, D$ and $E$ are $7, 3$ and $4$ respectively. Then the polygons bewteen the convex hull and polygon $BCDEFGA$ should have the vertices of index $(6,7,1)$ and $(2,3,4,5)$. Now let's write a function to separate a vector into vectors with consecutive numbers.</p>
+    
+<pre class="r"><code class="hljs">sep_vector &lt;- <span class="hljs-keyword">function</span>(x) {
+  n &lt;- length(x)
+  index &lt;- c()
+  sep &lt;- list()
+  <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) {
+    sep &lt;- c(sep, list(x))
+    <span class="hljs-keyword">return</span>(sep)
+  }
+  xs &lt;- sort(x)
+  xs[n+<span class="hljs-number">1</span>] &lt;- xs[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    <span class="hljs-keyword">while</span> (xs[i] + <span class="hljs-number">1</span> == xs[i+<span class="hljs-number">1</span>]) {
+      i &lt;- i + <span class="hljs-number">1</span>
+    }
+    index &lt;- c(index,i)
+  }
+  points &lt;- index[!duplicated(index)]
+  m &lt;- length(points)
+  sep[<span class="hljs-number">1</span>] &lt;- list(xs[<span class="hljs-number">1</span>:points[<span class="hljs-number">1</span>]])
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">2</span>:m) {
+    sep &lt;- c(sep, list(xs[(points[i-<span class="hljs-number">1</span>] + <span class="hljs-number">1</span>):points[i]]))
+  }
+  <span class="hljs-keyword">return</span>(sep)
+}</code></pre>
+    
+<pre class="r"><code class="hljs">sep_vector(c(<span class="hljs-number">1</span>:<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">8</span>,<span class="hljs-number">12</span>,<span class="hljs-number">14</span>,<span class="hljs-number">16</span>:<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">24</span>:<span class="hljs-number">28</span>,<span class="hljs-number">22</span>,<span class="hljs-number">21</span>,<span class="hljs-number">33</span>:<span class="hljs-number">35</span>))</code></pre>
+    
+<pre><code class="hljs">## [[1]]
+## [1] 1 2 3
+## 
+## [[2]]
+## [1] 5
+## 
+## [[3]]
+## [1] 8
+## 
+## [[4]]
+## [1] 12
+## 
+## [[5]]
+## [1] 14
+## 
+## [[6]]
+## [1] 16 17 18 19
+## 
+## [[7]]
+## [1] 21 22
+## 
+## [[8]]
+## [1] 24 25 26 27 28
+## 
+## [[9]]
+## [1] 33 34 35</code></pre>
+    
+<p>If we put <code>c(7,3,4)</code> into the function, output would be a list of <code>c(3,4)</code> and <code>c(7)</code>.</p>
+
+<p>Now combine all ideas into this function:</p>
+    
+<pre class="r"><code class="hljs">outbound_polygon &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  <span class="hljs-keyword">if</span> (type_of_polygon(x,y) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(numeric(<span class="hljs-number">0</span>))
+  xn &lt;- start_from_convex(x,y)$x
+  yn &lt;- start_from_convex(x,y)$y
+  n &lt;- length(x)
+  sep &lt;- list()
+  xl &lt;- list()
+  yl &lt;- list()
+  polygon_points &lt;- sep_vector(c(<span class="hljs-number">1</span>:length(xn))[-outbound_convex_index(xn,yn)])
+  xn[n+<span class="hljs-number">1</span>] &lt;- xn[<span class="hljs-number">1</span>]
+  yn[n+<span class="hljs-number">1</span>] &lt;- yn[<span class="hljs-number">1</span>]
+  num_of_polygons &lt;- length(polygon_points)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:num_of_polygons) {
+    centre &lt;- polygon_points[[i]]
+    min &lt;- min(centre) - <span class="hljs-number">1</span>
+    max &lt;- max(centre) + <span class="hljs-number">1</span>
+    sep &lt;- c(sep,list(c(min, centre, max)))
+  }
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:num_of_polygons) {
+    coord &lt;- sep[[i]]
+    xl &lt;- c(xl,list(xn[coord]))
+    yl &lt;- c(yl,list(yn[coord]))
+  }
+  <span class="hljs-keyword">return</span>(list(x = xl, y = yl))
+}</code></pre>
+
+<p>The purpose of this funciton is, given the coordinates of the vertices of a concave polygon, it will return the coordinates of the vertices of the polygons bewteen the convex hull of it and itself. Notice that those polygons in-between could also be concave.</p>
+
+<h2 id="mcm2">Monte Carlo Method, Version 2</h2>
+    
+<p>Now we can rewrite the <code>area_mc_method</code> function:</p>
+
+<pre class="r"><code class="hljs">area_mc_method_v2 &lt;- <span class="hljs-keyword">function</span>(x,y,k = <span class="hljs-number">2000</span>) {
+  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
+  type &lt;- type_of_polygon_v2(x,y)
+  <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
+    print(<span class="hljs-string">"Convex Polygon"</span>)
+    <span class="hljs-keyword">return</span>(area_mc_method(x,y,k))
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
+    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Self-intersecting Polygon"</span>)
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
+    print(<span class="hljs-string">"Concave Polygon"</span>)
+  }
+  c1c &lt;- ang_classify(x,y)$convex
+  <span class="hljs-keyword">if</span> (type_of_polygon_v2(x[c1c],y[c1c]) == <span class="hljs-string">"Self-intersecting"</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Error: Too complex polygon"</span>)
+  count &lt;- <span class="hljs-number">0</span>
+  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
+  random_x &lt;- generate_k_random_point(x,y,k)$x
+  random_y &lt;- generate_k_random_point(x,y,k)$y
+  x0 &lt;- outbound_convex(x,y)$x
+  y0 &lt;- outbound_convex(x,y)$y
+  inside &lt;- c()
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+    count &lt;- count + point_inside(x0,y0,random_x[i],random_y[i])
+    <span class="hljs-keyword">if</span> (point_inside(x0,y0,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
+  }
+  num_of_poly &lt;- length(outbound_polygon(x,y)$x)
+  <span class="hljs-keyword">if</span> (num_of_poly != <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:num_of_poly) {
+      xj &lt;- outbound_polygon(x,y)$x[[j]]
+      yj &lt;- outbound_polygon(x,y)$y[[j]]
+      <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+        count &lt;- count - point_inside(xj,yj,random_x[i],random_y[i])
+        <span class="hljs-keyword">if</span> (point_inside(xj,yj,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- inside[inside != i]
+      }
+    }  
+  }
+  plot(x,y,pch=<span class="hljs-string">""</span>)
+  polygon(x,y)
+  polygon(outbound_convex(x,y)$x,outbound_convex(x,y)$y, lty = <span class="hljs-number">3</span>)
+  polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
+  points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
+  points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>) 
+  approximate_area &lt;- count/k*rectangle_area
+  <span class="hljs-keyword">return</span>(approximate_area)
+}</code></pre>
+    
+<p>Although it looks very long, inside is very simple: Counting the point inside the convex hull, and remove the point between the convex hull and the polygon. However, if any polygon bewteen the convex hull and the polygon is still concave, then the result will no longer accurate.</p>
+    
+<p><i><b>Example 3.3</b></i>&nbsp; Evaluate the area of the concave polygon with vertices $(1,1),(3,6),(5,4),(4,3),(5,2),(3,3),(2,3)$ by Monte Carlo method.</p>
+    
+<pre class="r"><code class="hljs">xe5 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
+ye5 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">6</span>,<span class="hljs-number">4</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">3</span>)
+area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>, plotpoly = <span class="hljs-literal">FALSE</span>)</code></pre>
+    
+<pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
+<pre><code class="hljs">## [1] 4.86</code></pre>
+    
+
+
+<pre class="r"><code class="hljs">area_mc_method_v2(xe5,ye5)</code></pre>
+<pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
+<pre><code class="hljs">## [1] 6.2</code></pre>
+    
+    <figure align="center">
+  <img src="concave9.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 3.7: Monte Carlo Concave</figcaption>
+</figure>
+    
+
+<p>The actural area is 6, so the version 2 return the better approximation. The initial function will miss a part of the polygon, as the "upper bound" is not a function, but we still force it to be a function. When $x \in [4,5]$, the upper bound function will return the smaller $y$, so the point in triangle with vertices $(4,3),(5,4),(4,5)$ will not be counted, and that area is exactly 1. </p>
+    
+<p>In <code>area_mc_method_v2</code> function, we calculate the points inside the convex hull, and then the points in-between and subtract them. If the polygon in-between is concave, then we can do that again: Find the number of points inside the convex hull, subtract the number of points in-between. After that, if there are still some concave polygons left, the size of area would be insignificant compare to the whole polygon, so no need to repeat the process again and again.</p>
+    
+<p>Now think about the Taylor series $$f(x)=\sum_{k=0}^\infty f^{(k)}(a)\frac{(x-a)^k}{k!}.$$ If $x-a$ is small, the value of $\frac{(x-a)^k}{k!}$ is insignificant. Hence $$f(x)\approx\ f(a) + f'(a)(x-a)$$ when $x-a$ is small.</p>
+
+<p>Using the same idea, and rewrite the <code>area_mc_method_v2</code>:</p>
+    
+<pre class="r"><code class="hljs">area_mc_method_v2n &lt;- <span class="hljs-keyword">function</span>(x,y,k = <span class="hljs-number">2000</span>) {
+  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
+  type &lt;- type_of_polygon_v2(x,y)
+  <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
+    print(<span class="hljs-string">"Convex Polygon"</span>)
+    <span class="hljs-keyword">return</span>(area_mc_method(x,y,k))
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
+    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Self-intersecting Polygon"</span>)
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
+    print(<span class="hljs-string">"Concave Polygon"</span>)
+  }
+  c1c &lt;- ang_classify(x,y)$convex
+  <span class="hljs-keyword">if</span> (type_of_polygon_v2(x[c1c],y[c1c]) == <span class="hljs-string">"Self-intersecting"</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Error: Too complex polygon"</span>)
+  count &lt;- <span class="hljs-number">0</span>
+  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
+  random_x &lt;- generate_k_random_point(x,y,k)$x
+  random_y &lt;- generate_k_random_point(x,y,k)$y
+  x0 &lt;- outbound_convex(x,y)$x
+  y0 &lt;- outbound_convex(x,y)$y
+  inside &lt;- c()
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+    count &lt;- count + point_inside(x0,y0,random_x[i],random_y[i])
+    <span class="hljs-keyword">if</span> (point_inside(x0,y0,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
+  }
+  num_of_poly &lt;- length(outbound_polygon(x,y)$x)
+  xnc &lt;- list()
+  ync &lt;- list()
+  <span class="hljs-keyword">if</span> (num_of_poly != <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:num_of_poly) {
+      x1 &lt;- outbound_polygon(x,y)$x[[j]]
+      y1 &lt;- outbound_polygon(x,y)$y[[j]]
+      <span class="hljs-keyword">if</span> (type_of_polygon(x1,y1) != <span class="hljs-string">"Convex"</span>) {
+         xnc &lt;- c(xnc, outbound_polygon(x1,y1)$x)
+         ync &lt;- c(ync, outbound_polygon(x1,y1)$y)
+      }
+    }
+    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>:num_of_poly)) {
+      xj &lt;- outbound_polygon(x,y)$x[[j]]
+      yj &lt;- outbound_polygon(x,y)$y[[j]]
+      <span class="hljs-keyword">if</span> (type_of_polygon(xj,yj) == <span class="hljs-string">"Convex"</span>) {
+        <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+          count &lt;- count - point_inside(xj,yj,random_x[i],random_y[i])
+          <span class="hljs-keyword">if</span> (point_inside(xj,yj,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- inside[inside != i]
+        }
+      } <span class="hljs-keyword">else</span> {
+        xk &lt;- outbound_convex(xj,yj)$x
+        yk &lt;- outbound_convex(xj,yj)$y
+        <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+          count &lt;- count - point_inside(xk,yk,random_x[i],random_y[i])
+          <span class="hljs-keyword">if</span> (point_inside(xk,yk,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- inside[inside != i]
+        }
+      }
+    }
+    <span class="hljs-keyword">if</span> (length(xnc) != <span class="hljs-number">0</span>) <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:length(xnc)) {
+      xj &lt;- xnc[[j]]
+      yj &lt;- ync[[j]]
+      <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+        count &lt;- count + point_inside(xj,yj,random_x[i],random_y[i])
+        <span class="hljs-keyword">if</span> (point_inside(xj,yj,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
+      }
+    }
+  }
+  plot(x,y,pch=<span class="hljs-string">""</span>)
+  polygon(x,y)
+  polygon(outbound_convex(x,y)$x,outbound_convex(x,y)$y, lty = <span class="hljs-number">3</span>)
+  polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
+  points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
+  points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>) 
+  approximate_area &lt;- count/k*rectangle_area
+  <span class="hljs-keyword">return</span>(approximate_area)
+}</code></pre>
+    
+<p><b><i>Example 3.4</i></b>&nbsp; Evaluate the area of the concave polygon with vertices <code>xe7 <- c(5,4,7,6,5,6,6,3,4,5,3,2,3,1,3,2)</code>, <code>ye7 <- c(4,2,3,-1,1,0,2,1,1,-1,0,1,2,1,3,4)</code> by Monte Carlo method.</p>
+    
+<pre class="r"><code class="hljs">xe7 &lt;- c(<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">6</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
+ye7 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>)
+area_mc_method_v2(xe7,ye7)</code></pre>
+    
+<pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
+    
+<figure align="center">
+  <img src="concave12.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 3.8: Monte Carlo Concave 2</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 13.59</code></pre>
+    
+<pre class="r"><code class="hljs">xe7 &lt;- c(<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">6</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
+ye7 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>)
+area_mc_method_v2n(xe7,ye7)</code></pre>
+
+<pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
+
+<figure align="center">
+  <img src="concave10.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 3.9: Monte Carlo Concave 2</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 11.91</code></pre>
+    
+<p>Compare two figures above, we can see the second function successfully get rid of all the points that's inside the polygon in-between that is concave. Even if the polygon is very complex, the error will be reduced and hence we can get more accurate answer.</p>
+    
+<p>Remember, this function is not very efficiency, as the point in polygon algorithm above is laggy. In Part 2, we will refer some popular algorithms and rewrite the point in polygon function, to make it possible to detect a point inside whether convex, concave or self-intersecting polygon.</p>    
+
+<h4 id="mcm2end">You can test the function at <a href="code_3.html">here</a>.</h4>
+
+<h4 style="text-align:left;"><span style="float:right;"><a href="monte_carlo_2.html"><span>&#8594;</span>Section: Monte Carlo Method (Part 2)</a></span></h4>
+
+<p><span id="lblCopyRight">© Group 18</span></p>
+
+</body>
+</html>

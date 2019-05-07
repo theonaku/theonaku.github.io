@@ -1,0 +1,354 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<h1>Area: Group Project (Group 18)</h1>
+    
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+
+<h2>Property of Polygon</h2>
+
+<p>First of all, it is not easy to apply Monte Carlo method to all kind of polygons. Therefore we need to identify what is the type of the given polygon before we apply the Monte Carlo method. As the main research topic is to estimate the area of a convex polygon, the start point is to think about how to classify the convex and non-convex polygon in R.</p>
+<figure align="center">
+  <img src="convex.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.1: Random convex octagon</figcaption>
+</figure>
+
+<p>Figure 2.1 is a random generated convex octagon with all interior angles are less than $\frac{\pi}{2}$.</p>
+
+<p>But before we start, it is noticeable that any triangle is convex. As the sum of the interior angles of a triangle is $\frac{\pi}{2}$, all three angles should less than $\frac{\pi}{2}$ rad, which means it is a convex polygon.</p>
+ 
+<figure align="center">
+  <img src="sum_triangle.jpg" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.2: Sum of the angles of a triangle</figcaption>
+</figure>
+<p>For a triangle $ABC$, if we plot a line parallels to the line $AB$ and passes through vertex $C$ and point $D$, extend line $AC$ to point $E$, as shown in Figure 2.2. Then $\angle{BAC}$ has the same size as $\angle{DCE}$, $\angle{ABC}$ has the same size as $\angle{BCD}$. It is easy to show that $\angle{DCE} + \angle{BCD} + \angle{BCA} = \pi$, since $A$,$C$ and $E$ are in the same line, and a straight angle is $\pi$.</p>    
+    
+<p>Furthermore, it is also easy to show that the sum of interior angles of a $n$-side simple polygon is $(n-2)\pi$, as we can divide the simple polygon into many triangles. For example:</p>
+    
+<figure align="center">
+  <img src="convex_fan.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.3: Fan triangulation of a convex octagon</figcaption>
+</figure>
+
+<p>It is obvious that the sum of the interior angles of the octagon is the same as the sum of the interior angles of six triangles.</p>
+    
+<p>Starting from any vertex of a convex polygon, there exists $n-3$ vertices are unconnected to it. If $n-3$ diagonals are drawn from the vertex, then the polygon can be decomposed into $n-2$ triangles, which means the sum of the interior angles of the convex polygon is $(n-2)\pi$. This process is also known as  fan triangulation.<a href="bibliography.html#ref2">[2]</a></p>
+    
+<p>For concave polygon, the formula also works. Also, the sum of angles of the $n$-side self-intersecting polygon is less or equal to $(n-2)\pi$.<a href="bibliography.html#ref3">[3]</a></p>
+
+<h2>Scalar Product</h2>
+
+<p>In mathematics, the scalar product or dot product, can be defined for two vectors $\mathbf{u}$ and $\mathbf{v}$ by $$\mathbf{u} \cdot \mathbf{v}=|\mathbf{u}||\mathbf{v}|\cos{\theta},$$ where $\theta$ is the angle between $\mathbf{u}$ and $\mathbf{v}$, and $|\mathbf{u}|$ is the magnitude of itself.</p>
+
+<figure align="center">
+  <img src="dotproduct.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.4: Dot product between two vectors</figcaption>
+</figure>
+
+<p>The angle between two vectors can be determined by scalar product, by arranging the formula: $$\cos{\theta} = \frac{\mathbf{u} \cdot \mathbf{v}}{|\mathbf{u}||\mathbf{v}|},$$ and apply the inverse cosine, $$\theta = \arccos{\bigg(\frac{\mathbf{u} \cdot \mathbf{v}}{|\mathbf{u}||\mathbf{v}|}\bigg)}.$$</p>
+
+<p>In a concave polygon, there exists at least one interior angle is more than $\frac{\pi}{2}$. But if we use the above formula to find out the angle $\theta$ larger than $\pi$, it will return $2\pi-\theta$. As $\cos{(2\pi-\theta)} = \cos{\theta}$, and the inverse cosine always return the smallest value of $\theta$.</p>
+    
+<figure align="center">
+  <img src="concave_angle.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.5: Example of the case of concave polygon</figcaption>
+</figure>
+
+<h2 id="m1">Identify the type of a given polygon: Convex and Non-convex</h2>
+
+<p>By scalar product, all angles of the polygon can be determined. But as Figure 2.5 shown, if the method is applied to concave polygon, then there might be some exterior angles calculated. The sum of the angles should be less than $\frac{\pi}{2}$ in this case. Hence it is possible to identify the type of a polygon with the scalar product: If the sum of the angles equals to $\frac{\pi}{2}$, then it is Convex; else it is Non-convex.</p>
+    
+<p>Now convert the algorithm into a function:</p>
+
+<pre class="r"><code class="hljs">type_of_polygon &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  n &lt;- length(x)
+  direction &lt;- list()
+  angle &lt;- c()
+  convex &lt;- <span class="hljs-literal">FALSE</span>
+  x[n+<span class="hljs-number">1</span>] &lt;- x[<span class="hljs-number">1</span>]
+  y[n+<span class="hljs-number">1</span>] &lt;- y[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">3</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Error: Please enter more than three points"</span>)
+  <span class="hljs-keyword">if</span> (n == <span class="hljs-number">3</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Convex"</span>)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    direction &lt;- c(direction,list((c(x[i+<span class="hljs-number">1</span>],y[i+<span class="hljs-number">1</span>]) - c(x[i],y[i])))) <span class="hljs-comment">## Direction of the lines</span>
+  }
+  direction[n+<span class="hljs-number">1</span>] &lt;- direction[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    dotproduct &lt;- direction[[i]] %*% (-<span class="hljs-number">1</span>*direction[[i+<span class="hljs-number">1</span>]])
+    nomproduct &lt;- norm(direction[[i]])*norm(-<span class="hljs-number">1</span>*direction[[i+<span class="hljs-number">1</span>]])
+    angle &lt;- c(angle,acos(dotproduct/nomproduct))
+  }
+  <span class="hljs-keyword">if</span> ((n-<span class="hljs-number">2</span>)*pi - sum(angle) &gt; <span class="hljs-number">2.11e-08</span>) { <span class="hljs-comment"># Due to precision of double</span>
+    convex &lt;- <span class="hljs-literal">FALSE</span>
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((n-<span class="hljs-number">2</span>)*pi - sum(angle) &lt;= <span class="hljs-number">2.11e-08</span>) {
+    convex &lt;- <span class="hljs-literal">TRUE</span>
+  }
+  <span class="hljs-keyword">if</span> (convex) {
+    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Convex"</span>)
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Non-convex"</span>)
+  }
+}</code></pre>
+
+<p>For a polygon with more than 3 sides, this function will calculate the directions from the first vertex to the second vertex, the second to the third and so on. But to calculate the right angle, the second direction vector should change the direction, like <code>-1*direction[[i+1]]</code>. For example:</p>
+
+<figure align="center">
+  <img src="direction.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.6: Find the right angle</figcaption>
+</figure>
+    
+<p>As shown in Figure 2.6, the reason of why the second direction vector needs to be changed the direction is to get the right angle.</p>
+
+<p>The sum of the angles is determined, then if the sum is less than $\frac{\pi}{2}$, the polygon is not convex. Else, it is convex.</p>
+
+<h2 id="m2">Identify the type of a given polygon: Convex, Concave and Self-intersecting</h2>
+    
+<p>For the Non-convex polygon, the situation is more complex. But now we can use the <code>type_of_polygon</code> function to identify the convex polygon first, and start to classify the non-convex polygon. There are only two left, which are concave and self-intersecting polygons.</p>
+    
+<p>One possible way to achieve this is, if a non-convex polygon is self-intersected, then there exists at least one point of intersection which is not the vertex of the polygon. Therefore we can write a function to determine that, if two non-adjacent edges have at least one point of intersection, then the polygon is self-intersected. Else, it is concave.</p>
+    
+<p>In order to do that, the best way is to write a function that can return the line equations of the edges of the given polygon first, then test each line equations with each other expect the adjacent one. So let's start to do that:</p> 
+
+<pre class="r"><code class="hljs">line_equ &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  fx &lt;- c()
+  grad &lt;- gradient(x,y)
+  n &lt;- length(x)
+  f &lt;- <span class="hljs-keyword">function</span>(i) { 
+    g &lt;- grad[i] <span class="hljs-comment"># We can avoid to use the case when gradient is Inf or -Inf</span>
+    xm &lt;- x[i]
+    ym &lt;- y[i]
+    <span class="hljs-keyword">function</span>(x) g*(x - xm) + ym
+  }
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) { <span class="hljs-comment">#  In case input the same vertex twice or more</span>
+    <span class="hljs-keyword">if</span> (is.nan(grad[i])) {
+      <span class="hljs-keyword">return</span>(cat(<span class="hljs-string">"Input values are not vaild, repeat points detected."</span>))
+    }
+    fx &lt;- c(fx,f(i))
+  }
+  <span class="hljs-keyword">return</span>(fx)
+}</code></pre>
+
+<p>Line equation by the gradient $m$ and a point $(x_0,y_0)$ is $y - y_0 = m(x - x_0)$, or $y = m(x - x_0) + y_0$.</p>  
+    
+<p>The function above will not work if gradient between two points can not be deteremined, like gradient between the two exactly same points. Also if the g radient is <code>Inf</code> or <code>-Inf</code>, then this function will only return <code>Inf</code> or <code>-Inf</code>. But it is possible to avoid that in the later function.</p>
+
+<p>Also, it is better to add another function that in case the request of non-exist line equation happens. Like the request to find the zeroth or $(n+1)$th line equation of the edge of the $n$-side polygon.</p>
+
+<pre class="r"><code class="hljs">linen_equ &lt;- <span class="hljs-keyword">function</span>(x,y,n) {
+  <span class="hljs-keyword">if</span>(n == <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">return</span>(line_equ(x,y)[[length(x)]])
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (n &gt; length(x)) {
+    n1 &lt;- n %% length(x)
+    <span class="hljs-keyword">return</span>(line_equ(x,y)[[n1]])
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">return</span>(line_equ(x,y)[[n]])
+  }
+}</code></pre>
+
+<p>Now convert the algorithm of how to identify the concave or self-intersecting polygon into a function:</p>
+
+<pre class="r"><code class="hljs">type_of_polygon_v2 &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  <span class="hljs-keyword">if</span> (type_of_polygon(x,y) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">else</span>
+  xv2 &lt;- x <span class="hljs-comment"># So x[n+1] &lt;- x[1] will not affect the initial x-coordinate of vertices</span>
+  s &lt;- <span class="hljs-number">0</span> 
+  n &lt;- length(x)
+  x[n+<span class="hljs-number">1</span>] &lt;- x[<span class="hljs-number">1</span>]
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    <span class="hljs-keyword">if</span> (i == <span class="hljs-number">1</span>) {
+      <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>:n)[-c(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,n)]) {
+        <span class="hljs-keyword">if</span> (abs(x[<span class="hljs-number">1</span>] - x[<span class="hljs-number">2</span>]) &lt; <span class="hljs-number">0.1</span>) { <span class="hljs-comment"># Mostly when gradient is Inf or -Inf happens</span>
+          <span class="hljs-keyword">if</span> (abs(x[j] - x[j+<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">0.01</span>) <span class="hljs-keyword">break</span>
+          <span class="hljs-keyword">if</span> (linen_equ(xv2,y,j)(x[<span class="hljs-number">1</span>]) &lt;= max(y[<span class="hljs-number">1</span>],y[<span class="hljs-number">2</span>]) &amp;&amp; linen_equ(xv2,y,j)(x[<span class="hljs-number">1</span>]) &gt;= min(y[<span class="hljs-number">1</span>],y[<span class="hljs-number">2</span>])) {
+            s &lt;- s + <span class="hljs-number">1</span>
+            <span class="hljs-keyword">break</span>
+          }
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (k <span class="hljs-keyword">in</span> seq(x[<span class="hljs-number">1</span>],x[<span class="hljs-number">2</span>],length.out=<span class="hljs-number">101</span>)) {
+           <span class="hljs-keyword">if</span> (is.na(abs(linen_equ(xv2,y,<span class="hljs-number">1</span>)(k) - linen_equ(xv2,y,j)(k)))) <span class="hljs-keyword">next</span>
+           <span class="hljs-keyword">if</span> (abs(linen_equ(xv2,y,<span class="hljs-number">1</span>)(k) - linen_equ(xv2,y,j)(k)) &lt; <span class="hljs-number">0.1</span> ) {
+             xi &lt;- k
+             <span class="hljs-keyword">if</span> (xi &lt;= max(x[j],x[j+<span class="hljs-number">1</span>]) &amp;&amp; xi &gt;= min(x[j],x[j+<span class="hljs-number">1</span>])) {
+              s &lt;- s + <span class="hljs-number">1</span>
+              <span class="hljs-keyword">break</span>
+            }
+           }
+         }
+      }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (i == n) {
+      <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>:n)[-c(<span class="hljs-number">1</span>,(n-<span class="hljs-number">1</span>),n)]) {
+        <span class="hljs-keyword">if</span> (abs(x[<span class="hljs-number">1</span>] - x[n]) &lt; <span class="hljs-number">0.1</span>) {
+          <span class="hljs-keyword">if</span> (abs(x[j] - x[j+<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">0.01</span>) <span class="hljs-keyword">break</span>
+          <span class="hljs-keyword">if</span> (linen_equ(xv2,y,j)(x[<span class="hljs-number">1</span>]) &lt;= max(y[<span class="hljs-number">1</span>],y[n]) &amp;&amp; linen_equ(xv2,y,j)(x[<span class="hljs-number">1</span>]) &gt;= min(y[<span class="hljs-number">1</span>],y[n])) {
+            s &lt;- s + <span class="hljs-number">1</span>
+            <span class="hljs-keyword">break</span>
+          }
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (k <span class="hljs-keyword">in</span> seq(x[n],x[<span class="hljs-number">1</span>],length.out=<span class="hljs-number">101</span>)) {
+          <span class="hljs-keyword">if</span> (is.na(abs(linen_equ(xv2,y,n)(k) - linen_equ(xv2,y,j)(k)))) <span class="hljs-keyword">next</span>
+          <span class="hljs-keyword">if</span> (abs(linen_equ(xv2,y,n)(k) - linen_equ(xv2,y,j)(k)) &lt; <span class="hljs-number">0.1</span> ) {
+            xi &lt;- k
+            <span class="hljs-keyword">if</span> (xi &lt;= max(x[j],x[j+<span class="hljs-number">1</span>]) &amp;&amp; xi &gt;= min(x[j],x[j+<span class="hljs-number">1</span>])) {
+              s &lt;- s + <span class="hljs-number">1</span>
+              <span class="hljs-keyword">break</span>
+            }
+          }
+        }
+      }
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>:n)[-c(i-<span class="hljs-number">1</span>,i,i+<span class="hljs-number">1</span>)]) {
+        <span class="hljs-keyword">if</span> (abs(x[i] - x[i+<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">0.1</span>) {
+          <span class="hljs-keyword">if</span> (abs(x[j] - x[j+<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">0.01</span>) <span class="hljs-keyword">break</span>
+          <span class="hljs-keyword">if</span> (linen_equ(xv2,y,j)(x[i]) &lt;= max(y[i],y[i+<span class="hljs-number">1</span>]) &amp;&amp; linen_equ(xv2,y,j)(x[i]) &gt;= min(y[i],y[i+<span class="hljs-number">1</span>])) {
+            s &lt;- s + <span class="hljs-number">1</span>
+            <span class="hljs-keyword">break</span>
+          }
+        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (k <span class="hljs-keyword">in</span> seq(x[i],x[i+<span class="hljs-number">1</span>],length.out=<span class="hljs-number">101</span>)) {
+          <span class="hljs-keyword">if</span> (is.na(abs(linen_equ(xv2,y,i)(k) - linen_equ(xv2,y,j)(k)))) <span class="hljs-keyword">next</span>
+          <span class="hljs-keyword">if</span> (abs(linen_equ(xv2,y,i)(k) - linen_equ(xv2,y,j)(k)) &lt; <span class="hljs-number">0.1</span> ) {
+            xi &lt;- k
+            <span class="hljs-keyword">if</span> (xi &lt;= max(x[j],x[j+<span class="hljs-number">1</span>]) &amp;&amp; xi &gt;= min(x[j],x[j+<span class="hljs-number">1</span>])) {
+              s &lt;- s + <span class="hljs-number">1</span>
+              <span class="hljs-keyword">break</span>
+            }
+          }
+        }
+      }
+    }
+  }
+  <span class="hljs-keyword">if</span> (s == <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Concave"</span>)
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Self-intersecting"</span>)
+  }
+}</code></pre>
+
+<p>This is a utility function, and will be used in the rest of the project many times.</p>
+
+<p>The key point is to compare each line with the line not next to it. If intersection detects, then it is a self-intersecting polygon. But there are some cases that causes the function to return the incorrect result, like this one: </p>
+    
+<figure align="center">
+  <img src="concave1.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.7: Case 1, concave polygon</figcaption>
+</figure>
+
+<p>Or this one:</p>
+    
+<figure align="center">
+  <img src="concave2.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.8: Case 2, concave polygon</figcaption>
+</figure>
+    
+<p>In Figure 2.8, edge $MN$ and $OP$ are not intersected, but line $MN$ and $OP$ intersect at $A$. Even the domain of the line equation is limited by the start point and the end point, it is still possible to return error. For example, the domain of edge $MN$ is inside the domain of the edge $OP$.</p>
+    
+<p>To avoid this happens, one possible technique is when a intersection point is detected in the domain of one edge, automatically check it in the domain of another edge. If the intersection point is inside both domains, then the polygon is really the self-intersecting one.</p>
+    
+<p>Because this function use <code>linen_equ</code> function, if there exists an edge with gradient is too large or infinity, then <code>type_of_polygon_v2</code> function will calculate the lower and upper bound of such edge, and use those as limits instead.</p>
+    
+<figure align="center">
+  <img src="crossed1.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.9: Case 3, self-intersecting polygon</figcaption>
+</figure>
+
+<p>In Figure 2.9, gradient of the line $CD$ is infinity, then the function will only compare the line $CD$ with the line $AB$ and $DE$ at $x=0$ for $-1 \leq y \leq 1$.</p>
+    
+<p>What happens if the line needs to be compared with is with large gradient? They should never intersect, so no need to compare them. Like this one:</p>
+    
+<figure align="center">
+  <img src="concave3.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 2.10: Case 4, concave polygon</figcaption>
+</figure>
+    
+<p>Compare line $DE$ and $BC$ is not required, so use <code>break</code> to stop that in the function.</p>
+    
+<p>The next section is Monte Carlo (Part 1), it is all about the upper and lower bounds of the polygon. A much better approach and be found in the Part 2.</p>
+
+<h4 id="end">You can test the function at <a href="code_1.html">here</a>.</h4>
+    
+<h4 style="text-align:left;"><span style="float:right;"><a href="monte_carlo.html"><span>&#8594;</span>Section: Monte Carlo (Part 1)</a></span></h4>
+
+<p><span id="lblCopyRight">© Group 18</span></p>
+
+</body>
+</html>

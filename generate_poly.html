@@ -1,0 +1,303 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<h1>Area: Group Project (Group 18)</h1>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+    
+<h2 id="hull">Convex Hull</h2>
+    
+<p>In the section Monte Carlo (Part 1), we mention convex hull of the concave polygon as the circumscripe convex polygon of it. Actually, given a set of points, its convex hull<a href="bibliography.html#ref18">[18]</a> is the convex polygon constructed from the selected points that contains all the points. It is possible to find the convex hull in easy way, in Monte Carlo (Part 1) the function <code>outbound_convex</code> can use to find the convex hull of a less complicate simple polygon, i.e. winding number of a point inside is less than 2 generally.</p>
+    
+<p>However, if given an arbitrary set of points, that function will not work.</p>
+    
+<p>There is a function in R called <code>chull</code>. Just like its name, given an arbitrary set of points, it will return the index of the points that form the convex hull.</p>
+
+<p>For example:</p>
+    
+<pre class="r"><code class="hljs">k3 &lt;- <span class="hljs-number">1000</span>
+xr2 &lt;- runif(k3,-<span class="hljs-number">10</span>,<span class="hljs-number">10</span>) 
+yr2 &lt;- runif(k3,-<span class="hljs-number">10</span>,<span class="hljs-number">10</span>)
+inx &lt;- chull(xr2,yr2)
+plot(xr2,yr2,pch=<span class="hljs-string">"."</span>)
+polygon(xr2[inx],yr2[inx])</code></pre>
+    
+<figure align="center">
+  <img src="convex_hull1.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 8.1: Convex hull of an arbitrary set of points</figcaption>
+</figure>
+    
+<pre class="r"><code class="hljs">area_mc_method_v4(xr2[inx],yr2[inx],plotpoly = <span class="hljs-literal">FALSE</span>,typepoly = <span class="hljs-literal">FALSE</span>)</code></pre>
+
+<pre><code class="hljs">## [1] 390.754</code></pre>        
+
+<p>Also it's worth to notice that, if we generate the points over a rectangle uniformly, then the area of convex hull will approximately the same as the area of the rectangle. As we uniformly generate those points, there must be points around four corners, so the convex hull just looks like the rectangle itself. So we can say, if we generate $n$ points, as $n$ tends to infinity, the convex hull will tends to the region used to generate the points.</p>
+    
+<p>Apart from finding the convex hull, we can use the type of polygon function to test a large set of points. For example, if the first 5 points form a convex polygon, but the six points will make it self-intersecting or becomes concave, then we skip the point and move on to the next one. Code would look like this:</p>
+
+<pre class="r"><code class="hljs">k2 &lt;- <span class="hljs-number">1000</span> <span class="hljs-comment"># Number of points</span>
+bad_point_x &lt;- c()
+bad_point_y &lt;- c()
+xr1 &lt;- runif(k2,-<span class="hljs-number">10</span>,<span class="hljs-number">10</span>) 
+yr1 &lt;- runif(k2,-<span class="hljs-number">10</span>,<span class="hljs-number">10</span>)
+<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">3</span>:k2) {
+  <span class="hljs-keyword">if</span> (length(bad_point_x) == <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">if</span> (type_of_polygon(xr1[<span class="hljs-number">1</span>:i], yr1[<span class="hljs-number">1</span>:i]) != <span class="hljs-string">"Convex"</span>) {
+      bad_point_x &lt;- c(bad_point_x, i)
+      bad_point_y &lt;- c(bad_point_y, i)
+    }
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">if</span> (type_of_polygon(xr1[<span class="hljs-number">1</span>:i][-bad_point_x], yr1[<span class="hljs-number">1</span>:i][-bad_point_y]) != <span class="hljs-string">"Convex"</span>) {
+      bad_point_x &lt;- c(bad_point_x, i)
+      bad_point_y &lt;- c(bad_point_y, i)
+    }
+  }
+  <span class="hljs-keyword">if</span> (i == k2) {
+    plot(xr1,yr1, pch = <span class="hljs-string">"."</span>)
+    polygon(xr1[<span class="hljs-number">1</span>:i][-bad_point_x],yr1[<span class="hljs-number">1</span>:i][-bad_point_y])
+  }
+}</code></pre>
+    
+<figure align="center">
+  <img src="convex3.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 8.2: Convex polygon from an arbitrary set of points</figcaption>
+</figure>
+    
+<p>However, the limitation is very obvious. This method normally fails with a lot of "bad points" at the end.</p>
+    
+<p>Also, we can reorder the points: Instead of the given order, the furthest point from the centre of the set of points will be the first one, and the nearest one will be the last one. Then the method above will likely return a larger polygon.</p>
+    
+<pre class="r"><code class="hljs">k2 &lt;- <span class="hljs-number">1000</span> <span class="hljs-comment"># Number of points</span>
+bad_point_x &lt;- c()
+bad_point_y &lt;- c()
+xr1 &lt;- runif(k2,-<span class="hljs-number">10</span>,<span class="hljs-number">10</span>) 
+yr1 &lt;- runif(k2,-<span class="hljs-number">10</span>,<span class="hljs-number">10</span>)
+mean_xr1 &lt;- mean(xr1)
+mean_yr1 &lt;- mean(yr1)
+ordered_xr1 &lt;- c()
+ordered_yr1 &lt;- c()
+<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k2) {
+  ordered_xr1[i] &lt;- xr1[sort((xr1 - mean_yr1)^<span class="hljs-number">2</span> + (yr1 - mean_yr1)^<span class="hljs-number">2</span>, decreasing = <span class="hljs-literal">TRUE</span>, index.return = <span class="hljs-literal">TRUE</span>)$ix[i]]
+  ordered_yr1[i] &lt;- yr1[sort((xr1 - mean_yr1)^<span class="hljs-number">2</span> + (yr1 - mean_yr1)^<span class="hljs-number">2</span>, decreasing = <span class="hljs-literal">TRUE</span>, index.return = <span class="hljs-literal">TRUE</span>)$ix[i]]
+}
+<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">3</span>:k2) {
+  <span class="hljs-keyword">if</span> (length(bad_point_x) == <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">if</span> (type_of_polygon(ordered_xr1[<span class="hljs-number">1</span>:i], ordered_yr1[<span class="hljs-number">1</span>:i]) != <span class="hljs-string">"Convex"</span>) {
+      bad_point_x &lt;- c(bad_point_x, i)
+      bad_point_y &lt;- c(bad_point_y, i)
+    }
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">if</span> (type_of_polygon(ordered_xr1[<span class="hljs-number">1</span>:i][-bad_point_x], ordered_yr1[<span class="hljs-number">1</span>:i][-bad_point_y]) != <span class="hljs-string">"Convex"</span>) {
+      bad_point_x &lt;- c(bad_point_x, i)
+      bad_point_y &lt;- c(bad_point_y, i)
+    }
+  }
+  <span class="hljs-keyword">if</span> (i == k2) {
+    plot(ordered_xr1,ordered_yr1,pch=<span class="hljs-string">"."</span>)
+    polygon(ordered_xr1[<span class="hljs-number">1</span>:i][-bad_point_x],ordered_yr1[<span class="hljs-number">1</span>:i][-bad_point_y])
+  }
+}</code></pre>
+    
+<figure align="center">
+  <img src="convex4.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 8.3: Large convex polygon from an arbitrary set of points</figcaption>
+</figure>
+    
+<p>But like the first one, this method normally fails with a lot of "bad points" at the end. Figure 8.3 is just an ideal example from the code above. It doesn't mean we can't do something, like set a while loop inside, detect the area. If the area is less than, like 90% of the rectangle, then repeat until the area is larger than that.</p>
+
+<h2 id="random">Generate Random Polygon</h2>
+    
+<p>It is also possible to use the type of polygon function to generate a random simple polygon. Just put it into a while loop, and keep generating points inside a region. If the point generated form a convex/concave polygon in the given order, then stop the while, else repeat the process.</p>
+    
+<pre class="r"><code class="hljs">generate_poly &lt;- <span class="hljs-keyword">function</span>(n, convex = <span class="hljs-literal">TRUE</span>) { <span class="hljs-comment"># Must faster if convex is TRUE</span>
+  simple &lt;- <span class="hljs-literal">FALSE</span>
+  <span class="hljs-keyword">while</span> (!simple) {
+    x &lt;- runif(n,-<span class="hljs-number">2</span>,<span class="hljs-number">2</span>) <span class="hljs-comment"># If convex n &lt; 9, if !convex n &lt; 7</span>
+    y &lt;- runif(n,-<span class="hljs-number">2</span>,<span class="hljs-number">2</span>)
+    <span class="hljs-keyword">if</span> (!convex) type &lt;- type_of_polygon_v2(x,y) <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (convex) type &lt;- type_of_polygon(x,y)
+    <span class="hljs-keyword">if</span> (!convex) {
+      <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span> || type == <span class="hljs-string">"Concave"</span>) {
+        plot(x,y,asp = <span class="hljs-number">1</span>,pch = <span class="hljs-string">""</span>)
+        polygon(x,y)
+        simple &lt;- <span class="hljs-literal">TRUE</span>
+      }
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (convex) {
+      <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
+        plot(x,y,asp = <span class="hljs-number">1</span>,pch = <span class="hljs-string">""</span>)
+        polygon(x,y)
+        simple &lt;- <span class="hljs-literal">TRUE</span>
+      }
+    }
+  }
+  <span class="hljs-keyword">return</span>(list(x = x, y = y))
+}</code></pre>
+    
+<p>Like the function above, it generates a $n$-side polygon randomly. But when $n$ gets larger, it will be extremely slow, so $n \leq 8$ is recommended.</p>
+
+<pre class="r"><code class="hljs">generate_poly(<span class="hljs-number">8</span>) <span class="hljs-comment"># n = 6 with convex = FALSE is terrible already</span></code></pre>
+
+<figure align="center">
+  <img src="convex5.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 8.4: Random convex polygon</figcaption>
+</figure>
+
+<pre><code class="hljs">## $x
+## [1]  1.5902308 -0.6844604 -1.2514097 -1.7701839 -1.2096977 -0.8694716  0.4245622  1.2072511
+## 
+## $y
+## [1]  0.94380260  0.87501177  0.59655934 -0.04909636 -1.26849916 -1.64980162 -1.05089891 -0.67585441</code></pre>    
+
+<p>We can also generate a random polygon by setting a centre point first, and then span the angle and distance from the point randomly, also limit the sum of angle to $2\pi$. This method is much faster and it works very well, we can also use it to generate lattice polygon and calculate the area by Pick's theorem.</p>
+    
+<pre class="r"><code class="hljs">generate_poly_v2 &lt;- <span class="hljs-keyword">function</span>(n, area=<span class="hljs-literal">FALSE</span>, int = <span class="hljs-literal">FALSE</span>) { <span class="hljs-comment"># If int, pls not make n too large</span>
+  r &lt;- c()
+  angle &lt;- c()
+  x &lt;- c()
+  y &lt;- c()
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    r[i] &lt;- runif(<span class="hljs-number">1</span>,<span class="hljs-number">0.5</span>,<span class="hljs-number">1.5</span>)
+    angle[i] &lt;- runif(<span class="hljs-number">1</span>,<span class="hljs-number">0.9</span>*<span class="hljs-number">2</span>*pi/n,<span class="hljs-number">1.1</span>*<span class="hljs-number">2</span>*pi/n)
+  }
+  cumangle &lt;- cumsum(angle)
+  <span class="hljs-keyword">if</span> (int) {
+    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+      x[i] &lt;- round(<span class="hljs-number">4</span>*r[i]*cos(cumangle[i]))
+      y[i] &lt;- round(<span class="hljs-number">4</span>*r[i]*sin(cumangle[i]))
+    }
+    grad &lt;- gradient(x,y)
+    inx &lt;- c(n+<span class="hljs-number">1</span>)
+    nan_grad &lt;- <span class="hljs-literal">FALSE</span>
+    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+      <span class="hljs-keyword">if</span> (is.nan(grad[i])) {
+        inx &lt;- c(inx,i)
+        nan_grad &lt;- <span class="hljs-literal">TRUE</span>
+      }
+    }
+    x &lt;- x[-inx];y &lt;- y[-inx]
+    x2 &lt;- start_from_minx_v2(x,y)$x
+    y2 &lt;- start_from_minx_v2(x,y)$y
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    x[i] &lt;- r[i]*cos(cumangle[i])
+    y[i] &lt;- r[i]*sin(cumangle[i])
+  }
+  <span class="hljs-keyword">if</span>(area) {
+    <span class="hljs-keyword">if</span> (int) <span class="hljs-keyword">return</span>(picks_theorem(x2,y2)) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(area_mc_method_v4(x,y))
+  } <span class="hljs-keyword">else</span> plot(x,y,pch=<span class="hljs-string">""</span>);polygon(x,y)
+}</code></pre>
+    
+<p><b><i>Example 8.1</i></b>&nbsp; Generate a random simple lattice polygon and find the area by Pick's Theorem.</p>
+    
+<pre><code class="hljs">generate_poly_v2(<span class="hljs-number">20</span>,area=<span class="hljs-literal">TRUE</span>,int=<span class="hljs-literal">TRUE</span>) <span class="hljs-comment"># Too large n might cause self-intersecting polygon</span></code></pre>
+    
+<figure align="center">
+  <img src="pick5.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 8.5: Random lattice polygon</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 41</code></pre>
+    
+<p>Or else, we can use Monte Carlo method to find the area of the random polygon.</p>
+    
+<p><b><i>Example 8.2</i></b>&nbsp; Generate a random simple polygon and find the area by Monte Carlo method.</p>
+    
+<pre class="r"><code class="hljs">generate_poly_v2(<span class="hljs-number">20</span>,area = <span class="hljs-literal">TRUE</span>)</code></pre>
+    
+<figure align="center">
+  <img src="concave11.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 8.6: Random Concave polygon</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 3.732384</code></pre>
+    
+<h4 id="polyend">You can test the function at <a href="code_8.html">here</a>.</h4>
+
+<h4 style="text-align:left;"><span style="float:right;"><a href="group_project_2.html"><span>&#8594;</span>R Programming Code</a></span></h4>
+
+<p><span id="lblCopyRight">© Group 18</span></p>
+    
+</body>
+</html>

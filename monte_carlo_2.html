@@ -1,0 +1,466 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<h1>Area: Group Project (Group 18)</h1>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+    
+<h2>Point in the polygon: Convex, Concave and Self-intersecting</h2>
+    
+<p>Now we talk about some algorithms that widely known in computer science and mathematics. To determine a point is inside or outside the polygon, there are two popular algorithms: Ray-casting algorithm <a href="bibliography.html#ref7">[7]</a> and Winding number algorithm.<a href="bibliography.html#ref20">[20]</a></p>
+    
+<h3 id="ray">Ray-casting algorithm</h3>
+
+<p>If there is a ray starting from a point $O$, the number of times that the point $O$ passing the edges of polygon can be used to decide whether the point $O$ is inside or outside. Imagime a convex polygon, and if a point is inside there, then whatever direction the ray is pointing, it will only pass the edge once. If not, it will pass none or twice.</p>
+
+<figure align="center">
+  <img src="ray_1.jpeg" alt="graphy" style="width:50%">
+  <figcaption>Figure 4.1: Point in Convex Polygon</figcaption>
+</figure>
+
+<p>In Figure 4.1, point $A$ and $D$ are outside the polygon, point $B$ and $C$ are inside the polygon. It is obvious that the rays from point $B$ and $C$ only pass the edge of the polygon once, but the ray from point $D$ passes twice. Also, the ray from point $A$ doesn't pass the polygon.</p>
+    
+<p>For a point in concave polygon, there exists another situation: The ray passes one edge and through the polygon again.</p>
+    
+<figure align="center">
+  <img src="ray_2.jpeg" alt="graphy" style="width:50%">
+  <figcaption>Figure 4.2: Point in Concave Polygon</figcaption>
+</figure>
+
+<p>In Figure 4.2, point $A$ and $C$ are inside the polygon, point $B$ is outside the polygon. We can observe that the ray from point $A$ passes the edges of the polygon three times. Because it is inside the polygon, then the ray should leave the polygon first, and might enter and leave the polygon.</p>
+    
+<p>For a point in self-intersecting polygon, the ray might just pass the intersection point of the polygon, which seems like the wrong result will occur. But it is possible to consider that in the code and get the correct result. Actually, that would be the same as passing the vertex but not enter the convex or concave polygon.</p>
+
+<figure align="center">
+  <img src="ray_3.jpeg" alt="graphy" style="width:50%">
+  <figcaption>Figure 4.3: Point in Self-intersecting Polygon</figcaption>
+</figure>
+
+<p>One possible solution is, if the ray passes the intersection point, then count it twice. However, instead of casting one ray, it is better to cast more rays in different directions, and check the parity of each ray.</p>
+    
+<p>In the previous session, there is a function called <code>line_equ</code> to find the corresponding $y$-coordinate of a point on a line by given the $x$-coordinate. Then we can rewrite that function from $y=f(x)$ to $x=g(y)$ by changing the order:</p>
+    
+<pre class="r"><code class="hljs">line_equy &lt;- <span class="hljs-keyword">function</span>(x,y) {
+  fy &lt;- c()
+  grad &lt;- gradient(x,y)
+  n &lt;- length(x)
+  f &lt;- <span class="hljs-keyword">function</span>(i) { 
+    g &lt;- grad[i] <span class="hljs-comment"># We can avoid to use the case when gradient is Inf or -Inf</span>
+    xm &lt;- x[i]
+    ym &lt;- y[i]
+    <span class="hljs-keyword">function</span>(y) (y - ym)/g + xm
+  }
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) { <span class="hljs-comment">#  In case input the same vertex twice or more</span>
+    <span class="hljs-keyword">if</span> (is.nan(grad[i])) {
+      <span class="hljs-keyword">return</span>(cat(<span class="hljs-string">"Input values are not vaild, repeat points detected."</span>))
+    }
+    fy &lt;- c(fy,f(i))
+  }
+  <span class="hljs-keyword">return</span>(fy)
+}</code></pre>
+    
+<pre class="r"><code class="hljs">linen_equy &lt;- <span class="hljs-keyword">function</span>(x,y,n) {
+  <span class="hljs-keyword">if</span>(n == <span class="hljs-number">0</span>) {
+    <span class="hljs-keyword">return</span>(line_equy(x,y)[[length(y)]])
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (n &gt; length(y)) {
+    n1 &lt;- n %% length(y)
+    <span class="hljs-keyword">return</span>(line_equy(x,y)[[n1]])
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">return</span>(line_equy(x,y)[[n]])
+  }
+}</code></pre>
+
+<p>With this function, we can easily find the correspoinging $x$-coordinate if the $y$-coordinate is given. Which will be very useful if we cast a ray from a point to the right. The line equation of the ray from point $(x_0,y_0)$ horizontally to the $x$-axis is $y=y_0$, so only the $y$-coordinate is known.</p>    
+    
+<p>Now convert the algorithm into a function:</p>
+
+<pre class="r"><code class="hljs">ray_pass &lt;- <span class="hljs-keyword">function</span>(x,y,x0,y0) {
+  pass_x &lt;- c() <span class="hljs-comment"># Rightward ray, passing point x-coordinate</span>
+  pass_x2 &lt;- c() <span class="hljs-comment"># Leftward ray</span>
+  pass_pi &lt;- c() <span class="hljs-comment"># π/4 rad ray</span>
+  n &lt;- length(x) <span class="hljs-comment"># Number of vertices</span>
+  x2 &lt;- x;x2[n+<span class="hljs-number">1</span>] &lt;- x2[<span class="hljs-number">1</span>]
+  y2 &lt;- y;y2[n+<span class="hljs-number">1</span>] &lt;- y2[<span class="hljs-number">1</span>]
+  grad &lt;- gradient(x,y) <span class="hljs-comment"># Gradient of each edge in the polygon</span>
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    <span class="hljs-keyword">if</span> (grad[i] == <span class="hljs-number">0</span>) <span class="hljs-keyword">next</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (abs(grad[i]) != <span class="hljs-literal">Inf</span>) {
+      <span class="hljs-keyword">if</span> (y0 &lt;= max(y2[i],y2[i+<span class="hljs-number">1</span>]) &amp;&amp; y0 &gt;= min(y2[i],y2[i+<span class="hljs-number">1</span>])) {
+        <span class="hljs-keyword">if</span> (linen_equy(x,y,i)(y0) &gt;= x0) pass_x &lt;- c(pass_x,linen_equy(x,y,i)(y0))
+        <span class="hljs-keyword">else</span> pass_x2 &lt;- c(pass_x2,linen_equy(x,y,i)(y0))
+      }
+    } <span class="hljs-keyword">else</span> {
+      <span class="hljs-keyword">if</span> (y0 &lt;= max(y2[i],y2[i+<span class="hljs-number">1</span>]) &amp;&amp; y0 &gt;= min(y2[i],y2[i+<span class="hljs-number">1</span>])) {
+        <span class="hljs-keyword">if</span> (x0 &lt;= x2[i]) pass_x &lt;- c(pass_x,x2[i])
+        <span class="hljs-keyword">if</span> (x0 &gt;= x2[i]) pass_x2 &lt;- c(pass_x2,x2[i])
+      }
+    }
+  }
+  <span class="hljs-keyword">if</span> ((length(pass_x) %% <span class="hljs-number">2</span>) == (length(pass_x2) %% <span class="hljs-number">2</span>)) <span class="hljs-keyword">return</span>(length(pass_x))
+  <span class="hljs-keyword">if</span> ((length(pass_x) %% <span class="hljs-number">2</span>) != (length(pass_x2) %% <span class="hljs-number">2</span>)) {
+    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+      <span class="hljs-keyword">if</span> (grad[i] == <span class="hljs-number">0</span>) <span class="hljs-keyword">next</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (abs(grad[i]) != <span class="hljs-literal">Inf</span>) {
+        xi &lt;- seq(min(x2[i],x2[i+<span class="hljs-number">1</span>]),max(x2[i],x2[i+<span class="hljs-number">1</span>]),length.out=(floor(abs(x2[i]-x2[i+<span class="hljs-number">1</span>]))*<span class="hljs-number">1000</span>+<span class="hljs-number">1</span>))
+        <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> xi) {
+          <span class="hljs-keyword">if</span> (abs(linen_equ(x,y,i)(j) - (j - x0 + y0)) &lt; <span class="hljs-number">0.001</span>) {
+            <span class="hljs-keyword">if</span> (x0 &lt;= j) pass_pi &lt;- c(pass_pi,j)
+            <span class="hljs-keyword">break</span>
+          }
+        }
+      } <span class="hljs-keyword">else</span> {
+          <span class="hljs-keyword">if</span> ((x2[i] - x0 + y0) &lt;= max(y2[i],y2[i+<span class="hljs-number">1</span>]) &amp;&amp; (x2[i] - x0 + y0) &gt;= min(y2[i],y2[i+<span class="hljs-number">1</span>])) {
+          <span class="hljs-keyword">if</span> (x0 &lt;= x2[i]) pass_pi &lt;- c(pass_pi,x2[i])
+        }
+      }
+    }
+    <span class="hljs-keyword">return</span>(length(pass_pi))
+  }
+}</code></pre>
+    
+<p>This function is another looks long but simple function, it just like actually casting a ray from a point $(x_0,y_0)$ toward the right, and counting the edges it passes. It works for all kind of polygon, and try to minimise the error. It will cast two rays, one leftward and one rightward. If the parity of the number of intersections are different, then it will cast another ray $\pi/4$ rad upward and take that as the final result. There's still possible that a point inside passes the polygon even number times after all, but the possibility is insignificant.</p>
+    
+<figure align="center">
+  <img src="ray_4.jpeg" alt="graphy" style="width:50%">
+  <figcaption>Figure 4.4: Point in Concave Polygon with rays passing the vertices</figcaption>
+</figure>
+    
+<p>We can clearly see that, in Figure 4.4, the rays cast from point $A$ rightward passing a vertex and an edge, same as the ray leftward. The number of passing the edge should be both $3$ in this case, which means point $A$ is inside the polygon. However, the downward ray from point $C$ has the passing number 2, and the upward ray has the passing number 6, which means point $C$ is outside the polygon. But that's wrong, as point $C$ is indeed inside.</p>
+    
+<p>The reason behind this problem is, the rays from point $A$ is "passing" the vertex and leaving the polygon, whereas the downward ray from point $C$ is leaving the polygon via the vertex, so we should only count it once. Similar to point $B$, as entering the polygon via a vertex should not be counted twice. </p>
+    
+<figure align="center">
+  <img src="ray_bug1.jpeg" alt="bug1" style="width:50%">
+  <figcaption>Figure 4.5: Point in Convex Polygon with rays passing the vertices</figcaption>
+</figure>
+    
+<p>To reduce this happens, in the function it will cast two to three rays, which will greatly avoid the "passing vertex" cases happen. For example, if we test the function with point $B$ in Figure 4.4, then it will first calculate the passing number of the rays toward left and right at the same time, and the counting number are $3$ and $4$ respectively. Since they are not the same, it will calculate the passing number of the ray $\pi/4$ rad upward, which is $2$. Then the function will take it as the final result.</p>
+    
+<p>But in Figure 4.5, point $X$ would be outside the polygon if test it with the function. That's because the left and right ray will both meet a vertex when leaving the polygon, and have counted it twice.</p>
+    
+<p>Although it is still possible to meet the wrong result, it is not supposed to affect the estimate area too much, as explain before the insignificant of the possibility. More importantly, we are going to generate a number of points randomly and uniformly, which makes it harder to have a ray actually passing any vertex.</p>
+    
+<figure align="center">
+  <img src="ray_bug2.jpeg" alt="bug1" style="width:50%">
+  <figcaption>Figure 4.6: Point in Convex Polygon with rays passing the vertices</figcaption>
+</figure>
+    
+<p>Figure 4.6 shows another possible bug, but this is much harder to be happened.</p>
+    
+<h3 id="wind">Winding number algorithm</h3>
+
+<p>The winding number of a closed planar curve $C$ for a point $\mathbf{x}$ is the number of times that the curve $C$ winds round $\mathbf{x}$ in anticlockwise rotation. Therefore the winding number is signed, positive means anticlockwise winding, negative means clockwise winding.</p>
+
+<p>We can calculate the winding number by measuring the angle winded. Remember the angle also have its direction: Anticlockwise rotation is positive, clockwise is negative. If we want to find the winding number of a point relate to a polygon, the best technique is to set the first vertex $\mathbf{C_1}$ as the starting point, and then find the angle between the point and vertices. For example:</p>
+    
+<figure align="center">
+  <img src="wind1.png" alt="wind1" style="width:50%">
+  <figcaption>Figure 4.7: Wind around a point inside Convex Polygon</figcaption>
+</figure>
+
+<p>As the rotation starts from $C_1$ in anticlockwise, the total angle rotated is $\sum_{i=1}^{5}\theta_i = 2\pi$ and hence the winding number is $1$.</p>
+    
+<p>Since the angle of a complete rotation is $2\pi$ in anticlockwise, the winding number can be calculated as the angle rotated divided by $2\pi$. Let's see another example where the point is outside the polygon:</p>
+    
+<figure align="center">
+  <img src="wind2.png" alt="wind2" style="width:50%">
+  <figcaption>Figure 4.8: Wind around a point outside Convex Polygon</figcaption>
+</figure>
+    
+<p>If a point is outside the polygon, as Figure 4.8, the winding number will be $0$ as the angle rotated is $0$.</p>
+
+<figure align="center">
+  <img src="wind3.png" alt="wind3" style="width:50%">
+  <figcaption>Figure 4.9: Wind around a point inside Concave Polygon</figcaption>
+</figure>
+
+<p>Similarly, point inside the concave polygon has the winding number $1$, as the sum of the anticlockwise angles and clockwise angles is $2\pi$.</p>
+
+<p>But the key problem is, how to convert this algorithm into a function in R.</p>
+
+<p>First of all, if the point is lying at the border of the polygon, then we still consider the point is inside the polygon. Which means, the expected winding number of such point is non-zero. In Figure 4.7, we can simply add the angle of the rotation to get the total rotation angle, but in Figure 4.8 it is not possible to do that, because the angle we calculate by scalar product is always positive.</p>
+
+<p>The recommended way we can use to find the angle between two vectors is the scalar product, but it only return the positive value between $0$ and $\pi$, which is another limitation. There are still some solutions, like compare the cumulative sum of first $i$ angles and the angle between the line $C_1 \mathbf{x}$ and $C_{i+1} \mathbf{x}$. But again, if the sum of the angle is lager than $\pi$, whcih will be another problem.</p>
+  
+<p>The angle we want to find is relative to the given point $\mathbf{x}$, and that point is randomly generate later when applying the Monte Carlo method. Then we can write a function to find out the angle between vertices and the ray start from the given point rightward, and use that to figure out is the rotation angle is positive or negative, i.e. anticlockwise or clockwise rotation. </p>
+    
+<figure align="center">
+  <img src="obtuseang.png" alt="obt1" style="width:65%">
+  <figcaption>Figure 4.10: Obtuse angle</figcaption>
+</figure>
+    
+<p>However, the built-in function <code>atan</code> in R can only return the angle between $-\frac{\pi}{2}$ and $\frac{\pi}{2}$, so if we want to calculate the obtuse angle in Figure 4.10, we will have to add $\pi$ into the result.</p>
+    
+<pre class="r"><code class="hljs">atan(<span class="hljs-number">1</span>/-<span class="hljs-number">3</span>) <span class="hljs-comment"># Change in y over change in x</span></code></pre>
+    
+<pre><code class="hljs">## [1] -0.3217506</code></pre>
+
+<pre class="r"><code class="hljs">atan(<span class="hljs-number">1</span>/-<span class="hljs-number">3</span>) + pi</code></pre>
+    
+<pre><code class="hljs">## [1] 2.819842</code></pre>
+    
+<p>Similarly, for the reflex angle between $\frac{3}{2}\pi$ and $0$, it will return the negative value, which we need to add $2\pi$ into it.</p>
+    
+<figure align="center">
+  <img src="angle2.png" alt="obt1" style="width:65%">
+  <figcaption>Figure 4.11: Reflex angle</figcaption>
+</figure>
+
+<p>For the reflex angle between $\pi$ and $\frac{3}{2}\pi$, like the one in Figure 4.11, again we need to add $\pi$ into the result.</p>
+    
+<pre class="r"><code class="hljs">atan(-<span class="hljs-number">2</span>/-<span class="hljs-number">3</span>) <span class="hljs-comment"># Change in y over change in x</span></code></pre>
+<pre><code class="hljs">## [1] 0.5880026</code></pre>
+<pre class="r"><code class="hljs">atan(-<span class="hljs-number">2</span>/-<span class="hljs-number">3</span>) + pi</code></pre>
+<pre><code class="hljs">## [1] 3.729595</code></pre>
+    
+<p>Finally, if the point lies on the axes, then return the specific angle. What about if the point lies on the origin? Well in the winding number algorithm, we define that if the point is lying at the border of the polygon, then we still consider the point is inside the polygon before. Which is, we don't need to calculate the angle if the point is at the vertex.</p>
+    
+<p>Now summarise into a function:</p>
+
+<pre class="r"><code class="hljs">angle &lt;- <span class="hljs-keyword">function</span>(x0,y0,rx,ry) {
+  <span class="hljs-keyword">if</span> (y0 == ry) {
+    <span class="hljs-keyword">if</span> (x0 &gt;= rx) <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(pi)
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (y0 &gt; ry) {
+    <span class="hljs-keyword">if</span> (x0 == rx) <span class="hljs-keyword">return</span>(pi/<span class="hljs-number">2</span>)
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (x0 &gt; rx) <span class="hljs-keyword">return</span>(atan((y0 - ry)/(x0 - rx)))
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(pi + atan((y0 - ry)/(x0 - rx)))
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">if</span> (x0 &gt; rx) <span class="hljs-keyword">return</span>(<span class="hljs-number">2</span>*pi + atan((y0 - ry)/(x0 - rx))) 
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (x0 &lt; rx) <span class="hljs-keyword">return</span>(pi + atan((y0 - ry)/(x0 - rx))) 
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-number">3</span>*pi/<span class="hljs-number">2</span>)
+  } 
+}</code></pre>
+
+<p>In <code>angle</code> function, there are 4 variables: <code>x0,y0</code> means the coordinate of vertex, and <code>rx,ry</code> means the coordinate of randomly generated point. It will return the angle between the vertex and the rightward ray start from a given point.</p>
+
+<figure align="center">
+  <img src="clock1.png" alt="wind4" style="width:50%">
+  <figcaption>Figure 4.12: Clockwise angle</figcaption>
+</figure>      
+
+<p>In Figure 4.12, angle between $C_1$ and the line from $\mathbf{x}$ in positive $x$-direction is larger than angle between $C_2$ and the line from $\mathbf{x}$ in positive $x$-direction, which means it is clockwise rotation. But this is just a simple case, because if the point $C_2$ is under the line, then angle $\theta_{C_2\mathbf{x}}$ will be larger than angle $\theta_{C_1\mathbf{x}}$, but still in clockwise rotation.</p>
+    
+<figure align="center">
+  <img src="wind4.png" alt="wind4" style="width:50%">
+  <figcaption>Figure 4.13: Wind around a point inside Self-intersecting Polygon</figcaption>
+</figure>
+    
+<p>Just like the winding in Figure 4.13, from $C_2$ to $C_3$ the rotation pass the line from $\mathbf{x}$ in positive $x$-direction, but notice that the difference between $\theta_{C_3\mathbf{x}}$ and $\theta_{C_2\mathbf{x}}$, i.e. $\theta_{C_3\mathbf{x}} - \theta_{C_2\mathbf{x}}$ is larger than $\pi$, so it is clockwise.</p>
+    
+<p>But what about the rotation from $C_3$ to $C_2$? It is anticlockwise, and $\theta_{C_2\mathbf{x}}-\theta_{C_3\mathbf{x}}$ is smaller than $-\pi$.</p>
+    
+<p>Clearly it is possible to deduce the clockwise or anticlockwise rotation between two vertices about a point, and below is the summary for the rotation from $C_1$ to $C_2$:</p>
+    
+<pre class="r"><code class="hljs"><span class="hljs-keyword">if</span> (c2x - c1x &gt;= pi || (c2x - c1x &gt; -pi &amp;&amp; c2x - c1x &lt; <span class="hljs-number">0</span>)) anti &lt;- <span class="hljs-literal">FALSE</span>
+<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((c2x - c1x &lt; pi &amp;&amp; c2x - c1x &gt;= <span class="hljs-number">0</span>) || c2x - c1x &lt;= -pi) anti &lt;- <span class="hljs-literal">TRUE</span></code></pre>
+    
+<p>where <code>c1x,c2x</code> means the same thing as $\theta_{C_1\mathbf{x}}$ and $\theta_{C_2\mathbf{x}}$.</p>
+    
+<p>Once we know the direction of the rotation, we can simply plus or minus the angle during the winding around the point $\mathbf{x}$, depends on the clockwise or anticlockwise rotation. Below is the function to find out the windind number for a point $(x_0,y_0)$ inside the polygon.</p>
+    
+<pre class="r"><code class="hljs">winding_number &lt;- <span class="hljs-keyword">function</span>(x,y,x0,y0) {
+  cumang &lt;- <span class="hljs-number">0</span>
+  direction &lt;- list()
+  anglex &lt;- c()
+  n &lt;- length(x)
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    direction &lt;- c(direction,list((c(x0,y0) - c(x[i],y[i]))))
+    anglex &lt;- c(anglex, angle(x[i],y[i],x0,y0))
+  }
+  direction[n+<span class="hljs-number">1</span>] &lt;- direction[<span class="hljs-number">1</span>]
+  anglex[n+<span class="hljs-number">1</span>] &lt;- anglex[<span class="hljs-number">1</span>]
+  anti &lt;- <span class="hljs-literal">TRUE</span>
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
+    <span class="hljs-keyword">if</span> (norm(direction[[i]])*norm(direction[[i+<span class="hljs-number">1</span>]]) == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>(<span class="hljs-number">1</span>)
+    <span class="hljs-keyword">if</span> (anglex[i+<span class="hljs-number">1</span>] - anglex[i] &gt; pi || (anglex[i+<span class="hljs-number">1</span>] - anglex[i] &gt; -pi &amp;&amp; anglex[i+<span class="hljs-number">1</span>] - anglex[i] &lt; <span class="hljs-number">0</span>)) anti &lt;- <span class="hljs-literal">FALSE</span>
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((anglex[i+<span class="hljs-number">1</span>] - anglex[i] &lt; pi &amp;&amp; anglex[i+<span class="hljs-number">1</span>] - anglex[i] &gt;= <span class="hljs-number">0</span>) || anglex[i+<span class="hljs-number">1</span>] - anglex[i] &lt;= -pi) anti &lt;- <span class="hljs-literal">TRUE</span>
+    dotproduct &lt;- as.numeric(direction[[i]] %*% direction[[i+<span class="hljs-number">1</span>]])
+    nomproduct &lt;- norm(direction[[i]])*norm(direction[[i+<span class="hljs-number">1</span>]])
+    angle &lt;- acos(round(dotproduct/nomproduct,<span class="hljs-number">8</span>))
+    <span class="hljs-keyword">if</span> (anti) cumang &lt;- cumang + angle <span class="hljs-keyword">else</span> cumang &lt;- cumang - angle
+  }
+  wind &lt;- round(cumang/(<span class="hljs-number">2</span>*pi))
+  <span class="hljs-keyword">return</span>(wind)
+}</code></pre>    
+    
+<p>If the point $(x_0,y_0)$ is at the vertex, then the direction vector between them is $\mathbf{0}$, also the norm is $0$. So if the norm of the direction vector is $0$, then the function will return the winding number $1$, in order to avoid the <code>NaN</code> appears. If not, then the function will use the technique of dot product to calculate the angle. If it is clockwise rotation, the function will subtract the angle from the cumulative sum of the angle, else the function will add the angle into the cumulative sum of the angle.</p>
+    
+<figure align="center">
+  <img src="ray_wind.png" alt="ray+wind" style="width:50%">
+  <figcaption>Figure 4.14: Wind and Ray in the Pentagram</figcaption>
+</figure>
+    
+<p>But one possible problem is, if the polygon is pentagram, then what about the central pentagon region? If a point is inside there, should we consider that is inside the polygon or not? Like the point in Figure 4.14, It looks like it is inside the polygon, but if we cast a ray, it will "enter" and "exit" the polygon. However, if we count the winding number, the winding number will be $-2$, which is inside the polygon.</p>
+    
+<p>However, that's not a big problem. We can consider both as two separate cases, and it actually depends on the requirement.</p>
+    
+<pre class="r"><code class="hljs">xe0 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,<span class="hljs-number">8</span>,<span class="hljs-number">2</span>)
+ye0 &lt;- c(<span class="hljs-number">3</span>,-<span class="hljs-number">4</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">4</span>)
+area_mc_method_v3(xe0,ye0,method = <span class="hljs-string">"wind"</span>)</code></pre>
+    
+<pre><code class="hljs">## [1] "Self-intersecting Polygon"</code></pre>
+
+<figure align="center">
+  <img src="wind5.png" alt="wind5" style="width:65%">
+  <figcaption>Figure 4.15: Area of the Pentagram, by the winding number algorithm</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 16.7328</code></pre>
+    
+<pre class="r"><code class="hljs">xe0 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,<span class="hljs-number">8</span>,<span class="hljs-number">2</span>)
+ye0 &lt;- c(<span class="hljs-number">3</span>,-<span class="hljs-number">4</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">4</span>)
+area_mc_method_v3(xe0,ye0,method = <span class="hljs-string">"ray"</span>)</code></pre>
+    
+<pre><code class="hljs">## [1] "Self-intersecting Polygon"</code></pre>
+    
+<figure align="center">
+  <img src="ray_5.png" alt="ray5" style="width:65%">
+  <figcaption>Figure 4.16: Area of the Pentagram, by the ray-casting algorithm</figcaption>
+</figure>
+    
+<pre><code class="hljs">## [1] 11.9504</code></pre>
+
+<p>Now we can write the point in polygon function with both algorithm:</p>
+    
+<pre class="r"><code class="hljs">point_inside_v2 &lt;- <span class="hljs-keyword">function</span>(x,y,x0,y0, method = <span class="hljs-string">"wind"</span>) {
+  <span class="hljs-keyword">if</span> (method == <span class="hljs-string">"wind"</span>) {
+    wind &lt;- winding_number(x,y,x0,y0)
+    <span class="hljs-keyword">if</span> (wind != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> (<span class="hljs-number">1</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>)
+  }
+  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (method == <span class="hljs-string">"ray"</span>) {
+    ray &lt;- ray_pass(x,y,x0,y0)
+    <span class="hljs-keyword">if</span> (ray %% <span class="hljs-number">2</span> == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> (<span class="hljs-number">1</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>)
+  }
+}</code></pre>
+    
+    
+<p>The default algorithm is the winding number.</p>
+
+<h2 id="mcm3">Monte Carlo Method, Version 3</h2>    
+
+<p>We can use the new point in polygon function to reconstruct the function of the Monte Carlo Method.</p>
+
+<pre class="r"><code class="hljs">area_mc_method_v3 &lt;- <span class="hljs-keyword">function</span>(x,y,k=<span class="hljs-number">5000</span>, plotpoly=<span class="hljs-literal">TRUE</span>, method = <span class="hljs-string">"wind"</span>) {
+  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
+  type &lt;- type_of_polygon_v2(x,y)
+  <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
+    print(<span class="hljs-string">"Convex Polygon"</span>)
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
+    print(<span class="hljs-string">"Self-intersecting Polygon"</span>)
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
+    print(<span class="hljs-string">"Concave Polygon"</span>)
+  }
+  count &lt;- <span class="hljs-number">0</span>
+  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
+  random_x &lt;- generate_k_random_point(x,y,k)$x
+  random_y &lt;- generate_k_random_point(x,y,k)$y
+  inside &lt;- c()
+  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+    count &lt;- count + point_inside_v2(x,y,random_x[i],random_y[i],method)
+    <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x[i],random_y[i],method) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
+  }
+  approximate_area &lt;- count/k*rectangle_area
+  <span class="hljs-keyword">if</span> (plotpoly) {
+    plot(x,y,pch=<span class="hljs-string">""</span>)
+    polygon(x,y)
+    polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
+    points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
+    points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>) 
+  }
+  <span class="hljs-keyword">return</span>(approximate_area)
+}</code></pre>
+    
+<p>In theory, the version 3 should work very well: it's much faster than the obese version 2n, less error and works on almost all polygons.</p>
+    
+<p>The next section is Monte Carlo Part 3, we will talk more about the Monte Carlo integration.</p>
+    
+<h4 id="mcm3end">You can test the function at <a href="code_4.html">here</a>.</h4>
+
+<h4 style="text-align:left;"><span style="float:right;"><a href="monte_carlo_3.html"><span>&#8594;</span>Section: Monte Carlo (Part 3)</a></span></h4>
+
+<p><span id="lblCopyRight">© Group 18</span></p>
+    
+</body>
+</html>

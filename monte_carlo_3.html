@@ -1,0 +1,392 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<h1>Area: Group Project (Group 18)</h1>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+
+<h2>Monte Carlo Integration</h2>
+    
+<p>Recall from the introduction that the area $$A = \int_{a}^{b} p(x)\ dx \approx (b-a) \ \frac{1}{n} \sum_{i=1}^{n} p(X_i),$$ where $X_1, X_2,...,X_n$ is an uniform $U[a,b]$ distribution sample.</p>
+    
+<p>Instead of using it to estimate $\pi$ or the area of polygon, a more general usage is to estimate the complicated integral.<a href="bibliography.html#ref19">[19]</a> Another well-known method to approximate an integral is by Simpson's rule, which was first introduced in A-level study before. The formula is given by the following:$$A = \int_{a}^{b} f(x)\ dx \approx \frac{\Delta{x}}{3}(f(x_0) + 4f(x_1) + 2f(x_2) + 4f(x_3) + 2f(x_4) + ... + 4f(x_{n-1})+f(x_n)),$$ where $n$ is positive even, $\Delta{x} = \frac{b-a}{n}$, $x_i = a + i\Delta{x}$ and $i = 0,1,...,n$.<a href="bibliography.html#ref13">[13]</a></p>
+    
+<p>In R, we can use the following function to compute the integration by Simpson's rule:</p>
+    
+<pre class="r"><code class="hljs">simpsons_rule &lt;- <span class="hljs-keyword">function</span>(f,a,b,n=<span class="hljs-number">10000</span>) {
+  <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">0</span> || n %% <span class="hljs-number">2</span> != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Please enter positive even number n"</span>)
+  <span class="hljs-keyword">if</span> (!is.function(f)) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Please enter function f"</span>)
+  <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">Inf</span>) a &lt;- <span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a == -<span class="hljs-literal">Inf</span>) a &lt;- -<span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b == <span class="hljs-literal">Inf</span>) b &lt;- <span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b == -<span class="hljs-literal">Inf</span>) b &lt;- -<span class="hljs-number">1e4</span>
+  delta_x &lt;- (b - a)/n
+  xi &lt;- seq.int(a,b,length.out = n + <span class="hljs-number">1</span>)[-<span class="hljs-number">1</span>][-n]
+  odd &lt;- seq.int(<span class="hljs-number">1</span>,n - <span class="hljs-number">1</span>,<span class="hljs-number">2</span>)
+  <span class="hljs-keyword">if</span> (n &gt; <span class="hljs-number">2</span>) {
+    even &lt;- seq.int(<span class="hljs-number">2</span>,n - <span class="hljs-number">2</span>,<span class="hljs-number">2</span>)
+    approx &lt;- delta_x/<span class="hljs-number">3</span>*(f(a) + <span class="hljs-number">4</span>*sum(f(xi[odd])) + <span class="hljs-number">2</span>*sum(f(xi[even])) + f(b))
+  } <span class="hljs-keyword">else</span> {
+    approx &lt;- delta_x/<span class="hljs-number">3</span>*(f(a) + <span class="hljs-number">4</span>*sum(f(xi[odd])) + f(b))
+  }
+  <span class="hljs-keyword">return</span>(approx)
+}</code></pre>
+
+<p><b><i>Example 5.1</i></b> &nbsp; Estimate $\int_{0}^{1} e^{-x^2} \ dx$ by Monte Carlo method and by Simpson's rule.</p>
+    
+<p>By Monte Carlo method:</p>
+    
+<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">10000</span>
+x &lt;- runif(n)
+a &lt;- mean(exp(-x^<span class="hljs-number">2</span>))
+a</code></pre>
+    
+<pre><code class="hljs">## [1] 0.7478853</code></pre>
+    
+<p>By Simpson's rule:</p>
+    
+<pre class="r"><code class="hljs">fx &lt;- <span class="hljs-keyword">function</span>(x) exp(-x^<span class="hljs-number">2</span>)
+simpsons_rule(fx,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">10</span>)</code></pre>
+    
+<pre><code class="hljs">## [1] 0.7468249</code></pre>
+    
+<p><b><i>Example 5.2</i></b> &nbsp; Estimate the length of the curve $y =  \ln{x}$ over the interval $[1,4]$.</p>
+    
+<p>Arc length of a curve over $[a,b]$ is $\int_{a}^{b} \sqrt{1 + (\frac{dy}{dx})^2} \ dx$, which is $\int_{1}^{4} \sqrt{1 + \frac{1}{x^2}} \ dx$ in this case. The exact integral is not easy to be determined, but we can still use the Monte Carlo method or Simpson's rule to estimate it easily.</p>
+    
+<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">10000</span>
+x &lt;- runif(n,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>)
+a &lt;- <span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>))
+a</code></pre>
+    
+<pre><code class="hljs">## [1] 3.344581</code></pre>
+    
+<p>The exact integral is $3.342800$ to 6 decimal places, or $\sqrt{17} - \sqrt{2} + \frac{1}{2} \ln \left(18 \sqrt{2}-3 \sqrt{17}-2 \sqrt{34}+27\right)-\frac{3}{2}\ln{2}$.</p>
+    
+<h2 id="antithetic">Variance Reduction: Antithetic</h2>
+    
+<p>Notice that the variance of area depends on the variance of the estimator, which is $p(X)$ in this case. Then if we can reduce the variance of the estimator, the estimation will be more accurate. One important technique to reduce variance, is the antithetic variates method.<a href="bibliography.html#ref14">[14]</a></p>
+    
+<p>Instead of the original method, Monte Carlo method with antithetic variables is to set up the second variable that depends on the original variable, which the variance of the variables sum is less than the variance of the original variable.<a href="bibliography.html#ref19">[19]</a></p>
+
+<p>One of the basic properties of variance is $\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y) + 2\text{Cov}(X,Y)$, which implies that if the covariance of $X$ and $Y$ is negative, then the variance of $X+Y$ is less than the sum of their variance. If we can reduce the variance, then the estimation will be improved.</p>
+    
+<p>For example, if $Y = 1 - X$, then $$\text{Cov}(X, 1-X) = E\left(X(1-X)\right) - E(X)E(1-X) = E(X) - E(X^2) - E(X)\left(1-E(X)\right) = - \text{Var}(X),$$ which is a negative value, as the variance is positive (or zero if given constant values).</p>
+    
+<p>But when we are using Monte Carlo method, we will need to consider $\text{Cov}\left(p(X),p(1-X)\right)$, so we can't easily deduce the sign of the covariance. But think about the monotonicity of the function, if a function $p$ is not monotonic over a region, for example $p(x) = \cos{x}$ over $[-1,1]$, then let $Y = X$ and $p(X) = p(Y)$, which implies that we just repeat the original method again. In simple, if $p$ is monotonic, then $\text{Cov}(p(X),p(Y))$ is negative.</p>
+    
+<p><b><i>Example 5.3</i></b> &nbsp; Estimate $\int_{0}^{1} e^{-x^2} \ dx$ again. Notice that the function $e^{-x^2}$ is monotonic decreasing over $[0,1]$, then a Monte Carlo method with antithetic variables is $$\frac{1}{n} \sum_{i=1}^{n} \left(\frac{1}{2}e^{-X_i^2} + \frac{1}{2}e^{-(1-X_i)^2}\right),$$ and the code looks like this:</p>
+    
+<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">10000</span>
+x &lt;- runif(n,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)
+y &lt;- <span class="hljs-number">1</span> - x
+a &lt;- mean(exp(-x^<span class="hljs-number">2</span>)/<span class="hljs-number">2</span> + exp(-y^<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>)
+a</code></pre>
+    
+<pre><code class="hljs">## [1] 0.7464516</code></pre>
+    
+<p>The difference between the original and arithetic is not obvious if only run once, so let's test it more:</p>
+    
+<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">10000</span>
+a1 &lt;- c()
+a2 &lt;- c()
+<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:<span class="hljs-number">10</span>) {
+  x &lt;- runif(n,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)
+  y &lt;- <span class="hljs-number">1</span> - x
+  a1 &lt;- c(a1,mean(exp(-x^<span class="hljs-number">2</span>)))
+  a2 &lt;- c(a2,mean(exp(-x^<span class="hljs-number">2</span>)/<span class="hljs-number">2</span> + exp(-y^<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>))
+}
+data.frame(Original=(a1-<span class="hljs-number">0.746824</span>)*<span class="hljs-number">1000</span>,Antithetic=(a2-<span class="hljs-number">0.746824</span>)*<span class="hljs-number">1000</span>)</code></pre>
+    
+<pre><code class="hljs">##     Original  Antithetic
+## 1  -1.272708  0.13550731
+## 2   0.215526  0.16875908
+## 3  -1.066277 -0.35460663
+## 4  -1.525344  0.07371390
+## 5  -1.148357 -0.25150037
+## 6   1.637443  0.30984076
+## 7   1.331888  0.35226570
+## 8   2.680033  0.27922990
+## 9  -2.010939 -0.06512753
+## 10  0.576300  0.06304276</code></pre>
+
+<p>The exact integral is $0.746824$ to 6 decimal places, and we 1000 times the difference between the estimated value and the exact value. It is obvious that, the antithetic method is an improvement to the original method, as the variance is reduced.</p>
+    
+<p>Also, if we uniformly generate $X$ over $[a,b]$, then $Y = a + b - X$ is still within the range $[a,b]$, and $\text{Cov}(X,Y)$ is negative.</p>
+    
+<p><b><i>Example 5.4</i></b> &nbsp; Estimate the length of the curve $y =  \ln{x}$ over the interval $[1,4]$ with improved method.</p>
+    
+<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">1000000</span>
+a1 &lt;- c()
+a2 &lt;- c()
+<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:<span class="hljs-number">10</span>) {
+  x &lt;- runif(n,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>)
+  y &lt;- <span class="hljs-number">5</span> - x
+  a1 &lt;- c(a1,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)))
+  a2 &lt;- c(a2,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)/<span class="hljs-number">2</span> + sqrt(<span class="hljs-number">1</span>+y^-<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>))
+}
+data.frame(Original=(a1-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>,Antithetic=(a2-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>)</code></pre>
+    
+<pre><code class="hljs">##       Original  Antithetic
+## 1   0.16577621 -0.12269626
+## 2   0.22200712  0.02078038
+## 3  -0.22798658  0.08306721
+## 4  -0.12435955  0.06873986
+## 5  -0.39593390 -0.26677621
+## 6   0.09816367 -0.11048513
+## 7   0.35040366  0.03770652
+## 8  -0.15715313  0.13883513
+## 9  -0.18167042 -0.09729905
+## 10 -0.06786056 -0.05691587</code></pre>
+    
+<p>Now we can write the function of Monte Carlo integration in R.</p>
+    
+<pre class="r"><code class="hljs">monte_carlo_integral &lt;- <span class="hljs-keyword">function</span>(f,a,b,n=<span class="hljs-number">10000</span>,method=<span class="hljs-string">"original"</span>) {
+  <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Please enter positive number n"</span>)
+  <span class="hljs-keyword">if</span> (!is.function(f)) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Please enter function f"</span>)
+  <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">Inf</span>) a &lt;- <span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a == -<span class="hljs-literal">Inf</span>) a &lt;- -<span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b == <span class="hljs-literal">Inf</span>) b &lt;- <span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b == -<span class="hljs-literal">Inf</span>) b &lt;- -<span class="hljs-number">1e4</span>
+  x &lt;- runif(n,a,b)
+  <span class="hljs-keyword">if</span> (method == <span class="hljs-string">"original"</span>) {
+    area &lt;- (b-a)*mean(f(x))
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (method == <span class="hljs-string">"antithetic"</span>) {
+    y &lt;- a + b - x
+    area &lt;- (b-a)*mean(f(x)/<span class="hljs-number">2</span> + f(y)/<span class="hljs-number">2</span>)
+  }
+  <span class="hljs-keyword">return</span>(area)
+}</code></pre>
+    
+<p>In the case of <code>Inf</code>, just set a large number and evaluate it. If the integral of the given function $f$ is converge when $x$ tends to infinity, then the $f(x)$ tends to $0$. As we are estimating the integral, it won't make a huge difference whether the upper bound is $10000$ or $100000$ or infinity.</p>
+    
+<h4 id="mcintegral">You can test the function at <a href="code_5.html">here</a>.</h4>
+
+<h2 id="mcm4">Monte Carlo Method, Version 4</h2>
+    
+<p>Now think about using Monte Carlo integration to estimate the area of polygon, as we can apply the antithetic method to reduce the variance, it is possible to apply the same idea to have a better estimation. However, this method only can apply to the convex and bounded concave polygon, if we want to apply the integration technique. As we can find the maximum/minimum of the bounds, and divide them into the monotonic functions.</p>
+    
+<p>But more generally, we can still apply the antithetic method with the statistical Monte Carlo simulation, like counting the points inside the polygon. If we generate 10000 points in both $x$ and $y$ coordinates as an uniform $X \overset{\text{i.i.d.}}{\sim} U[a,b]$ and an uniform $Y \overset{\text{i.i.d.}}{\sim} U[c,d]$ distribution sample respectively, where $a,b$ are the minimum and maximum of $x$-coordinate of the polygon, $c,d$ are the minimum and maximum of $y$-coordinate of the polygon. Then we can find other 3 pairs of $x$ and $y$, which are $(a+b-X,Y),(X,c+d-Y)$ and $(a+b-X,c+d-Y)$.</p>
+
+<p>Now rewrite the <code>area_mc_method_v3</code>, to get the version 4:</p>
+    
+<pre class="r"><code class="hljs">area_mc_method_v4 &lt;- <span class="hljs-keyword">function</span>(x,y,k=<span class="hljs-number">5000</span>, typepoly = <span class="hljs-literal">TRUE</span>, plotpoly=<span class="hljs-literal">TRUE</span>, point_method = <span class="hljs-string">"wind"</span>, mc_method = <span class="hljs-string">"original"</span>) {
+  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
+  <span class="hljs-keyword">if</span> (typepoly) {
+    type &lt;- type_of_polygon_v2(x,y)
+    <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
+      print(<span class="hljs-string">"Convex Polygon"</span>);mc_method &lt;- <span class="hljs-string">"antithetic"</span>
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
+      print(<span class="hljs-string">"Self-intersecting Polygon"</span>)
+    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
+      print(<span class="hljs-string">"Concave Polygon"</span>)
+    }
+  } <span class="hljs-keyword">else</span> {
+    <span class="hljs-keyword">if</span> (type_of_polygon(x,y) == <span class="hljs-string">"Convex"</span>) mc_method &lt;- <span class="hljs-string">"antithetic"</span>
+  }
+  count &lt;- <span class="hljs-number">0</span>
+  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
+  random_x &lt;- generate_k_random_point(x,y,k)$x
+  random_y &lt;- generate_k_random_point(x,y,k)$y
+  inside &lt;- c()
+  inside2 &lt;- c()
+  inside3 &lt;- c()
+  inside4 &lt;- c()
+  <span class="hljs-keyword">if</span> (mc_method == <span class="hljs-string">"original"</span>) {
+    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+      count &lt;- count + point_inside_v2(x,y,random_x[i],random_y[i],point_method)
+      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x[i],random_y[i],point_method) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
+    }
+    approximate_area &lt;- count/k*rectangle_area
+  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mc_method == <span class="hljs-string">"antithetic"</span>) {
+    random_x1 &lt;- max(x) + min(x) - random_x
+    random_y1 &lt;- max(y) + min(y) - random_y
+    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
+      count &lt;- count + point_inside_v2(x,y,random_x[i],random_y[i],point_method) + point_inside_v2(x,y,random_x1[i],random_y[i],point_method) + point_inside_v2(x,y,random_x[i],random_y1[i],point_method) + point_inside_v2(x,y,random_x1[i],random_y1[i],point_method)
+      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x[i],random_y[i],point_method) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
+      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x1[i],random_y[i],point_method) == <span class="hljs-number">1</span>) inside2 &lt;- c(inside2, i)
+      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x[i],random_y1[i],point_method) == <span class="hljs-number">1</span>) inside3 &lt;- c(inside3, i)
+      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x1[i],random_y1[i],point_method) == <span class="hljs-number">1</span>) inside4 &lt;- c(inside4, i)
+    }
+    approximate_area &lt;- count/(<span class="hljs-number">4</span>*k)*rectangle_area
+  }
+  <span class="hljs-keyword">if</span> (plotpoly) {
+    plot(x,y,pch=<span class="hljs-string">""</span>)
+    polygon(x,y)
+    polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
+    points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
+    points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>)
+    <span class="hljs-keyword">if</span> (mc_method == <span class="hljs-string">"antithetic"</span>) {
+      points(random_x1[inside2],random_y[inside2], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
+      points(random_x1[-inside2],random_y[-inside2], pch = <span class="hljs-string">"."</span>)
+      points(random_x[inside3],random_y1[inside3], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
+      points(random_x[-inside3],random_y1[-inside3], pch = <span class="hljs-string">"."</span>)
+      points(random_x1[inside4],random_y1[inside4], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
+      points(random_x1[-inside4],random_y1[-inside4], pch = <span class="hljs-string">"."</span>)
+    }
+  }
+  <span class="hljs-keyword">return</span>(approximate_area)
+}</code></pre>
+    
+<p>The function above also add more fectures, makes it more general to use.</p>
+    
+<p>But this method is just like, reflect the points around and get the average result. For some polygons, it might even reduce the accuracy. The more complexity, the less accurate. But still, this method should work well for all convex polygons, so if the type of polygon is convex, then the function will always use the antithetic method.</p>
+    
+<p><b><i>Example 5.5</i></b> &nbsp; Estimate the area of polygons by the Monte Carlo method with antithetic variables, and compare the difference with the original method.</p>
+
+<pre class="r"><code class="hljs">xe2 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>)
+ye2 &lt;- c(<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">2</span>,<span class="hljs-number">1</span>)
+plot(xe2,ye2,pch=<span class="hljs-string">""</span>)
+polygon(xe2,ye2)</code></pre>
+    
+<figure align="center">
+  <img src="convex2.png" alt="graphy" style="width:50%">
+  <figcaption>Figure 5.1: Convex Polygon with coordinates <code>(xe2,ye2)</code></figcaption>
+</figure>
+<p></p>  
+
+<pre class="r"><code class="hljs">v3 &lt;- c()
+v4 &lt;- c()
+<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:<span class="hljs-number">10</span>) {
+  v3 &lt;- c(v3,area_mc_method_v3(xe2,ye2,plotpoly = <span class="hljs-literal">FALSE</span>,typepoly = <span class="hljs-literal">FALSE</span>))
+  v4 &lt;- c(v4,area_mc_method_v4(xe2,ye2,plotpoly = <span class="hljs-literal">FALSE</span>,typepoly = <span class="hljs-literal">FALSE</span>))
+}
+data.frame(Original=(v3-<span class="hljs-number">17.5</span>),Antithetic=(v4-<span class="hljs-number">17.5</span>))</code></pre>
+    
+<pre><code class="hljs">##    Original Antithetic
+## 1   -0.2040     0.1076
+## 2   -0.1768    -0.0328
+## 3   -0.2488     0.1544
+## 4    0.3032    -0.0904
+## 5   -0.2200     0.1004
+## 6    0.3128     0.1184
+## 7    0.4424     0.0230
+## 8    0.1472     0.0140
+## 9   -0.4000     0.1004
+## 10  -0.1912    -0.1174</code></pre>
+    
+<h4 id="mcm4end">You can test the function at <a href="code_6.html">here</a>.</h4>
+
+<h2 id="variate">Variance Reduction: Control Variates</h2>
+    
+<p>Another approach to reduce variance, is to introduce a control variate $g$, which is a function simliar to $p$, and can be solved analytically.<a href="bibliography.html#ref15">[15]</a><a href="bibliography.html#ref19">[19]</a></p>
+
+<p>If the integral of $g$ over $[a,b]$ is $I(g)$, then the integral hence will be $$A = \int_{a}^{b} p(x)\ dx = \int_{a}^{b} \left(p(x) - g(x)\right)\ dx + \int_{a}^{b} g(x)\ dx = \int_{a}^{b} \left(p(x) - g(x)\right)\ dx + I(g).$$</p>
+    
+<p>As $g$ similar to $p$, the variance of $p-g$ should be smaller than $p$, then $$A \approx (b-a) \ \frac{1}{n} \sum_{i=1}^{n} \left(p(X_i)-g(X_i)\right) + I(g).$$</p>
+    
+<p><b><i>Example 5.6</i></b>&nbsp; Estimate the length of the curve $y =  \ln{x}$ over the interval $[1,4]$ with improved method.</p>
+    
+<p>It is not hard to check that $\sqrt{1+\frac{1}{x^2}} < 1 + \frac{1}{x}$ for all $x > 0$, so we can let $g(x) =1+ \frac{1}{x}$. Then $$A \approx \frac{3}{n} \sum_{i=1}^{n} \left(\sqrt{1+\frac{1}{X^2_i}}-1-\frac{1}{X_i}\right) + \int_{1}^{4} \left(1 +\frac{1}{x}\right) \ dx = \frac{3}{n} \sum_{i=1}^{n} \left(\sqrt{1+\frac{1}{X^2_i}}-1-\frac{1}{X_i}\right) + 3 + 2\ln{2}.$$</p>
+    
+<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">1000000</span>
+a1 &lt;- c()
+a2 &lt;- c()
+a3 &lt;- c()
+<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:<span class="hljs-number">10</span>) {
+  x &lt;- runif(n,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>)
+  y &lt;- <span class="hljs-number">5</span> - x
+  a1 &lt;- c(a1,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)))
+  a2 &lt;- c(a2,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)/<span class="hljs-number">2</span> + sqrt(<span class="hljs-number">1</span>+y^-<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>))
+  a3 &lt;- c(a3,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)-(<span class="hljs-number">1</span>+x^-<span class="hljs-number">1</span>)) + <span class="hljs-number">2</span>*log(<span class="hljs-number">2</span>) + <span class="hljs-number">3</span>)
+}
+data.frame(Original=(a1-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>,Antithetic=(a2-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>,Control=(a3-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>)</code></pre>
+
+<pre><code class="hljs">##       Original  Antithetic     Control
+## 1   0.21223283  0.18938566 -0.14893086
+## 2   0.15050225 -0.01046107 -0.17487785
+## 3  -0.11634257  0.14409480  0.11449610
+## 4  -0.61327206 -0.16418989  0.34262107
+## 5  -0.07992773 -0.04965741 -0.01253572
+## 6   0.07871686 -0.03515993 -0.05556916
+## 7  -0.01743192  0.01432607 -0.01329278
+## 8  -0.01333745  0.01867702  0.02072985
+## 9   0.52673886 -0.08700540 -0.21474933
+## 10  0.42469550  0.03696982 -0.25150356</code></pre>
+    
+<p>Since it is not easy to find the $g$ just by programming, the <code>monte_carlo_integral</code> function won't include this method.</p>
+
+<h4 style="text-align:left;"><span style="float:right;"><a href="picks_theorem.html"><span>&#8594;</span>Section: Pick's Theorem</a></span></h4>
+
+<p><span id="lblCopyRight">© Group 18</span></p>
+
+</body>
+</html>

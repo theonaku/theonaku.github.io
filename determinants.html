@@ -1,0 +1,123 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+<h1>Area: Group Project (Group 18)</h1>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+    
+<h2>Areas and Determinants</h2>
+    
+<p>Recall from the introduction that the area of a $n$-side polygon with vertices $(x_1,y_1), (x_2,y_2), ... , (x_n,y_n)$ is $$A = \sum_{i=1}^{n} \frac{(x_{i+1}+x_i)(y_{i+1}-y_i)}{2} =\frac{1}{2} \sum_{i=1}^{n} \det\begin{pmatrix} 
+x_i & x_{i+1} \\
+y_i & y_{i+1}
+\end{pmatrix} $$ where $x_{n+1}:= x_1$, $y_{n+1}:=y_1$.</p>
+    
+<p>Interestingly, that is also the sum of determinants of the coordinates of vertices.</p>
+    
+<p>The formula of vector product<a href="bibliography.html#ref17">[17]</a>, or cross product of two vectors $\mathbf{a}$ and $\mathbf{b}$ in 3D space is $$\mathbf{a} \times \mathbf{b} = |\mathbf{a}||\mathbf{b}| \sin{\theta} \  \mathbf{n},$$ where $\mathbf{n}$ is the unit vector perpendicular to the plane that contains $\mathbf{a}$ and $\mathbf{b}$, and $\theta$ is the angle between them in the plane.</p>
+    
+<p>Notice that the absolute value of norm of $\mathbf{a} \times \mathbf{b}$ is $||\mathbf{a} \times \mathbf{b}|| = |\mathbf{a}||\mathbf{b}| \sin{\theta}$, as $\mathbf{n}$ is the unit vector.</p>
+    
+<p>Also it can be written as the determinant. If $\mathbf{a} = a_1i + a_2j + a_3k$ and $\mathbf{b} = b_1i + b_2j+b_3k$, then $$\mathbf{a}  \times \mathbf{b} = \left| {\begin{array}{*{20}{c}}{i}&{j}&{k}\\{{a_1}}&{{a_2}}&{{a_3}}\\{{b_1}}&{{b_2}}&{{b_3}}\end{array}} \right|.$$</p>
+    
+<p>If $\mathbf{a}$ and $\mathbf{b}$ are in 2D plane, i.e. $\mathbf{a} = a_1i + a_2j$ and $\mathbf{b} = b_1i + b_2j$, then $$\mathbf{a}  \times \mathbf{b} = \left| {\begin{array}{*{20}{c}}{i}&{j}&{k}\\{{a_1}}&{{a_2}}&{{0}}\\{{b_1}}&{{b_2}}&{{0}}\end{array}} \right| = k\left| {\begin{array}{*{20}{c}}{{a_1}}&{{a_2}}\\{{b_1}}&{{b_2}}\end{array}} \right|=(a_1b_2-a_2b_1)k,$$ which implies that $$| \mathbf{a} \times \mathbf{b}| = a_1b_2-a_2b_1.$$</p>
+    
+<figure align="center">
+  <img src="parallelogram.png" alt="graphy" style="width:65%">
+  <figcaption>Figure 7.1: Parallelogram with two vectors</figcaption>
+</figure>
+    
+<p>As shown in Figure 7.1, area $A$ of parallelogram formed by vectors $\mathbf{a}$ and $\mathbf{b}$ is $|\mathbf{a}||\mathbf{b}|\sin{\theta}$. Hence $$A = || \mathbf{a} \times \mathbf{b}|| = |\mathbf{a}||\mathbf{b}|\sin{\theta} = |a_1b_2-a_2b_1|,$$ which is also a determinant.</p>
+    
+<p>Similarly, area of triangle formed by two vectors can be found by the same method, just divide by 2.</p>
+
+<h4 style="text-align:left;"><span style="float:right;"><a href="generate_poly.html"><span>&#8594;</span>Section: Convex Hull and Random Polygon</a></span></h4>
+
+<p><span id="lblCopyRight">© Group 18</span></p>
+    
+</body>
+</html>

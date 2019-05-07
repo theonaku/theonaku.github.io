@@ -1,0 +1,180 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>MAS115 Group Project 2</title>
+    <link rel="icon" type="image/vnd.microsoft.icon" href="favicon.ico">
+    
+    <script type="text/javascript" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$']]},
+        CommonHTML: { linebreaks: { automatic: true } },
+        "HTML-CSS": { linebreaks: { automatic: true } }
+    });
+    </script>
+
+    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
+    
+    <link rel="stylesheet" href="project.css">
+</head>
+<body>
+<h1>Area: Group Project (Group 18)</h1>
+
+<div class="navbar">
+  <div class="subnav">
+    <button class="subnavbtn">Index<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="index.html">Introduction</a>
+      <a href="index.html#monte">Monte Carlo method</a>
+      <a href="index.html#functions">List of Useful Functions</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Identify Polygon Type <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="type_of_polygon.html">Property of Polygon</a>
+      <a href="type_of_polygon.html#m1">Identify Method 1</a>
+      <a href="type_of_polygon.html#m2">Identify Method 2</a>
+    </div>
+  </div> 
+  <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 1<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo.html">Classify Vertex 1</a>
+        <a href="monte_carlo.html#pointin1">Point in Polygon 1</a>
+      <a href="monte_carlo.html#mcm1">Monte Carlo Method 1</a>
+      
+        <a href="monte_carlo.html#ang">Classify Vertex 2</a>
+        <a href="monte_carlo.html#mcm2">Monte Carlo Method 2</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 2<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_2.html">Point in Polygon 2</a>
+        <a href="monte_carlo_2.html#ray">Ray-casting Algorithm</a>
+        <a href="monte_carlo_2.html#wind">Winding Number algorithm</a>
+      <a href="monte_carlo_2.html#mcm3">Monte Carlo Method 3</a>
+    </div>
+  </div>
+    <div class="subnav">
+    <button class="subnavbtn">Monte Carlo Part 3<i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="monte_carlo_3.html">Monte Carlo Integration</a>
+      <a href="monte_carlo_3.html#antithetic">Variance Reduction: Antithetic</a>
+        <a href="monte_carlo_3.html#mcm4">Monte Carlo Method 4</a>
+    <a href="monte_carlo_3.html#variate">Variance Reduction: Control Variates</a>
+    </div>
+  </div>
+      <div class="subnav">
+    <button class="subnavbtn">Extra <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="picks_theorem.html">Pick's Theorem</a>
+        <a href="determinants.html">Determinants</a>
+        <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
+  <a style="float:right" href="bibliography.html">Bibliography</a>
+</div>
+    
+<h2 style="color:#3f3e3f;font-size:42px;">Bibliography: </h2>
+
+<ol>
+<li id="ref1">
+<a href="http://mathworld.wolfram.com/about/author.html">Weisstein, Eric W.</a> "Perp Dot Product." From
+<a href="http://mathworld.wolfram.com">MathWorld</a>--A Wolfram Web Resource. <a href="http://mathworld.wolfram.com/PerpDotProduct.html">http://mathworld.wolfram.com/PerpDotProduct.html</a>
+</li>
+    
+<li id="ref2">
+<a href=" https://www.math.ucdavis.edu/~deloera/">De Loera, Jesus</a>; <a href="http://www.rambau.wm.uni-bayreuth.de">Rambau, Joerg</a>; <a href="https://personales.unican.es/santosf/">Santos, Francisco</a> (2010). Triangulations: Structures and Algorithms. Springer Science & Business Media. p. 103. ISBN <a href="https://www.springer.com/gb/book/9783642129704">9783642129711</a>.
+</li>
+
+<li id="ref3">
+Internal and external angles. (n.d.). In Wikipedia, The Free Encyclopedia. Retrieved 13:40, April 13, 2019, from <a href="https://en.wikipedia.org/w/index.php?title=Internal_and_external_angles&oldid=856032413#Extension_to_crossed_polygons">https://en.wikipedia.org/w/index.php?title=Internal_and_external_angles</a>
+</li>
+
+<li id="ref4">
+F. S. Hill, Jr.. (1994). The pleasures of “perp dot” products. In Graphics Gems IV, <a href="http://www.cs.cmu.edu/~ph/">Paul S. Heckbert</a> (Ed.). Academic Press Professional, Inc., San Diego, CA, USA p. 138-148.
+</li>
+    
+<li id="ref5">
+<a href="http://mathworld.wolfram.com/about/author.html">Weisstein, Eric W.</a> "Convex Polygon." From
+<a href="http://mathworld.wolfram.com">MathWorld</a>--A Wolfram Web Resource. <a href="http://mathworld.wolfram.com/ConvexPolygon.html">http://mathworld.wolfram.com/ConvexPolygon.html</a>
+</li>
+    
+<li id="ref6"> 
+<a href="https://www.journals.elsevier.com/international-journal-of-rock-mechanics-and-mining-sciences/editorial-board/lanru-jing">Jing, Lanru;</a> <a href="https://www.gfz-potsdam.de/en/staff/ove-stephansson/sec26/">Stephansson, Ove</a> (2007). Fundamentals of Discrete Element Methods for Rock Engineering: Theory and Applications. Elsevier Science. p. 145-197 ISBN <a href="https://www.elsevier.com/books/fundamentals-of-discrete-element-methods-for-rock-engineering-theory-and-applications/jing/978-0-444-82937-5">9780444829375</a>.
+</li> 
+    
+<li id="ref7"> 
+<a href="https://erich.realtimerendering.com ">Haines E.</a> (1991). <a href="https://www.sciencedirect.com/science/article/pii/B9780080507545500530">Fast Ray-convex Polyhedron Intersection.</a> In Graphics Gems II, <a href="https://senate.universityofcalifornia.edu/_files/inmemoriam/html/jamesrichardarvo.html">Arvo. J.</a> (Ed.). Academic Press Professional, Inc., San Diego, CA, USA p. 246-250. 
+</li>
+    
+<li id="ref8">
+<a href="https://www.math.wustl.edu/~sk/">Krantz, S. G.</a> "Closed Curves." §2.1.2 in Handbook of Complex Variables. Boston, MA: Birkhäuser, pp. 19-20, 1999.
+</li>
+    
+<li id="ref9">
+<a href="http://mathworld.wolfram.com/about/author.html">Weisstein, Eric W.</a> "Closed Curve." From <a href="http://mathworld.wolfram.com">MathWorld</a>--A Wolfram Web Resource. <a href="http://mathworld.wolfram.com/PerpDotProduct.html">http://mathworld.wolfram.com/ClosedCurve.html</a>
+</li>
+
+<li id="ref10">
+Braden, Bart. The Surveyor's Area Formula. In The College Mathematics Journal, vol. 17, no. 4, 1986, pp. 326–337. JSTOR, <a href ="www.jstor.org/stable/2686282">www.jstor.org/stable/2686282</a>.    
+</li>   
+
+<li id="ref11">
+<a href="https://www.nottingham.ac.uk/mathematics/people/paul.matthews">Matthews, Paul C.</a> (1998). Vector Calculus. Springer-Verlag London. p. 93-96 ISBN <a href ="https://www.springer.com/gb/book/9783540761808">9783540761808</a>.
+</li>    
+
+<li id="ref12">
+<a href="https://www.linkedin.com/in/thomas-lidebrandt-41777499">T. Lidebrandt.</a> “Variance reduction: Three approches to control variates,” Master Thesis, Mathematical statistics, Stockholm University, 2007. 
+</li>
+    
+<li id="ref13">
+<a href="http://mathworld.wolfram.com/about/author.html">Weisstein, Eric W.</a> "Simpson's Rule." From
+<a href="http://mathworld.wolfram.com">MathWorld</a>--A Wolfram Web Resource. <a href="http://mathworld.wolfram.com/SimpsonsRule.html">http://mathworld.wolfram.com/SimpsonsRule.html</a>
+</li>
+    
+<li id="ref14">
+<a href="https://people.smp.uq.edu.au/DirkKroese/">D. P. Kroese</a>, <a href="https://smp.uq.edu.au/profile/226/thomas-taimre">T. Taimre</a>, and <a href="https://web.maths.unsw.edu.au/~zdravkobotev/">Z. I. Botev</a>. Handbook of Monte Carlo Methods. John Wiley & Sons, New York, 2011.
+</li>
+    
+<li id="ref15">
+Boyle, P. (1977) Options: a Monte Carlo approach, Journal of Finan- cial Economics 4: 323-338.    
+</li>
+    
+<li id="ref16">
+<a href="http://mathworld.wolfram.com/about/author.html">Weisstein, Eric W.</a> "Pick's Theorem." From
+<a href="http://mathworld.wolfram.com">MathWorld</a>--A Wolfram Web Resource. <a href="http://mathworld.wolfram.com/PicksTheorem.html">http://mathworld.wolfram.com/PicksTheorem.html</a>
+</li>
+    
+<li id="ref17"><a href="https://en.wikipedia.org/wiki/Erwin_Kreyszig">Kreyszig E.</a> (2011). "CHAP. 9.3 Vector Product (Cross Product)". Advanced Engineering Mathematics (10th ed.). John Wiley & Sons. p. 368-374. ISBN <a href ="https://www.wiley.com/en-as/Advanced+Engineering+Mathematics%2C+10th+Edition-p-9780470913611">9780470913611</a>. 
+</li>
+    
+<li id="ref18">
+Convex hull. (n.d.). In Wikipedia, The Free Encyclopedia. Retrieved 18:33, April 16, 2019, from <a href="https://en.wikipedia.org/w/index.php?title=Convex_hull&oldid=875526661">https://en.wikipedia.org/wiki/Convex_hull</a>
+</li>
+    
+<li id="ref19"> 
+<a href="https://www.researchgate.net/profile/M_Kalos">M. H. Kalos</a>; P. A. Whitlock. (1986). Monte Carlo Methods. Vol. 1: Basics. Wiley- Interscience. p. 31-34. p. 107-111. ISBN <a href ="https://dl.acm.org/citation.cfm?id=7050">0471898392</a>.    
+</li>
+    
+<li id="ref20">
+<a href="https://erich.realtimerendering.com ">Haines E.</a> (1994). Point in polygon strategies. In Graphics Gems IV, <a href="http://www.cs.cmu.edu/~ph/">Paul S. Heckbert</a> (Ed.). Academic Press Professional, Inc., San Diego, CA, USA p. 24–46.
+</li>
+</ol>
+
+</body>
+    
+</html>
