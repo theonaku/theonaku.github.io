@@ -86,7 +86,7 @@
 
 <p>In a plane, a closed curve is a curve with no endpoints and which completely encloses an area.<a href="bibliography.html#ref8">[8]</a><a href="bibliography.html#ref9">[9]</a> If the curve $C$ is formed by a number of line segments, then it is also can be called as polygon. Area of polygon can be considered as the double integral of $1$ over the region of polygon $D$, and by Green's theorem<a href="bibliography.html#ref11">[11]</a> $$\oint_Cf \ dx+g \ dy=\iint_D\left(\frac{\partial g}{\partial x}-\frac{\partial f}{\partial y}\right)dA.$$ We want the right hand side $\frac{\partial g}{\partial x}-\frac{\partial f}{\partial y}$ to be $1$, so let $g(x,y)=x$ and $ \ f(x,y)=0$, then $$A = \oint_Cx \ dy.$$ Which is the line integral on a closed curve $C$. In our case, $C$ is the line segments that form the polygon.</p>
     
-<p>If we can break the curve $C$ into many pieces of segments $C_1, C_2, ..., C_n,$ since the integration has the additive properties over a continuous region, then we have $$\oint_Cx \ dy = \oint_{C_1}x \ dy + \oint_{C_2}x \ dy + ... + \oint_{C_n}x \ dy.$$</p>
+<p>If we can break the curve $C$ into many pieces of segments $C_1, C_2, ..., C_n,$ since the integration has the additive properties over a continuous region, then we have $$\oint_Cx \ dy = \int_{C_1}x \ dy + \int_{C_2}x \ dy + ... + \int_{C_n}x \ dy.$$</p>
     
 <p>In the case of polygon, each segments is the edge of the polygon, then we can find out the line equation of $C_i$ in vector form, which is the $i$-th edge of the polygon. Assume that the coordinates of the $i$-th vertex is $(x_i,y_i)$, then $$\mathbf{r} = \begin{pmatrix} 
 x_i \\
