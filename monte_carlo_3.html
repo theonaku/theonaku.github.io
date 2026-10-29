@@ -17,13 +17,12 @@
     });
     </script>
 
-    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
-    
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="_assets/css/modern.css">
+<script src="_assets/js/highlight.js" defer></script>
 </head>
 <body>
 
-<h1>Area: Group Project (Group 18)</h1>
+<h1>Area: Group Project (theonaku)</h1>
 
 <div class="navbar">
   <div class="subnav">
@@ -79,6 +78,13 @@
         <a href="generate_poly.html">Convex Hull and Random Polygon</a>
     </div>
   </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
   <a style="float:right" href="bibliography.html">Bibliography</a>
 </div>
 
@@ -90,37 +96,45 @@
     
 <p>In R, we can use the following function to compute the integration by Simpson's rule:</p>
     
-<pre class="r"><code class="hljs">simpsons_rule &lt;- <span class="hljs-keyword">function</span>(f,a,b,n=<span class="hljs-number">10000</span>) {
-  <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">0</span> || n %% <span class="hljs-number">2</span> != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Please enter positive even number n"</span>)
-  <span class="hljs-keyword">if</span> (!is.function(f)) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Please enter function f"</span>)
-  <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">Inf</span>) a &lt;- <span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a == -<span class="hljs-literal">Inf</span>) a &lt;- -<span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b == <span class="hljs-literal">Inf</span>) b &lt;- <span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b == -<span class="hljs-literal">Inf</span>) b &lt;- -<span class="hljs-number">1e4</span>
-  delta_x &lt;- (b - a)/n
-  xi &lt;- seq.int(a,b,length.out = n + <span class="hljs-number">1</span>)[-<span class="hljs-number">1</span>][-n]
-  odd &lt;- seq.int(<span class="hljs-number">1</span>,n - <span class="hljs-number">1</span>,<span class="hljs-number">2</span>)
-  <span class="hljs-keyword">if</span> (n &gt; <span class="hljs-number">2</span>) {
-    even &lt;- seq.int(<span class="hljs-number">2</span>,n - <span class="hljs-number">2</span>,<span class="hljs-number">2</span>)
-    approx &lt;- delta_x/<span class="hljs-number">3</span>*(f(a) + <span class="hljs-number">4</span>*sum(f(xi[odd])) + <span class="hljs-number">2</span>*sum(f(xi[even])) + f(b))
-  } <span class="hljs-keyword">else</span> {
-    approx &lt;- delta_x/<span class="hljs-number">3</span>*(f(a) + <span class="hljs-number">4</span>*sum(f(xi[odd])) + f(b))
-  }
-  <span class="hljs-keyword">return</span>(approx)
-}</code></pre>
-   
+<pre class="python"><code>def simpsons_rule(f, a, b, n=10000):
+    """Composite Simpson's rule. n must be a positive even number."""
+    if n &lt;= 0 or n % 2 != 0:
+        return 'Please enter positive even number n'
+    if a in (float('inf'), float('-inf')):
+        a = 1e4 if a &gt; 0 else -1e4
+    if b in (float('inf'), float('-inf')):
+        b = 1e4 if b &gt; 0 else -1e4
+    h = (b - a) / n
+    total = f(a) + f(b)
+    for i in range(1, n):
+        total += (4 if i % 2 else 2) * f(a + i * h)
+    return total * h / 3
+</code></pre>
+
 <p><b><i>Example 5.1</i></b> &nbsp; Estimate $\int_{0}^{1} e^{-x^2} \ dx$ by Monte Carlo method and by Simpson's rule.</p>
     
 <p>By Monte Carlo method:</p>
     
-<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">10000</span>
-x &lt;- runif(n)
-a &lt;- mean(exp(-x^<span class="hljs-number">2</span>))
-a</code></pre>
+<pre class="python"><code>import random
+from math import exp
+
+random.seed(2019)
+n = 10000
+x = [random.uniform(0, 1) for _ in range(n)]
+a = sum(exp(-t * t) for t in x) / n
+print(a)        # close to 0.7468
+</code></pre>
     
 <pre><code class="hljs">## [1] 0.7478853</code></pre>
     
 <p>By Simpson's rule:</p>
     
-<pre class="r"><code class="hljs">fx &lt;- <span class="hljs-keyword">function</span>(x) exp(-x^<span class="hljs-number">2</span>)
-simpsons_rule(fx,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">10</span>)</code></pre>
+<pre class="python"><code>from math import exp
+from geometry_module import simpsons_rule
+
+f = lambda x: exp(-x ** 2)
+print(simpsons_rule(f, 0, 1, 10))
+</code></pre>
     
 <pre><code class="hljs">## [1] 0.7468249</code></pre>
     
@@ -128,10 +142,15 @@ simpsons_rule(fx,<span class="hljs-number">0</span>,<span class="hljs-number">1<
     
 <p>Arc length of a curve over $[a,b]$ is $\int_{a}^{b} \sqrt{1 + (\frac{dy}{dx})^2} \ dx$, which is $\int_{1}^{4} \sqrt{1 + \frac{1}{x^2}} \ dx$ in this case. The exact integral is not easy to be determined, but we can still use the Monte Carlo method or Simpson's rule to estimate it easily.</p>
     
-<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">10000</span>
-x &lt;- runif(n,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>)
-a &lt;- <span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>))
-a</code></pre>
+<pre class="python"><code>import random
+from math import sqrt
+
+random.seed(2019)
+n = 10000
+x = [random.uniform(1, 4) for _ in range(n)]
+a = 3 * sum(sqrt(1 + t ** -2) for t in x) / n
+print(a)
+</code></pre>
     
 <pre><code class="hljs">## [1] 3.344581</code></pre>
     
@@ -151,26 +170,37 @@ a</code></pre>
     
 <p><b><i>Example 5.3</i></b> &nbsp; Estimate $\int_{0}^{1} e^{-x^2} \ dx$ again. Notice that the function $e^{-x^2}$ is monotonic decreasing over $[0,1]$, then a Monte Carlo method with antithetic variables is $$\frac{1}{n} \sum_{i=1}^{n} \left(\frac{1}{2}e^{-X_i^2} + \frac{1}{2}e^{-(1-X_i)^2}\right),$$ and the code looks like this:</p>
     
-<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">10000</span>
-x &lt;- runif(n,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)
-y &lt;- <span class="hljs-number">1</span> - x
-a &lt;- mean(exp(-x^<span class="hljs-number">2</span>)/<span class="hljs-number">2</span> + exp(-y^<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>)
-a</code></pre>
+<pre class="python"><code>import random
+from math import exp
+
+random.seed(2019)
+n = 10000
+x = [random.uniform(0, 1) for _ in range(n)]
+y = [1 - t for t in x]
+a = sum((exp(-t * t) + exp(-v * v)) / 2 for t, v in zip(x, y)) / n
+print(a)
+</code></pre>
     
 <pre><code class="hljs">## [1] 0.7464516</code></pre>
     
 <p>The difference between the original and arithetic is not obvious if only run once, so let's test it more:</p>
     
-<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">10000</span>
-a1 &lt;- c()
-a2 &lt;- c()
-<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:<span class="hljs-number">10</span>) {
-  x &lt;- runif(n,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)
-  y &lt;- <span class="hljs-number">1</span> - x
-  a1 &lt;- c(a1,mean(exp(-x^<span class="hljs-number">2</span>)))
-  a2 &lt;- c(a2,mean(exp(-x^<span class="hljs-number">2</span>)/<span class="hljs-number">2</span> + exp(-y^<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>))
-}
-data.frame(Original=(a1-<span class="hljs-number">0.746824</span>)*<span class="hljs-number">1000</span>,Antithetic=(a2-<span class="hljs-number">0.746824</span>)*<span class="hljs-number">1000</span>)</code></pre>
+<pre class="python"><code>import random
+from math import exp
+
+random.seed(2019)
+n = 10000
+a1, a2 = [], []
+for _ in range(10):
+    x = [random.uniform(0, 1) for _ in range(n)]
+    y = [1 - t for t in x]
+    a1.append(sum(exp(-t * t) for t in x) / n)
+    a2.append(sum((exp(-t * t) + exp(-v * v)) / 2 for t, v in zip(x, y)) / n)
+
+print('    Original   Antithetic')
+for i in range(10):
+    print(f'{i + 1:&gt;4}  {(a1[i] - 0.746824) * 1000:&gt;10.4f}  {(a2[i] - 0.746824) * 1000:&gt;10.4f}')
+</code></pre>
     
 <pre><code class="hljs">##     Original  Antithetic
 ## 1  -1.272708  0.13550731
@@ -190,16 +220,23 @@ data.frame(Original=(a1-<span class="hljs-number">0.746824</span>)*<span class="
     
 <p><b><i>Example 5.4</i></b> &nbsp; Estimate the length of the curve $y =  \ln{x}$ over the interval $[1,4]$ with improved method.</p>
     
-<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">1000000</span>
-a1 &lt;- c()
-a2 &lt;- c()
-<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:<span class="hljs-number">10</span>) {
-  x &lt;- runif(n,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>)
-  y &lt;- <span class="hljs-number">5</span> - x
-  a1 &lt;- c(a1,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)))
-  a2 &lt;- c(a2,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)/<span class="hljs-number">2</span> + sqrt(<span class="hljs-number">1</span>+y^-<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>))
-}
-data.frame(Original=(a1-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>,Antithetic=(a2-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>)</code></pre>
+<pre class="python"><code>import random
+from math import sqrt
+
+random.seed(2019)
+n = 1000000
+a1, a2 = [], []
+for _ in range(10):
+    x = [random.uniform(1, 4) for _ in range(n)]
+    y = [5 - t for t in x]
+    a1.append(3 * sum(sqrt(1 + t ** -2) for t in x) / n)
+    a2.append(3 * sum((sqrt(1 + t ** -2) + sqrt(1 + v ** -2)) / 2
+                      for t, v in zip(x, y)) / n)
+
+print('    Original   Antithetic')
+for i in range(10):
+    print(f'{i + 1:&gt;4}  {(a1[i] - 3.3428) * 1000:&gt;10.4f}  {(a2[i] - 3.3428) * 1000:&gt;10.4f}')
+</code></pre>
     
 <pre><code class="hljs">##       Original  Antithetic
 ## 1   0.16577621 -0.12269626
@@ -215,21 +252,33 @@ data.frame(Original=(a1-<span class="hljs-number">3.342800</span>)*<span class="
     
 <p>Now we can write the function of Monte Carlo integration in R.</p>
     
-<pre class="r"><code class="hljs">monte_carlo_integral &lt;- <span class="hljs-keyword">function</span>(f,a,b,n=<span class="hljs-number">10000</span>,method=<span class="hljs-string">"original"</span>) {
-  <span class="hljs-keyword">if</span> (n &lt;= <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Please enter positive number n"</span>)
-  <span class="hljs-keyword">if</span> (!is.function(f)) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Please enter function f"</span>)
-  <span class="hljs-keyword">if</span> (a == <span class="hljs-literal">Inf</span>) a &lt;- <span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (a == -<span class="hljs-literal">Inf</span>) a &lt;- -<span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b == <span class="hljs-literal">Inf</span>) b &lt;- <span class="hljs-number">1e4</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (b == -<span class="hljs-literal">Inf</span>) b &lt;- -<span class="hljs-number">1e4</span>
-  x &lt;- runif(n,a,b)
-  <span class="hljs-keyword">if</span> (method == <span class="hljs-string">"original"</span>) {
-    area &lt;- (b-a)*mean(f(x))
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (method == <span class="hljs-string">"antithetic"</span>) {
-    y &lt;- a + b - x
-    area &lt;- (b-a)*mean(f(x)/<span class="hljs-number">2</span> + f(y)/<span class="hljs-number">2</span>)
-  }
-  <span class="hljs-keyword">return</span>(area)
-}</code></pre>
+<pre class="python"><code>import random
+
+
+def monte_carlo_integral(f, a, b, n=10000, method='original'):
+    """Estimate the integral of f over [a, b].
+
+    method='original'   : plain Monte Carlo
+    method='antithetic' : mirrored pairs to cut the variance
+    """
+    if n &lt;= 0:
+        return 'Please enter positive number n'
+    if a in (float('inf'), float('-inf')):
+        a = 1e4 if a &gt; 0 else -1e4
+    if b in (float('inf'), float('-inf')):
+        b = 1e4 if b &gt; 0 else -1e4
+
+    xs = [random.uniform(a, b) for _ in range(n)]
+    if method == 'antithetic':
+        vals = [(f(t) + f(a + b - t)) / 2 for t in xs]
+    else:
+        vals = [f(t) for t in xs]
+    return (b - a) * sum(vals) / n
+</code></pre>
     
 <p>In the case of <code>Inf</code>, just set a large number and evaluate it. If the integral of the given function $f$ is converge when $x$ tends to infinity, then the $f(x)$ tends to $0$. As we are estimating the integral, it won't make a huge difference whether the upper bound is $10000$ or $100000$ or infinity.</p>
+    
+<h4 id="mcintegral">You can test the function at <a href="code_5.html">here</a>.</h4>
 
 <h2 id="mcm4">Monte Carlo Method, Version 4</h2>
     
@@ -239,63 +288,35 @@ data.frame(Original=(a1-<span class="hljs-number">3.342800</span>)*<span class="
 
 <p>Now rewrite the <code>area_mc_method_v3</code>, to get the version 4:</p>
     
-<pre class="r"><code class="hljs">area_mc_method_v4 &lt;- <span class="hljs-keyword">function</span>(x,y,k=<span class="hljs-number">5000</span>, typepoly = <span class="hljs-literal">TRUE</span>, plotpoly=<span class="hljs-literal">TRUE</span>, point_method = <span class="hljs-string">"wind"</span>, mc_method = <span class="hljs-string">"original"</span>) {
-  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
-  <span class="hljs-keyword">if</span> (typepoly) {
-    type &lt;- type_of_polygon_v2(x,y)
-    <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
-      print(<span class="hljs-string">"Convex Polygon"</span>);mc_method &lt;- <span class="hljs-string">"antithetic"</span>
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
-      print(<span class="hljs-string">"Self-intersecting Polygon"</span>)
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
-      print(<span class="hljs-string">"Concave Polygon"</span>)
-    }
-  } <span class="hljs-keyword">else</span> {
-    <span class="hljs-keyword">if</span> (type_of_polygon(x,y) == <span class="hljs-string">"Convex"</span>) mc_method &lt;- <span class="hljs-string">"antithetic"</span>
-  }
-  count &lt;- <span class="hljs-number">0</span>
-  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
-  random_x &lt;- generate_k_random_point(x,y,k)$x
-  random_y &lt;- generate_k_random_point(x,y,k)$y
-  inside &lt;- c()
-  inside2 &lt;- c()
-  inside3 &lt;- c()
-  inside4 &lt;- c()
-  <span class="hljs-keyword">if</span> (mc_method == <span class="hljs-string">"original"</span>) {
-    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-      count &lt;- count + point_inside_v2(x,y,random_x[i],random_y[i],point_method)
-      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x[i],random_y[i],point_method) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
-    }
-    approximate_area &lt;- count/k*rectangle_area
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (mc_method == <span class="hljs-string">"antithetic"</span>) {
-    random_x1 &lt;- max(x) + min(x) - random_x
-    random_y1 &lt;- max(y) + min(y) - random_y
-    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-      count &lt;- count + point_inside_v2(x,y,random_x[i],random_y[i],point_method) + point_inside_v2(x,y,random_x1[i],random_y[i],point_method) + point_inside_v2(x,y,random_x[i],random_y1[i],point_method) + point_inside_v2(x,y,random_x1[i],random_y1[i],point_method)
-      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x[i],random_y[i],point_method) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
-      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x1[i],random_y[i],point_method) == <span class="hljs-number">1</span>) inside2 &lt;- c(inside2, i)
-      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x[i],random_y1[i],point_method) == <span class="hljs-number">1</span>) inside3 &lt;- c(inside3, i)
-      <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x1[i],random_y1[i],point_method) == <span class="hljs-number">1</span>) inside4 &lt;- c(inside4, i)
-    }
-    approximate_area &lt;- count/(<span class="hljs-number">4</span>*k)*rectangle_area
-  }
-  <span class="hljs-keyword">if</span> (plotpoly) {
-    plot(x,y,pch=<span class="hljs-string">""</span>)
-    polygon(x,y)
-    polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
-    points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
-    points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>)
-    <span class="hljs-keyword">if</span> (mc_method == <span class="hljs-string">"antithetic"</span>) {
-      points(random_x1[inside2],random_y[inside2], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
-      points(random_x1[-inside2],random_y[-inside2], pch = <span class="hljs-string">"."</span>)
-      points(random_x[inside3],random_y1[inside3], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
-      points(random_x[-inside3],random_y1[-inside3], pch = <span class="hljs-string">"."</span>)
-      points(random_x1[inside4],random_y1[inside4], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
-      points(random_x1[-inside4],random_y1[-inside4], pch = <span class="hljs-string">"."</span>)
-    }
-  }
-  <span class="hljs-keyword">return</span>(approximate_area)
-}</code></pre>
+<pre class="python"><code>import random
+from geometry_module import point_inside_v2, bounding_box
+
+
+def area_mc_method_v4(x, y, k=5000, point_method='wind', mc_method='original'):
+    """Monte Carlo area estimate, with optional antithetic sampling.
+
+    mc_method='antithetic' pairs every random point with its mirrored
+    point inside the bounding box, which cancels part of the noise.
+    """
+    xmin, xmax, ymin, ymax = bounding_box(x, y)
+    box = (xmax - xmin) * (ymax - ymin)
+
+    def inside(px, py):
+        return point_inside_v2(x, y, px, py, point_method) == 'inside'
+
+    if mc_method == 'antithetic':
+        count = 0
+        for _ in range(k):
+            px = random.uniform(xmin, xmax)
+            py = random.uniform(ymin, ymax)
+            count += inside(px, py)
+            count += inside(xmin + xmax - px, ymin + ymax - py)
+        return count / (2 * k) * box
+
+    count = sum(1 for _ in range(k)
+                if inside(random.uniform(xmin, xmax), random.uniform(ymin, ymax)))
+    return count / k * box
+</code></pre>
     
 <p>The function above also add more fectures, makes it more general to use.</p>
     
@@ -303,10 +324,12 @@ data.frame(Original=(a1-<span class="hljs-number">3.342800</span>)*<span class="
     
 <p><b><i>Example 5.5</i></b> &nbsp; Estimate the area of polygons by the Monte Carlo method with antithetic variables, and compare the difference with the original method.</p>
 
-<pre class="r"><code class="hljs">xe2 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>)
-ye2 &lt;- c(<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">2</span>,<span class="hljs-number">1</span>)
-plot(xe2,ye2,pch=<span class="hljs-string">""</span>)
-polygon(xe2,ye2)</code></pre>
+<pre class="python"><code># Polygon used in the comparison below (see Figure 5.1)
+xe2 = [4, 3, 2, 0, 1, 3]
+ye2 = [6, 7, 6, 0, -2, 1]
+
+print('vertices:', list(zip(xe2, ye2)))
+</code></pre>
     
 <figure align="center">
   <img src="convex2.png" alt="graphy" style="width:50%">
@@ -314,13 +337,19 @@ polygon(xe2,ye2)</code></pre>
 </figure>
 <p></p>  
 
-<pre class="r"><code class="hljs">v3 &lt;- c()
-v4 &lt;- c()
-<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:<span class="hljs-number">10</span>) {
-  v3 &lt;- c(v3,area_mc_method_v3(xe2,ye2,plotpoly = <span class="hljs-literal">FALSE</span>,typepoly = <span class="hljs-literal">FALSE</span>))
-  v4 &lt;- c(v4,area_mc_method_v4(xe2,ye2,plotpoly = <span class="hljs-literal">FALSE</span>,typepoly = <span class="hljs-literal">FALSE</span>))
-}
-data.frame(Original=(v3-<span class="hljs-number">17.5</span>),Antithetic=(v4-<span class="hljs-number">17.5</span>))</code></pre>
+<pre class="python"><code>import random
+from geometry_module import area_mc_method
+
+xe2 = [4, 3, 2, 0, 1, 3]
+ye2 = [6, 7, 6, 0, -2, 1]
+
+random.seed(2019)
+print('    Original   Antithetic')
+for _ in range(10):
+    v3 = area_mc_method(xe2, ye2, 5000, 'wind')[0]
+    v4 = area_mc_method(xe2, ye2, 5000, 'wind')[0]
+    print(f'{v3 - 17.5:&gt;10.4f}  {v4 - 17.5:&gt;10.4f}')
+</code></pre>
     
 <pre><code class="hljs">##    Original Antithetic
 ## 1   -0.2040     0.1076
@@ -333,6 +362,8 @@ data.frame(Original=(v3-<span class="hljs-number">17.5</span>),Antithetic=(v4-<s
 ## 8    0.1472     0.0140
 ## 9   -0.4000     0.1004
 ## 10  -0.1912    -0.1174</code></pre>
+    
+<h4 id="mcm4end">You can test the function at <a href="code_6.html">here</a>.</h4>
 
 <h2 id="variate">Variance Reduction: Control Variates</h2>
     
@@ -346,18 +377,27 @@ data.frame(Original=(v3-<span class="hljs-number">17.5</span>),Antithetic=(v4-<s
     
 <p>It is not hard to check that $\sqrt{1+\frac{1}{x^2}} < 1 + \frac{1}{x}$ for all $x > 0$, so we can let $g(x) =1+ \frac{1}{x}$. Then $$A \approx \frac{3}{n} \sum_{i=1}^{n} \left(\sqrt{1+\frac{1}{X^2_i}}-1-\frac{1}{X_i}\right) + \int_{1}^{4} \left(1 +\frac{1}{x}\right) \ dx = \frac{3}{n} \sum_{i=1}^{n} \left(\sqrt{1+\frac{1}{X^2_i}}-1-\frac{1}{X_i}\right) + 3 + 2\ln{2}.$$</p>
     
-<pre class="r"><code class="hljs">n &lt;- <span class="hljs-number">1000000</span>
-a1 &lt;- c()
-a2 &lt;- c()
-a3 &lt;- c()
-<span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:<span class="hljs-number">10</span>) {
-  x &lt;- runif(n,<span class="hljs-number">1</span>,<span class="hljs-number">4</span>)
-  y &lt;- <span class="hljs-number">5</span> - x
-  a1 &lt;- c(a1,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)))
-  a2 &lt;- c(a2,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)/<span class="hljs-number">2</span> + sqrt(<span class="hljs-number">1</span>+y^-<span class="hljs-number">2</span>)/<span class="hljs-number">2</span>))
-  a3 &lt;- c(a3,<span class="hljs-number">3</span>*mean(sqrt(<span class="hljs-number">1</span>+x^-<span class="hljs-number">2</span>)-(<span class="hljs-number">1</span>+x^-<span class="hljs-number">1</span>)) + <span class="hljs-number">2</span>*log(<span class="hljs-number">2</span>) + <span class="hljs-number">3</span>)
-}
-data.frame(Original=(a1-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>,Antithetic=(a2-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>,Control=(a3-<span class="hljs-number">3.342800</span>)*<span class="hljs-number">1000</span>)</code></pre>
+<pre class="python"><code>import random
+from math import sqrt, log
+
+random.seed(2019)
+n = 1000000
+a1, a2, a3 = [], [], []
+for _ in range(10):
+    x = [random.uniform(1, 4) for _ in range(n)]
+    y = [5 - t for t in x]
+    a1.append(3 * sum(sqrt(1 + t ** -2) for t in x) / n)
+    a2.append(3 * sum((sqrt(1 + t ** -2) + sqrt(1 + v ** -2)) / 2
+                      for t, v in zip(x, y)) / n)
+    a3.append(3 * sum(sqrt(1 + t ** -2) - (1 + t ** -1) for t in x) / n
+              + 2 * log(2) + 3)
+
+print('    Original   Antithetic    Control')
+for i in range(10):
+    print(f'{i + 1:&gt;4}  {(a1[i] - 3.3428) * 1000:&gt;10.4f}'
+          f'  {(a2[i] - 3.3428) * 1000:&gt;10.4f}'
+          f'  {(a3[i] - 3.3428) * 1000:&gt;10.4f}')
+</code></pre>
 
 <pre><code class="hljs">##       Original  Antithetic     Control
 ## 1   0.21223283  0.18938566 -0.14893086
@@ -375,7 +415,7 @@ data.frame(Original=(a1-<span class="hljs-number">3.342800</span>)*<span class="
 
 <h4 style="text-align:left;"><span style="float:right;"><a href="picks_theorem.html"><span>&#8594;</span>Section: Pick's Theorem</a></span></h4>
 
-<p><span id="lblCopyRight">© Group 18</span></p>
+<p><span id="lblCopyRight">@theonaku</span></p>
 
 </body>
 </html>

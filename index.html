@@ -17,13 +17,12 @@
     });
     </script>
 
-    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
-    
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="_assets/css/modern.css">
+<script src="_assets/js/highlight.js" defer></script>
 </head>
 <body>
 
-<h1>Area: Group Project (Group 18)</h1>
+<h1>Area: Group Project (theonaku)</h1>
 
 <div class="navbar">
   <div class="subnav">
@@ -77,6 +76,13 @@
       <a href="picks_theorem.html">Pick's Theorem</a>
         <a href="determinants.html">Determinants</a>
         <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
     </div>
   </div>
   <a style="float:right" href="bibliography.html">Bibliography</a>
@@ -220,78 +226,24 @@ y_i & y_{i+1}
 
 <p>Before next stage, it is better to build some functions first, which will simplify the code later.</p>
 
-<pre class="r"><code class="hljs">norm &lt;- <span class="hljs-keyword">function</span>(x) sqrt(sum(x^<span class="hljs-number">2</span>)) <span class="hljs-comment"># Magnitude of a vector, norn</span>
+<pre class="python"><code>from geometry_module import anti_rot, gradient, norm, perpdot, start_from_minx, start_from_miny, vector_rot90
 
-start_from_miny &lt;- <span class="hljs-keyword">function</span>(x,y) { <span class="hljs-comment"># Reorder the given value of x and y</span>
-  new_x &lt;- c()
-  new_y &lt;- c()
-  n &lt;- length(x)
-  x &lt;- c(x, x)
-  y &lt;- c(y, y)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    new_x[i] &lt;- x[match(min(y),y) + i - <span class="hljs-number">1</span>]
-    new_y[i] &lt;- y[match(min(y),y) + i - <span class="hljs-number">1</span>]
-  }
-  <span class="hljs-keyword">return</span>(list(x = new_x, y = new_y)) <span class="hljs-comment"># It will return a list of two vectors, one is new_x and another is new_y</span>
-}
+# norm()
+# start_from_miny()
+# start_from_minx()
+# anti_rot()
+# gradient()
+# vector_rot90()
+# perpdot()
 
-start_from_minx &lt;- <span class="hljs-keyword">function</span>(x,y) { <span class="hljs-comment"># Reorder the vertices by x position, converse to the above</span>
-  new_x &lt;- c()
-  new_y &lt;- c()
-  n &lt;- length(x)
-  x &lt;- c(x, x)
-  y &lt;- c(y, y)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    new_x[i] &lt;- x[match(min(x),x) + i - <span class="hljs-number">1</span>]
-    new_y[i] &lt;- y[match(min(x),x) + i - <span class="hljs-number">1</span>]
-  }
-  <span class="hljs-keyword">return</span>(list(x = new_x, y = new_y))
-}
-
-anti_rot &lt;- <span class="hljs-keyword">function</span>(x,y) { <span class="hljs-comment"># Change the rotation order of the given points</span>
-  n &lt;- length(x)
-  x1 &lt;- x[<span class="hljs-number">1</span>]
-  y1 &lt;- y[<span class="hljs-number">1</span>]
-  x1 &lt;- c(x1, rev(x[-<span class="hljs-number">1</span>]))
-  y1 &lt;- c(y1, rev(y[-<span class="hljs-number">1</span>]))
-  <span class="hljs-keyword">return</span>(list(x = x1, y = y1))
-}
-
-gradient &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  grad &lt;- c()
-  n &lt;- length(x)
-  x[n+<span class="hljs-number">1</span>] &lt;- x[<span class="hljs-number">1</span>]
-  y[n+<span class="hljs-number">1</span>] &lt;- y[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    grad[i] &lt;- (y[i+<span class="hljs-number">1</span>] - y[i])/(x[i+<span class="hljs-number">1</span>] - x[i]) <span class="hljs-comment"># Gradient bewteen any two consecutive points</span>
-  }
-  <span class="hljs-keyword">return</span>(grad)
-}
-
-vector_rot90 &lt;- <span class="hljs-keyword">function</span>(x) {
-  <span class="hljs-keyword">return</span>(c(-x[<span class="hljs-number">2</span>],x[<span class="hljs-number">1</span>]))
-}
-
-perpdot &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  n &lt;- length(x)
-  x[n+<span class="hljs-number">1</span>] &lt;- x[<span class="hljs-number">1</span>]
-  y[n+<span class="hljs-number">1</span>] &lt;- y[<span class="hljs-number">1</span>]
-  direction &lt;- list()
-  perpdot &lt;- c()
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    direction &lt;- c(direction,list((c(x[i+<span class="hljs-number">1</span>],y[i+<span class="hljs-number">1</span>]) - c(x[i],y[i]))))
-  }
-  direction[n+<span class="hljs-number">1</span>] &lt;- direction[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    perpdotproduct &lt;- vector_rot90(direction[[i]]) %*% direction[[i+<span class="hljs-number">1</span>]]
-    perpdot &lt;- c(perpdot,perpdotproduct)
-  }
-  reorder &lt;- c()
-  reorder &lt;- c(reorder, perpdot[n])
-  reorder &lt;- c(reorder, perpdot[<span class="hljs-number">1</span>:(n-<span class="hljs-number">1</span>)])
-  <span class="hljs-keyword">return</span>(reorder)
-}</code>
-</pre>
+# anti_rot(x, y)
+# gradient(x, y)
+# norm(v)
+# perpdot(x, y)
+# start_from_minx(x, y)
+# start_from_miny(x, y)
+# vector_rot90(v)
+</code></pre>
 
 <ul>
 <li>
@@ -320,6 +272,6 @@ perpdot &lt;- <span class="hljs-keyword">function</span>(x,y) {
 <p>With all the preparations, now we can start to identify the type of polygon.</p>
 <h4 style="text-align:left;"> <span style="float:right;"><a href="type_of_polygon.html">→ Section: Identify the type of polygon</a></span></h4>
    
-<p><span id="lblCopyRight">© Group 18</span></p>
+<p><span id="lblCopyRight">@theonaku</span></p>
 </body>
 </html>

@@ -1,0 +1,97 @@
+﻿/* @author 雪里光（DSH 会话 session-fa9fbeb4），2026-10-29
+ * 用途：Pyodide 练习框的样式。跟原站深色/浅色主题共存。
+ */
+
+.py-exercise {
+  border: 1px solid #5a5a5a;
+  border-radius: 4px;
+  margin: 16px 0;
+  overflow: hidden;
+  background: #2b2b2b;
+}
+
+.py-code {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: 0;
+  border-bottom: 1px solid #444;
+  padding: 10px;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background: #1e1e1e;
+  color: #d6d6d6;
+  resize: vertical;
+  tab-size: 4;
+}
+
+.py-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: #333;
+  border-bottom: 1px solid #444;
+}
+
+.py-bar button {
+  border: 1px solid #666;
+  border-radius: 3px;
+  background: #4a4a4a;
+  color: #eee;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.py-bar button:hover {
+  background: #5a5a5a;
+}
+
+.py-run {
+  background: #2d6a4f !important;
+  border-color: #40916c !important;
+}
+
+.py-run:hover {
+  background: #40916c !important;
+}
+
+.py-status {
+  margin-left: auto;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.py-busy { color: #e9c46a; }
+.py-ok { color: #80ed99; }
+.py-err { color: #ff7b7b; }
+
+.py-output {
+  margin: 0;
+  padding: 10px;
+  min-height: 1.5em;
+  max-height: 400px;
+  overflow: auto;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #cfcfcf;
+  background: #1e1e1e;
+  white-space: pre-wrap;
+}
+
+
+
+/* 浅色主题下也看得清 */
+@media (prefers-color-scheme: light) {
+  .py-exercise { border-color: #ccc; background: #f5f5f5; }
+  .py-code { background: #fff; color: #222; border-bottom-color: #ddd; }
+  .py-bar { background: #eee; border-bottom-color: #ddd; }
+  .py-bar button { background: #fff; color: #333; border-color: #ccc; }
+  .py-bar button:hover { background: #e6e6e6; }
+  .py-run { background: #2d6a4f !important; color: #fff !important; }
+  .py-status { color: #666; }
+  .py-output { background: #fff; color: #222; }
+}

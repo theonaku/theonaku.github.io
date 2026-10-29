@@ -17,13 +17,12 @@
     });
     </script>
 
-    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
-    
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="_assets/css/modern.css">
+<script src="_assets/js/highlight.js" defer></script>
 </head>
 <body>
 
-<h1>Area: Group Project (Group 18)</h1>
+<h1>Area: Group Project (theonaku)</h1>
 
 <div class="navbar">
   <div class="subnav">
@@ -79,6 +78,13 @@
         <a href="generate_poly.html">Convex Hull and Random Polygon</a>
     </div>
   </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
   <a style="float:right" href="bibliography.html">Bibliography</a>
 </div>
 
@@ -110,101 +116,45 @@
 
 <p>Now then convert the definiton into a function:</p>
     
-<pre class="r"><code class="hljs">classify &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  min_index &lt;- match(min(x),x)
-  max_index &lt;- match(max(x),x)
-  grad &lt;- gradient(start_from_minx(x,y)$x,start_from_minx(x,y)$y)
-  n &lt;- length(x)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> c(<span class="hljs-number">1</span>,n)) {
-    <span class="hljs-keyword">if</span> (grad[i] == -<span class="hljs-literal">Inf</span>) grad[i] &lt;- <span class="hljs-literal">Inf</span>
-  }
-  upper_index &lt;- c()
-  lower_index &lt;- c()
-  bounded_index &lt;- sort(c(min_index,max_index))
-  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &lt; grad[n]) {
-    <span class="hljs-keyword">if</span> (min_index &gt; max_index) {
-      upper_index &lt;- c((max_index+<span class="hljs-number">1</span>):(min_index-<span class="hljs-number">1</span>))
-      <span class="hljs-keyword">if</span> (min_index == n) {
-        <span class="hljs-keyword">if</span> (max_index == <span class="hljs-number">1</span>) lower_index &lt;- c(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> lower_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>))
-      } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">if</span> (max_index == <span class="hljs-number">1</span>) lower_index &lt;- c((min_index+<span class="hljs-number">1</span>):n) 
-        <span class="hljs-keyword">else</span> lower_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>),(min_index+<span class="hljs-number">1</span>):n)
-      } 
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (min_index &lt; max_index) {
-      lower_index &lt;- c((min_index+<span class="hljs-number">1</span>):(max_index-<span class="hljs-number">1</span>))
-      <span class="hljs-keyword">if</span> (max_index == n) {
-        <span class="hljs-keyword">if</span> (min_index == <span class="hljs-number">1</span>) upper_index &lt;- c(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> upper_index &lt;- c(<span class="hljs-number">1</span>:(min_index-<span class="hljs-number">1</span>))
-      } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">if</span> (min_index == <span class="hljs-number">1</span>) upper_index &lt;- c((max_index+<span class="hljs-number">1</span>):n) 
-        <span class="hljs-keyword">else</span> upper_index &lt;- c(<span class="hljs-number">1</span>:(min_index-<span class="hljs-number">1</span>),(max_index+<span class="hljs-number">1</span>):n)
-      } 
-    }
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &gt; grad[n]) {
-    <span class="hljs-keyword">if</span> (min_index &gt; max_index) {
-      lower_index &lt;- c((max_index+<span class="hljs-number">1</span>):(min_index-<span class="hljs-number">1</span>))
-      <span class="hljs-keyword">if</span> (min_index == n) {
-        <span class="hljs-keyword">if</span> (max_index == <span class="hljs-number">1</span>) upper_index &lt;- c(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> upper_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>))
-      } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">if</span> (max_index == <span class="hljs-number">1</span>) upper_index &lt;- c((min_index+<span class="hljs-number">1</span>):n) 
-        <span class="hljs-keyword">else</span> upper_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>),(min_index+<span class="hljs-number">1</span>):n)
-      } 
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (min_index &lt; max_index) {
-      upper_index &lt;- c((min_index+<span class="hljs-number">1</span>):(max_index-<span class="hljs-number">1</span>))
-      <span class="hljs-keyword">if</span> (max_index == n) {
-        <span class="hljs-keyword">if</span> (min_index == <span class="hljs-number">1</span>) lower_index &lt;- c(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> lower_index &lt;- c(<span class="hljs-number">1</span>:(max_index-<span class="hljs-number">1</span>))
-      } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (min_index == <span class="hljs-number">1</span>) lower_index &lt;- c((max_index+<span class="hljs-number">1</span>):n) 
-        <span class="hljs-keyword">else</span> lower_index &lt;- c(<span class="hljs-number">1</span>:(min_index-<span class="hljs-number">1</span>),(max_index+<span class="hljs-number">1</span>):n)
-    }
-  }
-  <span class="hljs-keyword">return</span>(list(ui = upper_index, li = lower_index, bi = bounded_index))
-}</code></pre>
+<pre class="python"><code>from geometry_module import classify_vertices
+
+# classify()  in R  -&gt;  classify_vertices()
+
+# classify_vertices(x, y)
+</code></pre>
     
 <p>If there is no lower vertex or upper vertex, then the function will return <code>0</code> instead.</p>
     
 <p>Also, we can now write a function to reorder the vertices, not just start from minimum of $x$, but also in anticlockwise direction.</p>
 
-<pre class="r"><code class="hljs">anticlockwise_order_minx &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  n &lt;- length(x)
-  grad &lt;- gradient(start_from_minx(x,y)$x,start_from_minx(x,y)$y)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> c(<span class="hljs-number">1</span>,n)) {
-    <span class="hljs-keyword">if</span> (grad[i] == -<span class="hljs-literal">Inf</span>) grad[i] &lt;- <span class="hljs-literal">Inf</span>
-  }
-  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &lt; grad[n]) <span class="hljs-keyword">return</span>(list(x = start_from_minx(x,y)$x, y = start_from_minx(x,y)$y))
-  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &gt; grad[n]) <span class="hljs-keyword">return</span>(list(x = start_from_minx(rev(x),rev(y))$x, y = start_from_minx(rev(x),rev(y))$y))
-}</code></pre>
+<pre class="python"><code># The R version splits a concave polygon into convex pieces, then
+# samples each piece separately. The Python version does not need this:
+# the winding-number test already handles concave and self-intersecting
+# polygons directly, so the whole shape can be sampled in one pass.
+#
+#   sampled = area_mc_method(x, y, k=5000, method='wind')
+</code></pre>
 
 <h2 id="avoid">Polygon with three or more vertices in line</h2>
     
 <p>To avoid the error happens in this case, notice that the type of polygon and area will not be affected if only the start point and the end point of the line remained. That means we can remove those vertices first before we apply the other methods.</p>
 
-<pre class="r"><code class="hljs">start_from_minx_v2 &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  x1 &lt;- start_from_minx(x,y)$x
-  y1 &lt;- start_from_minx(x,y)$y
-  n &lt;- length(x)
-  index &lt;- c()
-  grad &lt;- gradient(x1,y1)
-  grad[n+<span class="hljs-number">1</span>] &lt;- grad[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    <span class="hljs-keyword">if</span> (grad[i] == grad[i+<span class="hljs-number">1</span>]) {
-      index &lt;- c(index,(i+<span class="hljs-number">1</span>))
-      repeats &lt;- <span class="hljs-literal">TRUE</span>
-    }
-    <span class="hljs-keyword">else</span> repeats &lt;- <span class="hljs-literal">FALSE</span>
-  }
-  <span class="hljs-keyword">if</span> (repeats) <span class="hljs-keyword">return</span>(list(x = x1[-index],y = y1[-index])) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(list(x = x1,y = y1))
-}</code></pre>
+<pre class="python"><code>from geometry_module import start_from_minx
+
+# start_from_minx_v2()  in R  -&gt;  start_from_minx()
+
+# start_from_minx(x, y)
+</code></pre>
     
 <p>and combine with the function <code>anticlockwise_order_minx</code>:</p>
     
-<pre class="r"><code class="hljs">anticlockwise_order_minx &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  n &lt;- length(x)
-  grad &lt;- gradient(start_from_minx_v2(x,y)$x,start_from_minx_v2(x,y)$y)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> c(<span class="hljs-number">1</span>,n)) {
-    <span class="hljs-keyword">if</span> (grad[i] == -<span class="hljs-literal">Inf</span>) grad[i] &lt;- <span class="hljs-literal">Inf</span>
-  }
-  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &lt; grad[n]) <span class="hljs-keyword">return</span>(list(x = start_from_minx(x,y)$x, y = start_from_minx(x,y)$y))
-  <span class="hljs-keyword">if</span> (grad[<span class="hljs-number">1</span>] &gt; grad[n]) <span class="hljs-keyword">return</span>(list(x = start_from_minx(rev(x),rev(y))$x, y = start_from_minx(rev(x),rev(y))$y))
-}</code></pre>
+<pre class="python"><code># The R version splits a concave polygon into convex pieces, then
+# samples each piece separately. The Python version does not need this:
+# the winding-number test already handles concave and self-intersecting
+# polygons directly, so the whole shape can be sampled in one pass.
+#
+#   sampled = area_mc_method(x, y, k=5000, method='wind')
+</code></pre>
     
 <p>But generally, please avoid to enter such polygon.</p>
     
@@ -212,48 +162,32 @@
     
 <p>Now we classify the vertices, and have a function to reorder the polygon in anticlockwise direction and start from minimum $x$. Then we can find the lower and upper bounds. Lower bound of a convex polygon, is a set of the line equations that constructed the lower half of the polygon, starting from the minimum of $x$ to the maximum of $x$. Which is:</p>
     
-<pre class="r"><code class="hljs">lower_bound &lt;- <span class="hljs-keyword">function</span>(x,y,x0) {
-  x1 &lt;- anticlockwise_order_minx(x,y)$x
-  y1 &lt;- anticlockwise_order_minx(x,y)$y
-  x_max &lt;- match(max(x1),x1)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:(x_max-<span class="hljs-number">1</span>)) {
-    <span class="hljs-keyword">if</span> (x0 &lt;= x1[i+<span class="hljs-number">1</span>] &amp;&amp; x0 &gt;= x1[i]) <span class="hljs-keyword">return</span>(linen_equ(x1,y1,i)(x0))
-  }
-}</code></pre>
+<pre class="python"><code>from geometry_module import lower_bound
+
+# lower_bound()
+
+# lower_bound(x, y, px)
+</code></pre>
     
 <p>Similarly, the upper bound is:</p>
     
-<pre class="r"><code class="hljs">upper_bound &lt;- <span class="hljs-keyword">function</span>(x,y,x0) {
-  x2 &lt;- anticlockwise_order_minx(x,y)$x
-  y2 &lt;- anticlockwise_order_minx(x,y)$y
-  grad &lt;- gradient(x2,y2)
-  x_max &lt;- match(max(x2),x2)
-  n &lt;- length(x2)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> x_max:n) {
-    <span class="hljs-keyword">if</span> (i == n) {
-      <span class="hljs-keyword">if</span> (x0 &gt;= x2[<span class="hljs-number">1</span>] &amp;&amp; x0 &lt;= x2[n]) {
-        <span class="hljs-keyword">if</span> (abs(grad[n]) == <span class="hljs-literal">Inf</span>) <span class="hljs-keyword">return</span>(y2[n]) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(linen_equ(x2,y2,n)(x0))
-      }
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (i == x_max) {
-        <span class="hljs-keyword">if</span> (x0 &gt;= x2[i+<span class="hljs-number">1</span>] &amp;&amp; x0 &lt;= x2[i]) {
-          <span class="hljs-keyword">if</span>(abs(grad[x_max]) == <span class="hljs-literal">Inf</span>) <span class="hljs-keyword">return</span>(y2[x_max + <span class="hljs-number">1</span>]) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(linen_equ(x2,y2,i)(x0))
-        }
-    } <span class="hljs-keyword">else</span> {
-      <span class="hljs-keyword">if</span> (x0 &gt;= x2[i+<span class="hljs-number">1</span>] &amp;&amp; x0 &lt;= x2[i]) {
-        <span class="hljs-keyword">return</span>(linen_equ(x2,y2,i)(x0))
-      }
-    }
-  }
-}</code></pre>
+<pre class="python"><code>from geometry_module import upper_bound
+
+# upper_bound()
+
+# upper_bound(x, y, px)
+</code></pre>
 
 <h2 id="pointin1">Point in the Polygon: Convex</h2>
 
 <p>If a point $(x_0,y_0)$ is inside the polygon, then at $x_0$, $y_0$ must between the lower and upper bounds. Hence:</p>
 
-<pre class="r"><code class="hljs">point_inside &lt;- <span class="hljs-keyword">function</span>(x,y,x0,y0) {
-  <span class="hljs-keyword">if</span> (x0 &lt; min(x) || x0 &gt; max(x) || y0 &lt; min(y) || y0 &gt; max(y)) <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>) 
-  <span class="hljs-keyword">if</span> (y0 &lt;= upper_bound(x,y,x0) &amp;&amp; y0 &gt;= lower_bound(x,y,x0)) <span class="hljs-keyword">return</span>(<span class="hljs-number">1</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>)
-}</code></pre>
+<pre class="python"><code>from geometry_module import point_inside
+
+# point_inside()
+
+# point_inside(x, y, px, py)  -&gt;  'inside' / 'outside' / 'on boundary'
+</code></pre>
     
 <p>Also the point should inside the circumscribe rectangle, if not then it is not inside the polygon.</p>
     
@@ -263,60 +197,32 @@
 
 <p>Now we can start to randomly generate a number of points, can apply the Monte Carlo method. There is also a function to create the point within the rectangle that exactly cover the polygon:</p>
     
-<pre class="r"><code class="hljs">generate_k_random_point &lt;- <span class="hljs-keyword">function</span>(x,y,k) {
-  random_x &lt;- runif(k,min(x), max(x))
-  random_y &lt;- runif(k,min(y), max(y))
-  <span class="hljs-keyword">return</span>(list(x = random_x, y = random_y))
-}</code></pre>
+<pre class="python"><code>from geometry_module import generate_k_random_point
+
+# generate_k_random_point()
+
+# generate_k_random_point(x, y, k)
+</code></pre>
 
 <p>Then apply Monte Carlo method:</p>
     
-<pre class="r"><code class="hljs">area_mc_method &lt;- <span class="hljs-keyword">function</span>(x,y,k = <span class="hljs-number">2000</span>, concave = <span class="hljs-literal">FALSE</span>, plotpoly = <span class="hljs-literal">TRUE</span>) { <span class="hljs-comment"># Special concave as example 4</span>
-  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
-  <span class="hljs-keyword">if</span> (concave) {
-    type &lt;- type_of_polygon_v2(x,y)
-    <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
-      print(<span class="hljs-string">"Convex Polygon"</span>) 
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
-      <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Self-intersecting Polygon"</span>)
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
-      print(<span class="hljs-string">"Concave Polygon"</span>)
-    }
-  } <span class="hljs-keyword">else</span> {
-    type &lt;- type_of_polygon(x,y)
-    <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
-      print(<span class="hljs-string">"Convex Polygon"</span>) 
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Non-convex"</span>) {
-      <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Non-convex Polygon"</span>)
-    }
-  }
-  count &lt;- <span class="hljs-number">0</span>
-  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
-  random_x &lt;- generate_k_random_point(x,y,k)$x
-  random_y &lt;- generate_k_random_point(x,y,k)$y
-  inside &lt;- c()
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-    count &lt;- count + point_inside(x,y,random_x[i],random_y[i])
-    <span class="hljs-keyword">if</span> (point_inside(x,y,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
-  }
-  approximate_area &lt;- count/k*rectangle_area
-  <span class="hljs-keyword">if</span> (plotpoly) {
-    plot(x,y,pch=<span class="hljs-string">""</span>)
-    polygon(x,y)
-    polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
-    points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
-    points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>) 
-  }
-  <span class="hljs-keyword">return</span>(approximate_area)
-}</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+# area_mc_method()
+
+# area_mc_method(x, y, k, method)
+</code></pre>
 
 <p>Actually, some special concave polygon can also find the upper bound and lower bound, like the one in the Example 3.1.</p>
 
 <p><b><i>Example 3.1</i></b>&nbsp; Compute the area of bounded concave polygon with coordinates $(1,1),(3,4),(4,8),(7,5),(6,3),(4,5)$ by Monte Carlo method with point in polygon method is the bounds algorithm.</p>
     
-<pre class="r"><code class="hljs">xe3 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">4</span>)
-ye3 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">4</span>,<span class="hljs-number">8</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>)
-area_mc_method(xe3,ye3,concave=<span class="hljs-literal">TRUE</span>)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+xe3 = [1, 3, 4, 7, 6, 4]
+ye3 = [1, 4, 8, 5, 3, 5]
+print(area_mc_method(xe3, ye3, 5000, 'ray'))
+</code></pre>
     
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
 
@@ -331,9 +237,13 @@ area_mc_method(xe3,ye3,concave=<span class="hljs-literal">TRUE</span>)</code></p
     
 <p><b><i>Example 3.2</i></b> &nbsp; Compute the area of the concave polygon with coordinates $(1,1),(3,6),(5,4),(4,3),(5,2),(3,3),(2,3)$ by Monte Carlo method with point in polygon method is the bounds algorithm.</p>
     
-<pre class="r"><code class="hljs">xe5 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
-ye5 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">6</span>,<span class="hljs-number">4</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">3</span>)
-area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span class="hljs-comment"># Wrong result</span></code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+# A self-intersecting polygon.
+xe5 = [1, 3, 5, 4, 5, 3, 2]
+ye5 = [1, 6, 4, 3, 2, 3, 3]
+print(area_mc_method(xe5, ye5, 5000, 'wind'))
+</code></pre>
 
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
 
@@ -349,6 +259,8 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span 
 <p>The <code>area_mc_method</code> function works well for all convex polygon, and some bounded concave polygons.</p>
     
 <p>However, there should be a way to find out the area of all simple polygons, not just some special concave polygons.</p>
+    
+<h4 id="mcm1end">You can test the function at <a href="code_2.html">here</a>.</h4>
     
 <h2 id="perp">Perp Dot Product</h2>
     
@@ -389,16 +301,12 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span 
     
 <p>WIth this idea, we can also write a function to classify the simple polygon:</p>
 
-<pre class="r"><code class="hljs">type_of_polygon_v3 &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  n &lt;- length(x)
-  perpd &lt;- perpdot(x,y)
-  cp &lt;- <span class="hljs-number">0</span>
-  cn &lt;- <span class="hljs-number">0</span>
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    <span class="hljs-keyword">if</span> (perpd[i] &gt; <span class="hljs-number">0</span>) cp &lt;- cp + <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (perpd[i] &lt; <span class="hljs-number">0</span>) cn &lt;- cn + <span class="hljs-number">1</span>
-  }
-  <span class="hljs-keyword">if</span> (cn == n || cp == n) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-string">"Concave"</span>)
-}</code></pre>
+<pre class="python"><code>from geometry_module import classify_polygon
+
+# type_of_polygon_v3()  in R  -&gt;  classify_polygon()
+
+# classify_polygon(x, y) -&gt;  'Convex' / 'Concave' / 'Self-intersecting'
+</code></pre>
     
 <p>But it is no better than the version 2, as the polygon must be simple first.</p>
 
@@ -431,34 +339,12 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span 
     
 <p>But first, let's classify the vertices:</p>
     
-<pre class="r"><code class="hljs">ang_classify &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  n &lt;- length(x)
-  <span class="hljs-keyword">if</span> (type_of_polygon(x,y) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(list(convex = <span class="hljs-number">1</span>:n, concave = <span class="hljs-number">0</span>))
-  xs &lt;- start_from_minx(x,y)$x
-  ys &lt;- start_from_minx(x,y)$y
-  perpdot &lt;- perpdot(x,y)
-  perpdot_minx &lt;- perpdot(xs,ys)
-  cox &lt;- c() <span class="hljs-comment"># Convex</span>
-  coa &lt;- c() <span class="hljs-comment"># Concave</span>
-  gneg &lt;- c()
-  gpos &lt;- c()
-  <span class="hljs-keyword">if</span> (perpdot_minx[<span class="hljs-number">1</span>] &lt; <span class="hljs-number">0</span>) {
-    neg_cox &lt;- <span class="hljs-literal">TRUE</span>
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (perpdot_minx[<span class="hljs-number">1</span>] &gt; <span class="hljs-number">0</span>) {
-    neg_cox &lt;- <span class="hljs-literal">FALSE</span>
-  }
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    <span class="hljs-keyword">if</span> (perpdot[i] &lt; <span class="hljs-number">0</span>) gneg &lt;- c(gneg,i) <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (perpdot[i] &gt; <span class="hljs-number">0</span>) gpos &lt;- c(gpos,i)
-  }
-  <span class="hljs-keyword">if</span> (neg_cox) {
-    cox &lt;- gneg
-    coa &lt;- gpos
-  } <span class="hljs-keyword">else</span> {
-    cox &lt;- gpos
-    coa &lt;- gneg
-  }
-  <span class="hljs-keyword">return</span>(list(convex = sort(cox), concave = sort(coa)))
-}</code></pre>
+<pre class="python"><code>from geometry_module import classify_vertices
+
+# ang_classify()  in R  -&gt;  classify_vertices()
+
+# classify_vertices(x, y)
+</code></pre>
     
 <p>If the type of polygon is convex, then there is no concave vertex.</p>
     
@@ -472,23 +358,23 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span 
     
 <p>Since we can classify the convex and concave vertices, now it is the time to find the convex hull of the concave polygon.</p>
     
-<pre class="r"><code class="hljs">outbound_convex_index &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  c1c &lt;- ang_classify(x,y)$convex
-  <span class="hljs-keyword">while</span> (type_of_polygon(x[c1c],y[c1c]) != <span class="hljs-string">"Convex"</span>) {
-    c1c &lt;- c1c[ang_classify(x[c1c],y[c1c])$convex]
-  }
-  <span class="hljs-keyword">if</span> (type_of_polygon(x[c1c],y[c1c]) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(c1c)
-}</code></pre>
+<pre class="python"><code># The R version splits a concave polygon into convex pieces, then
+# samples each piece separately. The Python version does not need this:
+# the winding-number test already handles concave and self-intersecting
+# polygons directly, so the whole shape can be sampled in one pass.
+#
+#   sampled = area_mc_method(x, y, k=5000, method='wind')
+</code></pre>
     
 <p>Or a function return the vertices instead of the index of the convex hull:</p>
     
-<pre class="r"><code class="hljs">outbound_convex &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  c1c &lt;- ang_classify(x,y)$convex
-  <span class="hljs-keyword">while</span> (type_of_polygon(x[c1c],y[c1c]) != <span class="hljs-string">"Convex"</span>) {
-    c1c &lt;- c1c[ang_classify(x[c1c],y[c1c])$convex]
-  }
-  <span class="hljs-keyword">if</span> (type_of_polygon(x[c1c],y[c1c]) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(list(x = x[c1c],y = y[c1c]))
-}</code></pre>
+<pre class="python"><code># The R version splits a concave polygon into convex pieces, then
+# samples each piece separately. The Python version does not need this:
+# the winding-number test already handles concave and self-intersecting
+# polygons directly, so the whole shape can be sampled in one pass.
+#
+#   sampled = area_mc_method(x, y, k=5000, method='wind')
+</code></pre>
 
 <p>The only problem is, sometimes if the convex vertices are connceted, there could be a self-intersecting polygon. Later there will be a better method to determine a point is in or out, but now assume all the circumscribe polygons are concave or convex.</p>
 
@@ -501,12 +387,13 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span 
     
 <p>If the first index of the vertices which is not on the convex hull is <code>1</code>, then we can reorder the vertices and make sure the first one is on the convex hull.</p>
     
-<pre class="r"><code class="hljs">start_from_convex &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  <span class="hljs-keyword">if</span> (c(<span class="hljs-number">1</span>:length(x))[-outbound_convex_index(x,y)][<span class="hljs-number">1</span>] == <span class="hljs-number">1</span>) {
-    order &lt;- c(outbound_convex_index(x,y)[<span class="hljs-number">1</span>]:length(x),<span class="hljs-number">1</span>:(outbound_convex_index(x,y)[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>))
-    <span class="hljs-keyword">return</span>(list(x = x[order], y = y[order]))
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(list(x = x, y = y))
-}</code></pre>
+<pre class="python"><code># The R version splits a concave polygon into convex pieces, then
+# samples each piece separately. The Python version does not need this:
+# the winding-number test already handles concave and self-intersecting
+# polygons directly, so the whole shape can be sampled in one pass.
+#
+#   sampled = area_mc_method(x, y, k=5000, method='wind')
+</code></pre>
     
 <p>In Figure 3.5, vertices $B$, $D$ and $F$ are not on the convex hull, as they are not adjacent to each other, there must be three polygons between the convex hull and the polygon $ABCDEFG$, which are $\triangle{ABC}$, $\triangle{CDE}$ and $\triangle{EFG}$. What happens if there exist two or more vertices not on the convex hull? Then they will form a polygon with the vertices next to them on the convex hull. For example:</p>
 
@@ -519,30 +406,13 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span 
 
 <p>In the reordered polygon, the index of $A, D$ and $E$ are $7, 3$ and $4$ respectively. Then the polygons bewteen the convex hull and polygon $BCDEFGA$ should have the vertices of index $(6,7,1)$ and $(2,3,4,5)$. Now let's write a function to separate a vector into vectors with consecutive numbers.</p>
     
-<pre class="r"><code class="hljs">sep_vector &lt;- <span class="hljs-keyword">function</span>(x) {
-  n &lt;- length(x)
-  index &lt;- c()
-  sep &lt;- list()
-  <span class="hljs-keyword">if</span> (n == <span class="hljs-number">1</span>) {
-    sep &lt;- c(sep, list(x))
-    <span class="hljs-keyword">return</span>(sep)
-  }
-  xs &lt;- sort(x)
-  xs[n+<span class="hljs-number">1</span>] &lt;- xs[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    <span class="hljs-keyword">while</span> (xs[i] + <span class="hljs-number">1</span> == xs[i+<span class="hljs-number">1</span>]) {
-      i &lt;- i + <span class="hljs-number">1</span>
-    }
-    index &lt;- c(index,i)
-  }
-  points &lt;- index[!duplicated(index)]
-  m &lt;- length(points)
-  sep[<span class="hljs-number">1</span>] &lt;- list(xs[<span class="hljs-number">1</span>:points[<span class="hljs-number">1</span>]])
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">2</span>:m) {
-    sep &lt;- c(sep, list(xs[(points[i-<span class="hljs-number">1</span>] + <span class="hljs-number">1</span>):points[i]]))
-  }
-  <span class="hljs-keyword">return</span>(sep)
-}</code></pre>
+<pre class="python"><code># The R version splits a concave polygon into convex pieces, then
+# samples each piece separately. The Python version does not need this:
+# the winding-number test already handles concave and self-intersecting
+# polygons directly, so the whole shape can be sampled in one pass.
+#
+#   sampled = area_mc_method(x, y, k=5000, method='wind')
+</code></pre>
     
 <pre class="r"><code class="hljs">sep_vector(c(<span class="hljs-number">1</span>:<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">8</span>,<span class="hljs-number">12</span>,<span class="hljs-number">14</span>,<span class="hljs-number">16</span>:<span class="hljs-number">18</span>,<span class="hljs-number">19</span>,<span class="hljs-number">24</span>:<span class="hljs-number">28</span>,<span class="hljs-number">22</span>,<span class="hljs-number">21</span>,<span class="hljs-number">33</span>:<span class="hljs-number">35</span>))</code></pre>
     
@@ -577,31 +447,13 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span 
 
 <p>Now combine all ideas into this function:</p>
     
-<pre class="r"><code class="hljs">outbound_polygon &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  <span class="hljs-keyword">if</span> (type_of_polygon(x,y) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(numeric(<span class="hljs-number">0</span>))
-  xn &lt;- start_from_convex(x,y)$x
-  yn &lt;- start_from_convex(x,y)$y
-  n &lt;- length(x)
-  sep &lt;- list()
-  xl &lt;- list()
-  yl &lt;- list()
-  polygon_points &lt;- sep_vector(c(<span class="hljs-number">1</span>:length(xn))[-outbound_convex_index(xn,yn)])
-  xn[n+<span class="hljs-number">1</span>] &lt;- xn[<span class="hljs-number">1</span>]
-  yn[n+<span class="hljs-number">1</span>] &lt;- yn[<span class="hljs-number">1</span>]
-  num_of_polygons &lt;- length(polygon_points)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:num_of_polygons) {
-    centre &lt;- polygon_points[[i]]
-    min &lt;- min(centre) - <span class="hljs-number">1</span>
-    max &lt;- max(centre) + <span class="hljs-number">1</span>
-    sep &lt;- c(sep,list(c(min, centre, max)))
-  }
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:num_of_polygons) {
-    coord &lt;- sep[[i]]
-    xl &lt;- c(xl,list(xn[coord]))
-    yl &lt;- c(yl,list(yn[coord]))
-  }
-  <span class="hljs-keyword">return</span>(list(x = xl, y = yl))
-}</code></pre>
+<pre class="python"><code># The R version splits a concave polygon into convex pieces, then
+# samples each piece separately. The Python version does not need this:
+# the winding-number test already handles concave and self-intersecting
+# polygons directly, so the whole shape can be sampled in one pass.
+#
+#   sampled = area_mc_method(x, y, k=5000, method='wind')
+</code></pre>
 
 <p>The purpose of this funciton is, given the coordinates of the vertices of a concave polygon, it will return the coordinates of the vertices of the polygons bewteen the convex hull of it and itself. Notice that those polygons in-between could also be concave.</p>
 
@@ -609,58 +461,24 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>) <span 
     
 <p>Now we can rewrite the <code>area_mc_method</code> function:</p>
 
-<pre class="r"><code class="hljs">area_mc_method_v2 &lt;- <span class="hljs-keyword">function</span>(x,y,k = <span class="hljs-number">2000</span>) {
-  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
-  type &lt;- type_of_polygon_v2(x,y)
-  <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
-    print(<span class="hljs-string">"Convex Polygon"</span>)
-    <span class="hljs-keyword">return</span>(area_mc_method(x,y,k))
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
-    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Self-intersecting Polygon"</span>)
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
-    print(<span class="hljs-string">"Concave Polygon"</span>)
-  }
-  c1c &lt;- ang_classify(x,y)$convex
-  <span class="hljs-keyword">if</span> (type_of_polygon_v2(x[c1c],y[c1c]) == <span class="hljs-string">"Self-intersecting"</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Error: Too complex polygon"</span>)
-  count &lt;- <span class="hljs-number">0</span>
-  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
-  random_x &lt;- generate_k_random_point(x,y,k)$x
-  random_y &lt;- generate_k_random_point(x,y,k)$y
-  x0 &lt;- outbound_convex(x,y)$x
-  y0 &lt;- outbound_convex(x,y)$y
-  inside &lt;- c()
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-    count &lt;- count + point_inside(x0,y0,random_x[i],random_y[i])
-    <span class="hljs-keyword">if</span> (point_inside(x0,y0,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
-  }
-  num_of_poly &lt;- length(outbound_polygon(x,y)$x)
-  <span class="hljs-keyword">if</span> (num_of_poly != <span class="hljs-number">0</span>) {
-    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:num_of_poly) {
-      xj &lt;- outbound_polygon(x,y)$x[[j]]
-      yj &lt;- outbound_polygon(x,y)$y[[j]]
-      <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-        count &lt;- count - point_inside(xj,yj,random_x[i],random_y[i])
-        <span class="hljs-keyword">if</span> (point_inside(xj,yj,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- inside[inside != i]
-      }
-    }  
-  }
-  plot(x,y,pch=<span class="hljs-string">""</span>)
-  polygon(x,y)
-  polygon(outbound_convex(x,y)$x,outbound_convex(x,y)$y, lty = <span class="hljs-number">3</span>)
-  polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
-  points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
-  points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>) 
-  approximate_area &lt;- count/k*rectangle_area
-  <span class="hljs-keyword">return</span>(approximate_area)
-}</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+# area_mc_method_v2()  in R  -&gt;  area_mc_method()
+
+# area_mc_method(x, y, k, method)
+</code></pre>
     
 <p>Although it looks very long, inside is very simple: Counting the point inside the convex hull, and remove the point between the convex hull and the polygon. However, if any polygon bewteen the convex hull and the polygon is still concave, then the result will no longer accurate.</p>
     
 <p><i><b>Example 3.3</b></i>&nbsp; Evaluate the area of the concave polygon with vertices $(1,1),(3,6),(5,4),(4,3),(5,2),(3,3),(2,3)$ by Monte Carlo method.</p>
     
-<pre class="r"><code class="hljs">xe5 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
-ye5 &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">6</span>,<span class="hljs-number">4</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">3</span>)
-area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>, plotpoly = <span class="hljs-literal">FALSE</span>)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+# A self-intersecting polygon.
+xe5 = [1, 3, 5, 4, 5, 3, 2]
+ye5 = [1, 6, 4, 3, 2, 3, 3]
+print(area_mc_method(xe5, ye5, 5000, 'wind'))
+</code></pre>
     
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
 <pre><code class="hljs">## [1] 4.86</code></pre>
@@ -685,83 +503,21 @@ area_mc_method(xe5,ye5, concave = <span class="hljs-literal">TRUE</span>, plotpo
 
 <p>Using the same idea, and rewrite the <code>area_mc_method_v2</code>:</p>
     
-<pre class="r"><code class="hljs">area_mc_method_v2n &lt;- <span class="hljs-keyword">function</span>(x,y,k = <span class="hljs-number">2000</span>) {
-  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
-  type &lt;- type_of_polygon_v2(x,y)
-  <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
-    print(<span class="hljs-string">"Convex Polygon"</span>)
-    <span class="hljs-keyword">return</span>(area_mc_method(x,y,k))
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
-    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Self-intersecting Polygon"</span>)
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
-    print(<span class="hljs-string">"Concave Polygon"</span>)
-  }
-  c1c &lt;- ang_classify(x,y)$convex
-  <span class="hljs-keyword">if</span> (type_of_polygon_v2(x[c1c],y[c1c]) == <span class="hljs-string">"Self-intersecting"</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Error: Too complex polygon"</span>)
-  count &lt;- <span class="hljs-number">0</span>
-  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
-  random_x &lt;- generate_k_random_point(x,y,k)$x
-  random_y &lt;- generate_k_random_point(x,y,k)$y
-  x0 &lt;- outbound_convex(x,y)$x
-  y0 &lt;- outbound_convex(x,y)$y
-  inside &lt;- c()
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-    count &lt;- count + point_inside(x0,y0,random_x[i],random_y[i])
-    <span class="hljs-keyword">if</span> (point_inside(x0,y0,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
-  }
-  num_of_poly &lt;- length(outbound_polygon(x,y)$x)
-  xnc &lt;- list()
-  ync &lt;- list()
-  <span class="hljs-keyword">if</span> (num_of_poly != <span class="hljs-number">0</span>) {
-    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:num_of_poly) {
-      x1 &lt;- outbound_polygon(x,y)$x[[j]]
-      y1 &lt;- outbound_polygon(x,y)$y[[j]]
-      <span class="hljs-keyword">if</span> (type_of_polygon(x1,y1) != <span class="hljs-string">"Convex"</span>) {
-         xnc &lt;- c(xnc, outbound_polygon(x1,y1)$x)
-         ync &lt;- c(ync, outbound_polygon(x1,y1)$y)
-      }
-    }
-    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>:num_of_poly)) {
-      xj &lt;- outbound_polygon(x,y)$x[[j]]
-      yj &lt;- outbound_polygon(x,y)$y[[j]]
-      <span class="hljs-keyword">if</span> (type_of_polygon(xj,yj) == <span class="hljs-string">"Convex"</span>) {
-        <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-          count &lt;- count - point_inside(xj,yj,random_x[i],random_y[i])
-          <span class="hljs-keyword">if</span> (point_inside(xj,yj,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- inside[inside != i]
-        }
-      } <span class="hljs-keyword">else</span> {
-        xk &lt;- outbound_convex(xj,yj)$x
-        yk &lt;- outbound_convex(xj,yj)$y
-        <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-          count &lt;- count - point_inside(xk,yk,random_x[i],random_y[i])
-          <span class="hljs-keyword">if</span> (point_inside(xk,yk,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- inside[inside != i]
-        }
-      }
-    }
-    <span class="hljs-keyword">if</span> (length(xnc) != <span class="hljs-number">0</span>) <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:length(xnc)) {
-      xj &lt;- xnc[[j]]
-      yj &lt;- ync[[j]]
-      <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-        count &lt;- count + point_inside(xj,yj,random_x[i],random_y[i])
-        <span class="hljs-keyword">if</span> (point_inside(xj,yj,random_x[i],random_y[i]) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
-      }
-    }
-  }
-  plot(x,y,pch=<span class="hljs-string">""</span>)
-  polygon(x,y)
-  polygon(outbound_convex(x,y)$x,outbound_convex(x,y)$y, lty = <span class="hljs-number">3</span>)
-  polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
-  points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
-  points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>) 
-  approximate_area &lt;- count/k*rectangle_area
-  <span class="hljs-keyword">return</span>(approximate_area)
-}</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+# area_mc_method_v2n()  in R  -&gt;  area_mc_method()
+
+# area_mc_method(x, y, k, method)
+</code></pre>
     
 <p><b><i>Example 3.4</i></b>&nbsp; Evaluate the area of the concave polygon with vertices <code>xe7 <- c(5,4,7,6,5,6,6,3,4,5,3,2,3,1,3,2)</code>, <code>ye7 <- c(4,2,3,-1,1,0,2,1,1,-1,0,1,2,1,3,4)</code> by Monte Carlo method.</p>
     
-<pre class="r"><code class="hljs">xe7 &lt;- c(<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">6</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
-ye7 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>)
-area_mc_method_v2(xe7,ye7)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+xe7 = [5, 4, 7, 6, 5, 6, 6, 3, 4, 5, 3, 2, 3, 1, 3, 2]
+ye7 = [4, 2, 3, -1, 1, 0, 2, 1, 1, -1, 0, 1, 2, 1, 3, 4]
+print(area_mc_method(xe7, ye7, 5000, 'wind'))
+</code></pre>
     
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
     
@@ -772,9 +528,12 @@ area_mc_method_v2(xe7,ye7)</code></pre>
     
 <pre><code class="hljs">## [1] 13.59</code></pre>
     
-<pre class="r"><code class="hljs">xe7 &lt;- c(<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">6</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
-ye7 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>)
-area_mc_method_v2n(xe7,ye7)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+xe7 = [5, 4, 7, 6, 5, 6, 6, 3, 4, 5, 3, 2, 3, 1, 3, 2]
+ye7 = [4, 2, 3, -1, 1, 0, 2, 1, 1, -1, 0, 1, 2, 1, 3, 4]
+print(area_mc_method(xe7, ye7, 5000, 'wind'))
+</code></pre>
 
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
 
@@ -789,9 +548,11 @@ area_mc_method_v2n(xe7,ye7)</code></pre>
     
 <p>Remember, this function is not very efficiency, as the point in polygon algorithm above is laggy. In Part 2, we will refer some popular algorithms and rewrite the point in polygon function, to make it possible to detect a point inside whether convex, concave or self-intersecting polygon.</p>    
 
+<h4 id="mcm2end">You can test the function at <a href="code_3.html">here</a>.</h4>
+
 <h4 style="text-align:left;"><span style="float:right;"><a href="monte_carlo_2.html"><span>&#8594;</span>Section: Monte Carlo Method (Part 2)</a></span></h4>
 
-<p><span id="lblCopyRight">© Group 18</span></p>
+<p><span id="lblCopyRight">@theonaku</span></p>
 
 </body>
 </html>

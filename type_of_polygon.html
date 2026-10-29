@@ -17,13 +17,12 @@
     });
     </script>
 
-    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
-    
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="_assets/css/modern.css">
+<script src="_assets/js/highlight.js" defer></script>
 </head>
 <body>
 
-<h1>Area: Group Project (Group 18)</h1>
+<h1>Area: Group Project (theonaku)</h1>
     
 <div class="navbar">
   <div class="subnav">
@@ -77,6 +76,13 @@
       <a href="picks_theorem.html">Pick's Theorem</a>
         <a href="determinants.html">Determinants</a>
         <a href="generate_poly.html">Convex Hull and Random Polygon</a>
+    </div>
+  </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
     </div>
   </div>
   <a style="float:right" href="bibliography.html">Bibliography</a>
@@ -137,35 +143,12 @@
     
 <p>Now convert the algorithm into a function:</p>
 
-<pre class="r"><code class="hljs">type_of_polygon &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  n &lt;- length(x)
-  direction &lt;- list()
-  angle &lt;- c()
-  convex &lt;- <span class="hljs-literal">FALSE</span>
-  x[n+<span class="hljs-number">1</span>] &lt;- x[<span class="hljs-number">1</span>]
-  y[n+<span class="hljs-number">1</span>] &lt;- y[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">3</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Error: Please enter more than three points"</span>)
-  <span class="hljs-keyword">if</span> (n == <span class="hljs-number">3</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Convex"</span>)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    direction &lt;- c(direction,list((c(x[i+<span class="hljs-number">1</span>],y[i+<span class="hljs-number">1</span>]) - c(x[i],y[i])))) <span class="hljs-comment">## Direction of the lines</span>
-  }
-  direction[n+<span class="hljs-number">1</span>] &lt;- direction[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    dotproduct &lt;- direction[[i]] %*% (-<span class="hljs-number">1</span>*direction[[i+<span class="hljs-number">1</span>]])
-    nomproduct &lt;- norm(direction[[i]])*norm(-<span class="hljs-number">1</span>*direction[[i+<span class="hljs-number">1</span>]])
-    angle &lt;- c(angle,acos(dotproduct/nomproduct))
-  }
-  <span class="hljs-keyword">if</span> ((n-<span class="hljs-number">2</span>)*pi - sum(angle) &gt; <span class="hljs-number">2.11e-08</span>) { <span class="hljs-comment"># Due to precision of double</span>
-    convex &lt;- <span class="hljs-literal">FALSE</span>
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((n-<span class="hljs-number">2</span>)*pi - sum(angle) &lt;= <span class="hljs-number">2.11e-08</span>) {
-    convex &lt;- <span class="hljs-literal">TRUE</span>
-  }
-  <span class="hljs-keyword">if</span> (convex) {
-    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Convex"</span>)
-  } <span class="hljs-keyword">else</span> {
-    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Non-convex"</span>)
-  }
-}</code></pre>
+<pre class="python"><code>from geometry_module import type_of_polygon
+
+# type_of_polygon()
+
+# type_of_polygon(x, y)  -&gt;  'Convex' / 'Non-convex'
+</code></pre>
 
 <p>For a polygon with more than 3 sides, this function will calculate the directions from the first vertex to the second vertex, the second to the third and so on. But to calculate the right angle, the second direction vector should change the direction, like <code>-1*direction[[i+1]]</code>. For example:</p>
 
@@ -186,24 +169,15 @@
     
 <p>In order to do that, the best way is to write a function that can return the line equations of the edges of the given polygon first, then test each line equations with each other expect the adjacent one. So let's start to do that:</p> 
 
-<pre class="r"><code class="hljs">line_equ &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  fx &lt;- c()
-  grad &lt;- gradient(x,y)
-  n &lt;- length(x)
-  f &lt;- <span class="hljs-keyword">function</span>(i) { 
-    g &lt;- grad[i] <span class="hljs-comment"># We can avoid to use the case when gradient is Inf or -Inf</span>
-    xm &lt;- x[i]
-    ym &lt;- y[i]
-    <span class="hljs-keyword">function</span>(x) g*(x - xm) + ym
-  }
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) { <span class="hljs-comment">#  In case input the same vertex twice or more</span>
-    <span class="hljs-keyword">if</span> (is.nan(grad[i])) {
-      <span class="hljs-keyword">return</span>(cat(<span class="hljs-string">"Input values are not vaild, repeat points detected."</span>))
-    }
-    fx &lt;- c(fx,f(i))
-  }
-  <span class="hljs-keyword">return</span>(fx)
-}</code></pre>
+<pre class="python"><code>from geometry_module import line_equ_y
+
+# line_equ() in R  ->  line_equ_y() in Python
+# Returns a function y = f(x) for edge i of the polygon.
+x = [0, 3, 3, 1]
+y = [0, 0, 2, 2]
+f = line_equ_y(x, y, 0)      # the bottom edge
+print('y at x = 1.5 :', f(1.5))
+</code></pre>
 
 <p>Line equation by the gradient $m$ and a point $(x_0,y_0)$ is $y - y_0 = m(x - x_0)$, or $y = m(x - x_0) + y_0$.</p>  
     
@@ -211,91 +185,24 @@
 
 <p>Also, it is better to add another function that in case the request of non-exist line equation happens. Like the request to find the zeroth or $(n+1)$th line equation of the edge of the $n$-side polygon.</p>
 
-<pre class="r"><code class="hljs">linen_equ &lt;- <span class="hljs-keyword">function</span>(x,y,n) {
-  <span class="hljs-keyword">if</span>(n == <span class="hljs-number">0</span>) {
-    <span class="hljs-keyword">return</span>(line_equ(x,y)[[length(x)]])
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (n &gt; length(x)) {
-    n1 &lt;- n %% length(x)
-    <span class="hljs-keyword">return</span>(line_equ(x,y)[[n1]])
-  } <span class="hljs-keyword">else</span> {
-    <span class="hljs-keyword">return</span>(line_equ(x,y)[[n]])
-  }
-}</code></pre>
+<pre class="python"><code>from geometry_module import line_by_index
+
+# linen_equ() in R  ->  line_by_index() in Python
+# Same as above, but takes an edge number (1-based, wraps around).
+x = [0, 3, 3, 1]
+y = [0, 0, 2, 2]
+f = line_by_index(x, y, 1)
+print('y at x = 1.5 :', f(1.5))
+</code></pre>
 
 <p>Now convert the algorithm of how to identify the concave or self-intersecting polygon into a function:</p>
 
-<pre class="r"><code class="hljs">type_of_polygon_v2 &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  <span class="hljs-keyword">if</span> (type_of_polygon(x,y) == <span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Convex"</span>) <span class="hljs-keyword">else</span>
-  xv2 &lt;- x <span class="hljs-comment"># So x[n+1] &lt;- x[1] will not affect the initial x-coordinate of vertices</span>
-  s &lt;- <span class="hljs-number">0</span> 
-  n &lt;- length(x)
-  x[n+<span class="hljs-number">1</span>] &lt;- x[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    <span class="hljs-keyword">if</span> (i == <span class="hljs-number">1</span>) {
-      <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>:n)[-c(<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,n)]) {
-        <span class="hljs-keyword">if</span> (abs(x[<span class="hljs-number">1</span>] - x[<span class="hljs-number">2</span>]) &lt; <span class="hljs-number">0.1</span>) { <span class="hljs-comment"># Mostly when gradient is Inf or -Inf happens</span>
-          <span class="hljs-keyword">if</span> (abs(x[j] - x[j+<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">0.01</span>) <span class="hljs-keyword">break</span>
-          <span class="hljs-keyword">if</span> (linen_equ(xv2,y,j)(x[<span class="hljs-number">1</span>]) &lt;= max(y[<span class="hljs-number">1</span>],y[<span class="hljs-number">2</span>]) &amp;&amp; linen_equ(xv2,y,j)(x[<span class="hljs-number">1</span>]) &gt;= min(y[<span class="hljs-number">1</span>],y[<span class="hljs-number">2</span>])) {
-            s &lt;- s + <span class="hljs-number">1</span>
-            <span class="hljs-keyword">break</span>
-          }
-        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (k <span class="hljs-keyword">in</span> seq(x[<span class="hljs-number">1</span>],x[<span class="hljs-number">2</span>],length.out=<span class="hljs-number">101</span>)) {
-           <span class="hljs-keyword">if</span> (is.na(abs(linen_equ(xv2,y,<span class="hljs-number">1</span>)(k) - linen_equ(xv2,y,j)(k)))) <span class="hljs-keyword">next</span>
-           <span class="hljs-keyword">if</span> (abs(linen_equ(xv2,y,<span class="hljs-number">1</span>)(k) - linen_equ(xv2,y,j)(k)) &lt; <span class="hljs-number">0.1</span> ) {
-             xi &lt;- k
-             <span class="hljs-keyword">if</span> (xi &lt;= max(x[j],x[j+<span class="hljs-number">1</span>]) &amp;&amp; xi &gt;= min(x[j],x[j+<span class="hljs-number">1</span>])) {
-              s &lt;- s + <span class="hljs-number">1</span>
-              <span class="hljs-keyword">break</span>
-            }
-           }
-         }
-      }
-    } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (i == n) {
-      <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>:n)[-c(<span class="hljs-number">1</span>,(n-<span class="hljs-number">1</span>),n)]) {
-        <span class="hljs-keyword">if</span> (abs(x[<span class="hljs-number">1</span>] - x[n]) &lt; <span class="hljs-number">0.1</span>) {
-          <span class="hljs-keyword">if</span> (abs(x[j] - x[j+<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">0.01</span>) <span class="hljs-keyword">break</span>
-          <span class="hljs-keyword">if</span> (linen_equ(xv2,y,j)(x[<span class="hljs-number">1</span>]) &lt;= max(y[<span class="hljs-number">1</span>],y[n]) &amp;&amp; linen_equ(xv2,y,j)(x[<span class="hljs-number">1</span>]) &gt;= min(y[<span class="hljs-number">1</span>],y[n])) {
-            s &lt;- s + <span class="hljs-number">1</span>
-            <span class="hljs-keyword">break</span>
-          }
-        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (k <span class="hljs-keyword">in</span> seq(x[n],x[<span class="hljs-number">1</span>],length.out=<span class="hljs-number">101</span>)) {
-          <span class="hljs-keyword">if</span> (is.na(abs(linen_equ(xv2,y,n)(k) - linen_equ(xv2,y,j)(k)))) <span class="hljs-keyword">next</span>
-          <span class="hljs-keyword">if</span> (abs(linen_equ(xv2,y,n)(k) - linen_equ(xv2,y,j)(k)) &lt; <span class="hljs-number">0.1</span> ) {
-            xi &lt;- k
-            <span class="hljs-keyword">if</span> (xi &lt;= max(x[j],x[j+<span class="hljs-number">1</span>]) &amp;&amp; xi &gt;= min(x[j],x[j+<span class="hljs-number">1</span>])) {
-              s &lt;- s + <span class="hljs-number">1</span>
-              <span class="hljs-keyword">break</span>
-            }
-          }
-        }
-      }
-    } <span class="hljs-keyword">else</span> {
-      <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>:n)[-c(i-<span class="hljs-number">1</span>,i,i+<span class="hljs-number">1</span>)]) {
-        <span class="hljs-keyword">if</span> (abs(x[i] - x[i+<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">0.1</span>) {
-          <span class="hljs-keyword">if</span> (abs(x[j] - x[j+<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">0.01</span>) <span class="hljs-keyword">break</span>
-          <span class="hljs-keyword">if</span> (linen_equ(xv2,y,j)(x[i]) &lt;= max(y[i],y[i+<span class="hljs-number">1</span>]) &amp;&amp; linen_equ(xv2,y,j)(x[i]) &gt;= min(y[i],y[i+<span class="hljs-number">1</span>])) {
-            s &lt;- s + <span class="hljs-number">1</span>
-            <span class="hljs-keyword">break</span>
-          }
-        } <span class="hljs-keyword">else</span> <span class="hljs-keyword">for</span> (k <span class="hljs-keyword">in</span> seq(x[i],x[i+<span class="hljs-number">1</span>],length.out=<span class="hljs-number">101</span>)) {
-          <span class="hljs-keyword">if</span> (is.na(abs(linen_equ(xv2,y,i)(k) - linen_equ(xv2,y,j)(k)))) <span class="hljs-keyword">next</span>
-          <span class="hljs-keyword">if</span> (abs(linen_equ(xv2,y,i)(k) - linen_equ(xv2,y,j)(k)) &lt; <span class="hljs-number">0.1</span> ) {
-            xi &lt;- k
-            <span class="hljs-keyword">if</span> (xi &lt;= max(x[j],x[j+<span class="hljs-number">1</span>]) &amp;&amp; xi &gt;= min(x[j],x[j+<span class="hljs-number">1</span>])) {
-              s &lt;- s + <span class="hljs-number">1</span>
-              <span class="hljs-keyword">break</span>
-            }
-          }
-        }
-      }
-    }
-  }
-  <span class="hljs-keyword">if</span> (s == <span class="hljs-number">0</span>) {
-    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Concave"</span>)
-  } <span class="hljs-keyword">else</span> {
-    <span class="hljs-keyword">return</span>(<span class="hljs-string">"Self-intersecting"</span>)
-  }
-}</code></pre>
+<pre class="python"><code>from geometry_module import classify_polygon
+
+# type_of_polygon_v2()  in R  -&gt;  classify_polygon()
+
+# classify_polygon(x, y) -&gt;  'Convex' / 'Concave' / 'Self-intersecting'
+</code></pre>
 
 <p>This is a utility function, and will be used in the rest of the project many times.</p>
 
@@ -336,10 +243,12 @@
 <p>Compare line $DE$ and $BC$ is not required, so use <code>break</code> to stop that in the function.</p>
     
 <p>The next section is Monte Carlo (Part 1), it is all about the upper and lower bounds of the polygon. A much better approach and be found in the Part 2.</p>
+
+<h4 id="end">You can test the function at <a href="code_1.html">here</a>.</h4>
     
 <h4 style="text-align:left;"><span style="float:right;"><a href="monte_carlo.html"><span>&#8594;</span>Section: Monte Carlo (Part 1)</a></span></h4>
 
-<p><span id="lblCopyRight">© Group 18</span></p>
+<p><span id="lblCopyRight">@theonaku</span></p>
 
 </body>
 </html>

@@ -17,13 +17,12 @@
     });
     </script>
 
-    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
-    
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="_assets/css/modern.css">
+<script src="_assets/js/highlight.js" defer></script>
 </head>
 <body>
 
-<h1>Area: Group Project (Group 18)</h1>
+<h1>Area: Group Project (theonaku)</h1>
 
 <div class="navbar">
   <div class="subnav">
@@ -79,6 +78,13 @@
         <a href="generate_poly.html">Convex Hull and Random Polygon</a>
     </div>
   </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
   <a style="float:right" href="bibliography.html">Bibliography</a>
 </div>
     
@@ -117,81 +123,37 @@
     
 <p>In the previous session, there is a function called <code>line_equ</code> to find the corresponding $y$-coordinate of a point on a line by given the $x$-coordinate. Then we can rewrite that function from $y=f(x)$ to $x=g(y)$ by changing the order:</p>
     
-<pre class="r"><code class="hljs">line_equy &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  fy &lt;- c()
-  grad &lt;- gradient(x,y)
-  n &lt;- length(x)
-  f &lt;- <span class="hljs-keyword">function</span>(i) { 
-    g &lt;- grad[i] <span class="hljs-comment"># We can avoid to use the case when gradient is Inf or -Inf</span>
-    xm &lt;- x[i]
-    ym &lt;- y[i]
-    <span class="hljs-keyword">function</span>(y) (y - ym)/g + xm
-  }
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) { <span class="hljs-comment">#  In case input the same vertex twice or more</span>
-    <span class="hljs-keyword">if</span> (is.nan(grad[i])) {
-      <span class="hljs-keyword">return</span>(cat(<span class="hljs-string">"Input values are not vaild, repeat points detected."</span>))
-    }
-    fy &lt;- c(fy,f(i))
-  }
-  <span class="hljs-keyword">return</span>(fy)
-}</code></pre>
+<pre class="python"><code>from geometry_module import line_equ_x
+
+# line_equy() in R  -&gt;  line_equ_x() in Python
+# Returns x = f(y) for edge i (the inverse of line_equ_y).
+# Edge 1 is the slanted one; a horizontal edge would divide by zero.
+x = [0, 3, 3, 1]
+y = [0, 0, 2, 2]
+g = line_equ_x(x, y, 1)
+print('x at y = 1 :', g(1.0))
+</code></pre>
     
-<pre class="r"><code class="hljs">linen_equy &lt;- <span class="hljs-keyword">function</span>(x,y,n) {
-  <span class="hljs-keyword">if</span>(n == <span class="hljs-number">0</span>) {
-    <span class="hljs-keyword">return</span>(line_equy(x,y)[[length(y)]])
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (n &gt; length(y)) {
-    n1 &lt;- n %% length(y)
-    <span class="hljs-keyword">return</span>(line_equy(x,y)[[n1]])
-  } <span class="hljs-keyword">else</span> {
-    <span class="hljs-keyword">return</span>(line_equy(x,y)[[n]])
-  }
-}</code></pre>
+<pre class="python"><code>from geometry_module import line_equ_x
+
+# linen_equy() in R has no direct counterpart: use line_equ_x()
+# with an explicit edge index instead.
+x = [0, 3, 3, 1]
+y = [0, 0, 2, 2]
+g = line_equ_x(x, y, 1)
+print('x at y = 1 :', g(1.0))
+</code></pre>
 
 <p>With this function, we can easily find the correspoinging $x$-coordinate if the $y$-coordinate is given. Which will be very useful if we cast a ray from a point to the right. The line equation of the ray from point $(x_0,y_0)$ horizontally to the $x$-axis is $y=y_0$, so only the $y$-coordinate is known.</p>    
     
 <p>Now convert the algorithm into a function:</p>
 
-<pre class="r"><code class="hljs">ray_pass &lt;- <span class="hljs-keyword">function</span>(x,y,x0,y0) {
-  pass_x &lt;- c() <span class="hljs-comment"># Rightward ray, passing point x-coordinate</span>
-  pass_x2 &lt;- c() <span class="hljs-comment"># Leftward ray</span>
-  pass_pi &lt;- c() <span class="hljs-comment"># π/4 rad ray</span>
-  n &lt;- length(x) <span class="hljs-comment"># Number of vertices</span>
-  x2 &lt;- x;x2[n+<span class="hljs-number">1</span>] &lt;- x2[<span class="hljs-number">1</span>]
-  y2 &lt;- y;y2[n+<span class="hljs-number">1</span>] &lt;- y2[<span class="hljs-number">1</span>]
-  grad &lt;- gradient(x,y) <span class="hljs-comment"># Gradient of each edge in the polygon</span>
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    <span class="hljs-keyword">if</span> (grad[i] == <span class="hljs-number">0</span>) <span class="hljs-keyword">next</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (abs(grad[i]) != <span class="hljs-literal">Inf</span>) {
-      <span class="hljs-keyword">if</span> (y0 &lt;= max(y2[i],y2[i+<span class="hljs-number">1</span>]) &amp;&amp; y0 &gt;= min(y2[i],y2[i+<span class="hljs-number">1</span>])) {
-        <span class="hljs-keyword">if</span> (linen_equy(x,y,i)(y0) &gt;= x0) pass_x &lt;- c(pass_x,linen_equy(x,y,i)(y0))
-        <span class="hljs-keyword">else</span> pass_x2 &lt;- c(pass_x2,linen_equy(x,y,i)(y0))
-      }
-    } <span class="hljs-keyword">else</span> {
-      <span class="hljs-keyword">if</span> (y0 &lt;= max(y2[i],y2[i+<span class="hljs-number">1</span>]) &amp;&amp; y0 &gt;= min(y2[i],y2[i+<span class="hljs-number">1</span>])) {
-        <span class="hljs-keyword">if</span> (x0 &lt;= x2[i]) pass_x &lt;- c(pass_x,x2[i])
-        <span class="hljs-keyword">if</span> (x0 &gt;= x2[i]) pass_x2 &lt;- c(pass_x2,x2[i])
-      }
-    }
-  }
-  <span class="hljs-keyword">if</span> ((length(pass_x) %% <span class="hljs-number">2</span>) == (length(pass_x2) %% <span class="hljs-number">2</span>)) <span class="hljs-keyword">return</span>(length(pass_x))
-  <span class="hljs-keyword">if</span> ((length(pass_x) %% <span class="hljs-number">2</span>) != (length(pass_x2) %% <span class="hljs-number">2</span>)) {
-    <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-      <span class="hljs-keyword">if</span> (grad[i] == <span class="hljs-number">0</span>) <span class="hljs-keyword">next</span> <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (abs(grad[i]) != <span class="hljs-literal">Inf</span>) {
-        xi &lt;- seq(min(x2[i],x2[i+<span class="hljs-number">1</span>]),max(x2[i],x2[i+<span class="hljs-number">1</span>]),length.out=(floor(abs(x2[i]-x2[i+<span class="hljs-number">1</span>]))*<span class="hljs-number">1000</span>+<span class="hljs-number">1</span>))
-        <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> xi) {
-          <span class="hljs-keyword">if</span> (abs(linen_equ(x,y,i)(j) - (j - x0 + y0)) &lt; <span class="hljs-number">0.001</span>) {
-            <span class="hljs-keyword">if</span> (x0 &lt;= j) pass_pi &lt;- c(pass_pi,j)
-            <span class="hljs-keyword">break</span>
-          }
-        }
-      } <span class="hljs-keyword">else</span> {
-          <span class="hljs-keyword">if</span> ((x2[i] - x0 + y0) &lt;= max(y2[i],y2[i+<span class="hljs-number">1</span>]) &amp;&amp; (x2[i] - x0 + y0) &gt;= min(y2[i],y2[i+<span class="hljs-number">1</span>])) {
-          <span class="hljs-keyword">if</span> (x0 &lt;= x2[i]) pass_pi &lt;- c(pass_pi,x2[i])
-        }
-      }
-    }
-    <span class="hljs-keyword">return</span>(length(pass_pi))
-  }
-}</code></pre>
+<pre class="python"><code>from geometry_module import point_inside
+
+# ray_pass()  in R  -&gt;  point_inside()
+
+# point_inside(x, y, px, py)  -&gt;  'inside' / 'outside' / 'on boundary'
+</code></pre>
     
 <p>This function is another looks long but simple function, it just like actually casting a ray from a point $(x_0,y_0)$ toward the right, and counting the edges it passes. It works for all kind of polygon, and try to minimise the error. It will cast two rays, one leftward and one rightward. If the parity of the number of intersections are different, then it will cast another ray $\pi/4$ rad upward and take that as the final result. There's still possible that a point inside passes the polygon even number times after all, but the possibility is insignificant.</p>
     
@@ -292,19 +254,13 @@
     
 <p>Now summarise into a function:</p>
 
-<pre class="r"><code class="hljs">angle &lt;- <span class="hljs-keyword">function</span>(x0,y0,rx,ry) {
-  <span class="hljs-keyword">if</span> (y0 == ry) {
-    <span class="hljs-keyword">if</span> (x0 &gt;= rx) <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(pi)
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (y0 &gt; ry) {
-    <span class="hljs-keyword">if</span> (x0 == rx) <span class="hljs-keyword">return</span>(pi/<span class="hljs-number">2</span>)
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (x0 &gt; rx) <span class="hljs-keyword">return</span>(atan((y0 - ry)/(x0 - rx)))
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(pi + atan((y0 - ry)/(x0 - rx)))
-  } <span class="hljs-keyword">else</span> {
-    <span class="hljs-keyword">if</span> (x0 &gt; rx) <span class="hljs-keyword">return</span>(<span class="hljs-number">2</span>*pi + atan((y0 - ry)/(x0 - rx))) 
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (x0 &lt; rx) <span class="hljs-keyword">return</span>(pi + atan((y0 - ry)/(x0 - rx))) 
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-number">3</span>*pi/<span class="hljs-number">2</span>)
-  } 
-}</code></pre>
+<pre class="python"><code>from math import atan2, pi
+
+# angle() in R built the polar angle by hand with atan and four
+# quadrant branches. Python has atan2, which does it in one call:
+def angle(px, py, rx, ry):
+    return atan2(py - ry, px - rx) % (2 * pi)
+</code></pre>
 
 <p>In <code>angle</code> function, there are 4 variables: <code>x0,y0</code> means the coordinate of vertex, and <code>rx,ry</code> means the coordinate of randomly generated point. It will return the angle between the vertex and the rightward ray start from a given point.</p>
 
@@ -326,37 +282,21 @@
     
 <p>Clearly it is possible to deduce the clockwise or anticlockwise rotation between two vertices about a point, and below is the summary for the rotation from $C_1$ to $C_2$:</p>
     
-<pre class="r"><code class="hljs"><span class="hljs-keyword">if</span> (c2x - c1x &gt;= pi || (c2x - c1x &gt; -pi &amp;&amp; c2x - c1x &lt; <span class="hljs-number">0</span>)) anti &lt;- <span class="hljs-literal">FALSE</span>
-<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((c2x - c1x &lt; pi &amp;&amp; c2x - c1x &gt;= <span class="hljs-number">0</span>) || c2x - c1x &lt;= -pi) anti &lt;- <span class="hljs-literal">TRUE</span></code></pre>
+<pre class="python"><code># Angle bookkeeping used by the R winding-number implementation.
+# The Python version avoids it entirely: winding_number() counts
+# signed crossings instead of accumulating angles.
+</code></pre>
     
 <p>where <code>c1x,c2x</code> means the same thing as $\theta_{C_1\mathbf{x}}$ and $\theta_{C_2\mathbf{x}}$.</p>
     
 <p>Once we know the direction of the rotation, we can simply plus or minus the angle during the winding around the point $\mathbf{x}$, depends on the clockwise or anticlockwise rotation. Below is the function to find out the windind number for a point $(x_0,y_0)$ inside the polygon.</p>
     
-<pre class="r"><code class="hljs">winding_number &lt;- <span class="hljs-keyword">function</span>(x,y,x0,y0) {
-  cumang &lt;- <span class="hljs-number">0</span>
-  direction &lt;- list()
-  anglex &lt;- c()
-  n &lt;- length(x)
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    direction &lt;- c(direction,list((c(x0,y0) - c(x[i],y[i]))))
-    anglex &lt;- c(anglex, angle(x[i],y[i],x0,y0))
-  }
-  direction[n+<span class="hljs-number">1</span>] &lt;- direction[<span class="hljs-number">1</span>]
-  anglex[n+<span class="hljs-number">1</span>] &lt;- anglex[<span class="hljs-number">1</span>]
-  anti &lt;- <span class="hljs-literal">TRUE</span>
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    <span class="hljs-keyword">if</span> (norm(direction[[i]])*norm(direction[[i+<span class="hljs-number">1</span>]]) == <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span>(<span class="hljs-number">1</span>)
-    <span class="hljs-keyword">if</span> (anglex[i+<span class="hljs-number">1</span>] - anglex[i] &gt; pi || (anglex[i+<span class="hljs-number">1</span>] - anglex[i] &gt; -pi &amp;&amp; anglex[i+<span class="hljs-number">1</span>] - anglex[i] &lt; <span class="hljs-number">0</span>)) anti &lt;- <span class="hljs-literal">FALSE</span>
-    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ((anglex[i+<span class="hljs-number">1</span>] - anglex[i] &lt; pi &amp;&amp; anglex[i+<span class="hljs-number">1</span>] - anglex[i] &gt;= <span class="hljs-number">0</span>) || anglex[i+<span class="hljs-number">1</span>] - anglex[i] &lt;= -pi) anti &lt;- <span class="hljs-literal">TRUE</span>
-    dotproduct &lt;- as.numeric(direction[[i]] %*% direction[[i+<span class="hljs-number">1</span>]])
-    nomproduct &lt;- norm(direction[[i]])*norm(direction[[i+<span class="hljs-number">1</span>]])
-    angle &lt;- acos(round(dotproduct/nomproduct,<span class="hljs-number">8</span>))
-    <span class="hljs-keyword">if</span> (anti) cumang &lt;- cumang + angle <span class="hljs-keyword">else</span> cumang &lt;- cumang - angle
-  }
-  wind &lt;- round(cumang/(<span class="hljs-number">2</span>*pi))
-  <span class="hljs-keyword">return</span>(wind)
-}</code></pre>    
+<pre class="python"><code>from geometry_module import winding_number
+
+# winding_number()
+
+# winding_number(x, y, px, py)
+</code></pre>    
     
 <p>If the point $(x_0,y_0)$ is at the vertex, then the direction vector between them is $\mathbf{0}$, also the norm is $0$. So if the norm of the direction vector is $0$, then the function will return the winding number $1$, in order to avoid the <code>NaN</code> appears. If not, then the function will use the technique of dot product to calculate the angle. If it is clockwise rotation, the function will subtract the angle from the cumulative sum of the angle, else the function will add the angle into the cumulative sum of the angle.</p>
     
@@ -369,9 +309,12 @@
     
 <p>However, that's not a big problem. We can consider both as two separate cases, and it actually depends on the requirement.</p>
     
-<pre class="r"><code class="hljs">xe0 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,<span class="hljs-number">8</span>,<span class="hljs-number">2</span>)
-ye0 &lt;- c(<span class="hljs-number">3</span>,-<span class="hljs-number">4</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">4</span>)
-area_mc_method_v3(xe0,ye0,method = <span class="hljs-string">"wind"</span>)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+xe0 = [4, 6, 0, 8, 2]
+ye0 = [3, -4, 0, 0, -4]
+print(area_mc_method(xe0, ye0, 5000, 'wind'))
+</code></pre>
     
 <pre><code class="hljs">## [1] "Self-intersecting Polygon"</code></pre>
 
@@ -382,9 +325,12 @@ area_mc_method_v3(xe0,ye0,method = <span class="hljs-string">"wind"</span>)</cod
     
 <pre><code class="hljs">## [1] 16.7328</code></pre>
     
-<pre class="r"><code class="hljs">xe0 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">6</span>,<span class="hljs-number">0</span>,<span class="hljs-number">8</span>,<span class="hljs-number">2</span>)
-ye0 &lt;- c(<span class="hljs-number">3</span>,-<span class="hljs-number">4</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,-<span class="hljs-number">4</span>)
-area_mc_method_v3(xe0,ye0,method = <span class="hljs-string">"ray"</span>)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+xe0 = [4, 6, 0, 8, 2]
+ye0 = [3, -4, 0, 0, -4]
+print(area_mc_method(xe0, ye0, 5000, 'ray'))
+</code></pre>
     
 <pre><code class="hljs">## [1] "Self-intersecting Polygon"</code></pre>
     
@@ -397,16 +343,12 @@ area_mc_method_v3(xe0,ye0,method = <span class="hljs-string">"ray"</span>)</code
 
 <p>Now we can write the point in polygon function with both algorithm:</p>
     
-<pre class="r"><code class="hljs">point_inside_v2 &lt;- <span class="hljs-keyword">function</span>(x,y,x0,y0, method = <span class="hljs-string">"wind"</span>) {
-  <span class="hljs-keyword">if</span> (method == <span class="hljs-string">"wind"</span>) {
-    wind &lt;- winding_number(x,y,x0,y0)
-    <span class="hljs-keyword">if</span> (wind != <span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> (<span class="hljs-number">1</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>)
-  }
-  <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (method == <span class="hljs-string">"ray"</span>) {
-    ray &lt;- ray_pass(x,y,x0,y0)
-    <span class="hljs-keyword">if</span> (ray %% <span class="hljs-number">2</span> == <span class="hljs-number">1</span>) <span class="hljs-keyword">return</span> (<span class="hljs-number">1</span>) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(<span class="hljs-number">0</span>)
-  }
-}</code></pre>
+<pre class="python"><code>from geometry_module import point_inside_v2
+
+# point_inside_v2()
+
+# point_inside_v2(x, y, px, py, method)
+</code></pre>
     
     
 <p>The default algorithm is the winding number.</p>
@@ -415,43 +357,22 @@ area_mc_method_v3(xe0,ye0,method = <span class="hljs-string">"ray"</span>)</code
 
 <p>We can use the new point in polygon function to reconstruct the function of the Monte Carlo Method.</p>
 
-<pre class="r"><code class="hljs">area_mc_method_v3 &lt;- <span class="hljs-keyword">function</span>(x,y,k=<span class="hljs-number">5000</span>, plotpoly=<span class="hljs-literal">TRUE</span>, method = <span class="hljs-string">"wind"</span>) {
-  <span class="hljs-keyword">if</span> (length(x) &lt;= <span class="hljs-number">2</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Input values are not vaild. Error: Only two vertices"</span>)
-  type &lt;- type_of_polygon_v2(x,y)
-  <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Convex"</span>) {
-    print(<span class="hljs-string">"Convex Polygon"</span>)
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Self-intersecting"</span>) {
-    print(<span class="hljs-string">"Self-intersecting Polygon"</span>)
-  } <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (type == <span class="hljs-string">"Concave"</span>) {
-    print(<span class="hljs-string">"Concave Polygon"</span>)
-  }
-  count &lt;- <span class="hljs-number">0</span>
-  rectangle_area &lt;- (max(x)-min(x))*(max(y)-min(y))
-  random_x &lt;- generate_k_random_point(x,y,k)$x
-  random_y &lt;- generate_k_random_point(x,y,k)$y
-  inside &lt;- c()
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-    count &lt;- count + point_inside_v2(x,y,random_x[i],random_y[i],method)
-    <span class="hljs-keyword">if</span> (point_inside_v2(x,y,random_x[i],random_y[i],method) == <span class="hljs-number">1</span>) inside &lt;- c(inside, i)
-  }
-  approximate_area &lt;- count/k*rectangle_area
-  <span class="hljs-keyword">if</span> (plotpoly) {
-    plot(x,y,pch=<span class="hljs-string">""</span>)
-    polygon(x,y)
-    polygon(c(min(x), max(x), max(x), min(x)), c(min(y), min(y), max(y), max(y)), lty = <span class="hljs-number">3</span>)
-    points(random_x[inside],random_y[inside], pch = <span class="hljs-string">"."</span>, col = <span class="hljs-string">"red"</span>)
-    points(random_x[-inside],random_y[-inside], pch = <span class="hljs-string">"."</span>) 
-  }
-  <span class="hljs-keyword">return</span>(approximate_area)
-}</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+# area_mc_method_v3()  in R  -&gt;  area_mc_method()
+
+# area_mc_method(x, y, k, method)
+</code></pre>
     
 <p>In theory, the version 3 should work very well: it's much faster than the obese version 2n, less error and works on almost all polygons.</p>
     
 <p>The next section is Monte Carlo Part 3, we will talk more about the Monte Carlo integration.</p>
+    
+<h4 id="mcm3end">You can test the function at <a href="code_4.html">here</a>.</h4>
 
 <h4 style="text-align:left;"><span style="float:right;"><a href="monte_carlo_3.html"><span>&#8594;</span>Section: Monte Carlo (Part 3)</a></span></h4>
 
-<p><span id="lblCopyRight">© Group 18</span></p>
+<p><span id="lblCopyRight">@theonaku</span></p>
     
 </body>
 </html>

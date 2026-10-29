@@ -17,13 +17,12 @@
     });
     </script>
 
-    <script type="text/javascript" src="//cdn.datacamp.com/dcl-react.js.gz"></script>
-    
-    <link rel="stylesheet" href="project.css">
+    <link rel="stylesheet" href="_assets/css/modern.css">
+<script src="_assets/js/highlight.js" defer></script>
 </head>
 <body>
 
-<h1>Area: Group Project (Group 18)</h1>
+<h1>Area: Group Project (theonaku)</h1>
 
 <div class="navbar">
   <div class="subnav">
@@ -79,6 +78,13 @@
         <a href="generate_poly.html">Convex Hull and Random Polygon</a>
     </div>
   </div>
+  <div class="subnav">
+    <button class="subnavbtn">Code <i class="fa fa-caret-down"></i></button>
+    <div class="subnav-content">
+      <a href="group_project_2.html">R Programming Code</a>
+        <a href="group_project_2.Rmd" download>Download Rmd</a>
+    </div>
+  </div>
   <a style="float:right" href="bibliography.html">Bibliography</a>
 </div>
     
@@ -97,9 +103,12 @@
     
 <p>Also, by Monte Carlo method:</p>
     
-<pre class="r"><code class="hljs">x &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">9</span>,<span class="hljs-number">8</span>,<span class="hljs-number">2</span>)
-y &lt;- c(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">3</span>,<span class="hljs-number">0</span>)
-area_mc_method_v4(x,y,typepoly = <span class="hljs-literal">FALSE</span>, plotpoly = <span class="hljs-literal">FALSE</span>, point_method = <span class="hljs-string">"wind"</span>, mc_method = <span class="hljs-string">"antithetic"</span>)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+x = [1, 3, 5, 9, 8, 2]
+y = [2, 3, 3, -1, -3, 0]
+print(area_mc_method(x, y, 5000, 'wind'))
+</code></pre>
     
 <pre><code class="hljs">## [1] 25.0008</code></pre>
     
@@ -115,22 +124,12 @@ area_mc_method_v4(x,y,typepoly = <span class="hljs-literal">FALSE</span>, plotpo
     
 <p>Before we start, let's write a function that will get rid of the redundant point of a polygon. That is, if there is three or more points in a line, it will remove the point in-between.</p>
     
-<pre class="r"><code class="hljs">start_from_minx_v2 &lt;- <span class="hljs-keyword">function</span>(x,y) {
-  x1 &lt;- start_from_minx(x,y)$x
-  y1 &lt;- start_from_minx(x,y)$y
-  n &lt;- length(x)
-  index &lt;- c()
-  grad &lt;- gradient(x1,y1)
-  grad[n+<span class="hljs-number">1</span>] &lt;- grad[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-    <span class="hljs-keyword">if</span> (grad[i] == grad[i+<span class="hljs-number">1</span>]) {
-      index &lt;- c(index,(i+<span class="hljs-number">1</span>))
-      repeats &lt;- <span class="hljs-literal">TRUE</span>
-    }
-    <span class="hljs-keyword">else</span> repeats &lt;- <span class="hljs-literal">FALSE</span>
-  }
-  <span class="hljs-keyword">if</span> (repeats) <span class="hljs-keyword">return</span>(list(x = x1[-index],y = y1[-index])) <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span>(list(x = x1,y = y1))
-}</code></pre>
+<pre class="python"><code>from geometry_module import start_from_minx
+
+# start_from_minx_v2()  in R  -&gt;  start_from_minx()
+
+# start_from_minx(x, y)
+</code></pre>
     
 <p>If that is the case, then the gradient will be the same between those points, which allow us to allocate such points.</p>
     
@@ -138,67 +137,21 @@ area_mc_method_v4(x,y,typepoly = <span class="hljs-literal">FALSE</span>, plotpo
     
 <p>Below is the code in R:</p>
 
-<pre class="r"><code class="hljs">picks_theorem &lt;- <span class="hljs-keyword">function</span>(x,y,gridplot = <span class="hljs-literal">TRUE</span>) {
-  x1 &lt;- start_from_minx_v2(x,y)$x <span class="hljs-comment"># Against three or more points in one of more line(s)</span>
-  y1 &lt;- start_from_minx_v2(x,y)$y
-  <span class="hljs-keyword">if</span> (type_of_polygon_v2(x1,y1) == <span class="hljs-string">"Self-intersecting"</span>) <span class="hljs-keyword">return</span>(<span class="hljs-string">"Error: Self-intersecting polygon"</span>)
-  n &lt;- length(x1)
-  grad &lt;- gradient(x1,y1);grad[n+<span class="hljs-number">1</span>] &lt;- grad[<span class="hljs-number">1</span>]
-  xi &lt;- min(x1):max(x1);yi &lt;- min(y1):max(y1);xj &lt;- c();yj &lt;- c()
-  x2 &lt;- x1;x2[n+<span class="hljs-number">1</span>] &lt;- x2[<span class="hljs-number">1</span>];y2 &lt;- y1;y2[n+<span class="hljs-number">1</span>] &lt;- y2[<span class="hljs-number">1</span>]
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:length(xi)) {
-    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:length(yi)) {
-      yj &lt;- c(yj,yi[j]);xj &lt;- c(xj,xi[i])
-    }
-  }
-  m &lt;- length(xj)
-  boundi &lt;- c()
-  <span class="hljs-keyword">for</span> (i <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:m) {
-    <span class="hljs-keyword">for</span> (j <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:n) {
-      <span class="hljs-keyword">if</span> (!is.infinite(grad[j])) {
-        <span class="hljs-keyword">if</span> (linen_equ(x1,y1,j)(xj[i]) == yj[i]) {
-          <span class="hljs-keyword">if</span> (xj[i] &lt;= max(x2[j],x2[j+<span class="hljs-number">1</span>]) &amp;&amp; xj[i] &gt;= min(x2[j],x2[j+<span class="hljs-number">1</span>])) {
-            boundi &lt;- c(boundi,i)
-          }
-        }
-      } <span class="hljs-keyword">else</span> {
-        <span class="hljs-keyword">if</span> (linen_equy(x1,y1,j)(yj[i]) == xj[i]) {
-          <span class="hljs-keyword">if</span> (yj[i] &lt;= max(y2[j],y2[j+<span class="hljs-number">1</span>]) &amp;&amp; yj[i] &gt;= min(y2[j],y2[j+<span class="hljs-number">1</span>])) {
-            boundi &lt;- c(boundi,i)
-          }
-        }
-      }
-    }
-  }
-  boundary &lt;- boundi[!duplicated(boundi)]
-  xnb &lt;- xj[-boundary];ynb &lt;- yj[-boundary]
-  k &lt;- length(xnb)
-  inside &lt;- c()
-  <span class="hljs-keyword">if</span> (k != <span class="hljs-number">0</span>) {
-    <span class="hljs-keyword">for</span> (a <span class="hljs-keyword">in</span> <span class="hljs-number">1</span>:k) {
-      <span class="hljs-keyword">if</span> (point_inside_v2(x1,y1,xnb[a],ynb[a],<span class="hljs-string">"wind"</span>) == <span class="hljs-number">1</span>) {
-        inside &lt;- c(inside,a)
-      }
-    }
-  }
-  b &lt;- length(boundary)
-  i &lt;- length(inside)
-  area &lt;- i + b/<span class="hljs-number">2</span> - <span class="hljs-number">1</span>
-  <span class="hljs-keyword">if</span> (gridplot) {
-    plot(x,y,pch=<span class="hljs-string">""</span>)
-    polygon(x,y)
-    points(xj,yj)
-    points(xj[boundary],yj[boundary],col=<span class="hljs-string">"yellow"</span>,pch=<span class="hljs-number">19</span>)
-    <span class="hljs-keyword">if</span> (i != <span class="hljs-number">0</span>) points(xnb[inside],ynb[inside],col=<span class="hljs-string">"purple"</span>,pch=<span class="hljs-number">19</span>)
-  }
-  <span class="hljs-keyword">return</span>(area)
-}</code></pre>
+<pre class="python"><code>from geometry_module import picks_theorem
+
+# picks_theorem()
+
+# picks_theorem(interior, boundary)
+</code></pre>
 
 <p>Now try it with the polygon at the beginning:</p>
     
-<pre class="r"><code class="hljs">x &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">9</span>,<span class="hljs-number">8</span>,<span class="hljs-number">2</span>)
-y &lt;- c(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,-<span class="hljs-number">3</span>,<span class="hljs-number">0</span>)
-picks_theorem(x,y)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+x = [1, 3, 5, 9, 8, 2]
+y = [2, 3, 3, -1, -3, 0]
+print(area_mc_method(x, y, 5000, 'wind'))
+</code></pre>
     
 <figure align="center">
   <img src="pick2.png" alt="graphy" style="width:65%">
@@ -209,9 +162,21 @@ picks_theorem(x,y)</code></pre>
     
 <p>It also works well with a simple rectangle:</p>
     
-<pre class="r"><code class="hljs">x &lt;- c(<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">5</span>,<span class="hljs-number">5</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)
-y &lt;- c(<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">0</span>,<span class="hljs-number">4</span>,<span class="hljs-number">4</span>,<span class="hljs-number">4</span>,<span class="hljs-number">2</span>)
-picks_theorem(x,y)</code></pre>
+<pre class="python"><code>from geometry_module import picks_theorem, boundary_points, shoelace_area
+
+# A shape with lattice vertices, so Pick's theorem applies directly.
+x = [1, 3, 5, 5, 2, 1, 1]
+y = [0, 0, 0, 4, 4, 4, 2]
+
+b = boundary_points(x, y)
+a = abs(shoelace_area(x, y))
+interior = a - b / 2 + 1
+
+print('boundary points :', b)
+print('shoelace area   :', a)
+print('interior points :', interior)
+print('Pick check      :', picks_theorem(interior, b))
+</code></pre>
     
 <figure align="center">
   <img src="pick4.png" alt="graphy" style="width:65%">
@@ -222,7 +187,13 @@ picks_theorem(x,y)</code></pre>
     
 <p>By the way, Monte Carlo method is working as usual:</p>
     
-<pre class="r"><code class="hljs">area_mc_method_v4(x,y,typepoly = <span class="hljs-literal">FALSE</span>, plotpoly = <span class="hljs-literal">FALSE</span>)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+# Monte Carlo on the same polygon, for comparison with Pick's theorem
+x = [1, 3, 5, 9, 8, 2]
+y = [2, 3, 3, -1, -3, 0]
+print(area_mc_method(x, y, 5000, 'wind')[0])
+</code></pre>
 
 <pre><code class="hljs">## [1] 16</code></pre>
     
@@ -230,9 +201,12 @@ picks_theorem(x,y)</code></pre>
     
 <p>Let's see one more example:</p>
 
-<pre class="r"><code class="hljs">xe7 &lt;- c(<span class="hljs-number">5</span>,<span class="hljs-number">4</span>,<span class="hljs-number">7</span>,<span class="hljs-number">6</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">6</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)
-ye7 &lt;- c(<span class="hljs-number">4</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>,<span class="hljs-number">0</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>)
-picks_theorem(xe7,ye7)</code></pre>
+<pre class="python"><code>from geometry_module import area_mc_method
+
+xe7 = [5, 4, 7, 6, 5, 6, 6, 3, 4, 5, 3, 2, 3, 1, 3, 2]
+ye7 = [4, 2, 3, -1, 1, 0, 2, 1, 1, -1, 0, 1, 2, 1, 3, 4]
+print(area_mc_method(xe7, ye7, 5000, 'wind'))
+</code></pre>
     
 <figure align="center">
   <img src="pick3.png" alt="graphy" style="width:65%">
@@ -245,7 +219,7 @@ picks_theorem(xe7,ye7)</code></pre>
     
 <h4 style="text-align:left;"><span style="float:right;"><a href="determinants.html"><span>&#8594;</span>Section: Areas and Determinants</a></span></h4>
 
-<p><span id="lblCopyRight">© Group 18</span></p>
+<p><span id="lblCopyRight">@theonaku</span></p>
     
 </body>
 </html>
