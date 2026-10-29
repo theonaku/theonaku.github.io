@@ -403,21 +403,35 @@ pre code, code.hljs {
   color: var(--accent);
 }
 
-/* 右侧那个 Bibliography 链接也顺一下 */
+/* 右侧那个 Bibliography 链接：跟菜单项同一排，
+   不要用 margin-left:auto 推开——那样它会被挤到第二行，整条导航显得松散 */
 .navbar > a {
-  margin-left: auto;
   padding: 6px 10px;
   font-size: .86rem;
+  font-weight: 550;
+  color: var(--fg-soft);
+  border-radius: 6px;
   flex: 0 0 auto;
+  border-bottom: 0;
 }
 
-/* 窄屏：导航改成可以左右滑，不占太多高度 */
+.navbar > a:hover {
+  background: var(--bg-soft);
+  color: var(--fg);
+}
+
+/* 窄屏：导航可以换行，但间距收紧，别撑成一堵墙 */
 @media (max-width: 640px) {
   .navbar {
     margin: 0 -18px 2em;
     padding: 6px 18px;
+    row-gap: 0;
   }
-  .navbar .subnavbtn { font-size: .8rem; padding: 5px 8px; }
+  .navbar .subnavbtn,
+  .navbar > a {
+    font-size: .8rem;
+    padding: 5px 8px;
+  }
 }
 
 /* ---------------------------------------------------------------- 页脚 */
