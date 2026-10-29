@@ -254,6 +254,28 @@ print(area_mc_method(xe5, ye5, 5000, 'wind'))
 <p>However, there should be a way to find out the area of all simple polygons, not just some special concave polygons.</p>
     
 <h4 id="mcm1end">You can try the function in the examples below.</h4>
+<div data-py-exercise data-height="260">
+<script type="text/plain" class="py-source">
+from geometry_module import area_mc_method
+import matplotlib.pyplot as plt
+
+xe3 = [1, 3, 4, 7, 6, 4]
+ye3 = [1, 4, 8, 5, 3, 5]
+
+for k in (1000, 10000, 100000):
+    est, box, cnt = area_mc_method(xe3, ye3, k, 'ray')
+    print(f'k={k:&lt;7} estimate {est:.4f}')
+
+plt.figure(figsize=(4, 3))
+plt.fill(xe3, ye3, alpha=0.25, edgecolor='seagreen', linewidth=2)
+plt.plot(xe3 + [xe3[0]], ye3 + [ye3[0]], 'o-', color='seagreen')
+plt.title('Monte Carlo, part 1')
+plt.axis('equal')
+plt.grid(alpha=0.3)
+plt.show()
+</script>
+</div>
+
     
 <h2 id="perp">Perp Dot Product</h2>
     

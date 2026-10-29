@@ -272,6 +272,29 @@ def monte_carlo_integral(f, a, b, n=10000, method='original'):
 <p>In the case of <code>Inf</code>, just set a large number and evaluate it. If the integral of the given function $f$ is converge when $x$ tends to infinity, then the $f(x)$ tends to $0$. As we are estimating the integral, it won't make a huge difference whether the upper bound is $10000$ or $100000$ or infinity.</p>
     
 <h4 id="mcintegral">You can try the function in the examples below.</h4>
+<div data-py-exercise data-height="260">
+<script type="text/plain" class="py-source">
+from math import exp
+from geometry_module import simpsons_rule, monte_carlo_integral
+import matplotlib.pyplot as plt
+
+f = lambda x: exp(-x ** 2)
+
+print('Simpson     :', simpsons_rule(f, 0, 1, 10000))
+print('Monte Carlo :', round(monte_carlo_integral(f, 0, 1, 100000), 6))
+print('Antithetic  :', round(monte_carlo_integral(f, 0, 1, 100000, 'antithetic'), 6))
+
+xs = [i / 200 for i in range(201)]
+ys = [f(x) for x in xs]
+plt.figure(figsize=(4, 3))
+plt.plot(xs, ys, color='steelblue', linewidth=2)
+plt.fill_between(xs, ys, alpha=0.25, color='steelblue')
+plt.title('y = exp(-x^2)')
+plt.grid(alpha=0.3)
+plt.show()
+</script>
+</div>
+
 
 <h2 id="mcm4">Monte Carlo Method, Version 4</h2>
     

@@ -238,6 +238,29 @@ print('y at x = 1.5 :', f(1.5))
 <p>The next section is Monte Carlo (Part 1), it is all about the upper and lower bounds of the polygon. A much better approach and be found in the Part 2.</p>
 
 <h4 id="end">You can try the function in the examples below.</h4>
+<div data-py-exercise data-height="260">
+<script type="text/plain" class="py-source">
+from geometry_module import type_of_polygon, classify_polygon
+import matplotlib.pyplot as plt
+
+shapes = {
+    'convex':   ([0, 3, 3, 0], [0, 0, 3, 3]),
+    'concave':  ([0, 4, 4, 2, 2, 0], [0, 0, 4, 4, 2, 2]),
+    'bow-tie':  ([0, 4, 0, 4], [0, 4, 4, 0]),
+}
+
+fig, axes = plt.subplots(1, 3, figsize=(10, 3))
+for ax, (name, (xs, ys)) in zip(axes, shapes.items()):
+    print(f'{name:&lt;10} {classify_polygon(xs, ys)}')
+    ax.fill(xs, ys, alpha=0.25, edgecolor='steelblue', linewidth=2)
+    ax.plot(xs + [xs[0]], ys + [ys[0]], 'o-', color='steelblue')
+    ax.set_title(name)
+    ax.axis('equal')
+plt.tight_layout()
+plt.show()
+</script>
+</div>
+
     
 <h4 style="text-align:left;"><span style="float:right;"><a href="monte_carlo.html"><span>&#8594;</span>Section: Monte Carlo (Part 1)</a></span></h4>
 

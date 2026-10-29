@@ -168,8 +168,45 @@ y_i & y_{i+1}
     
 <p>Below is an example of how to estimate $\pi$ by the Monte Carlo method:</p>
     
-<div align="center">
-<iframe width='80%' height='100%' src='https://rdrr.io/snippets/embed/?code=library(scales)%20%23%20Adjust%20the%20alpha%20value%20of%20background%20colour%0Ax%20%3C-%20runif(10000%2C%20min%20%3D%200%2C%20max%20%3D%201)%20%23%20Generate%2010000%20points%20in%20a%20square%0Ay%20%3C-%20runif(10000%2C%20min%20%3D%200%2C%20max%20%3D%201)%0Acount%20%3C-%200%0Afor%20(i%20in%201%3A10000)%20%7B%0A%20%20if%20(x%5Bi%5D%5E2%20%2B%20y%5Bi%5D%5E2%20%3C%3D%201)%20%23%20Count%20the%20number%20of%20points%20inside%20the%20quarter%20circle%0A%20%20count%20%3C-%20count%20%2B%201%0A%7D%0Api_estimate%20%3C-%204*count%2F10000%20%23%20Pi%20is%204%20times%20the%20area%20of%20the%20quarter%20circle%0Acat(%22Pi%20is%20approximately%20%22%2C%20pi_estimate)%0A%0Aquarter.circle%20%3C-%20function(x%2Cy%2Cr%2Ck%3D250)%20%7B%0A%20%20t%20%3C-%20seq(0%2Cpi%2F2%2Clen%3Dk)%20%0A%20%20x_t%20%3C-%20x%2Br*cos(t)%20%0A%20%20y_t%20%3C-%20y%2Br*sin(t)%0A%20%20x_t%20%3C-%20c(x_t%2Cx)%20%23%20Back%20to%20the%20centre%20of%20the%20given%20circle%0A%20%20y_t%20%3C-%20c(y_t%2Cy)%0A%20%20polygon(x_t%2Cy_t%2Ccol%20%3D%20alpha(%22blue%22%2C%200.4))%0A%7D%20%0A%0Aplot(x%2Cy%2Cpch%3D%22.%22%2Casp%3D1)%0Apolygon(c(0%2C1%2C1%2C0)%2Cc(0%2C0%2C1%2C1)%2Ccol%20%3D%20alpha(%22red%22%2C%200.2))%0Aquarter.circle(0%2C0%2C1)'></iframe>
+<div data-py-exercise data-height="260">
+<script type="text/plain" class="py-source">
+import random
+import matplotlib.pyplot as plt
+
+# Estimate pi by throwing points into the unit square
+random.seed(2019)
+n = 10000
+inside_x, inside_y = [], []
+outside_x, outside_y = [], []
+
+for _ in range(n):
+    px = random.uniform(0, 1)
+    py = random.uniform(0, 1)
+    if px * px + py * py <= 1.0:
+        inside_x.append(px)
+        inside_y.append(py)
+    else:
+        outside_x.append(px)
+        outside_y.append(py)
+
+inside = len(inside_x)
+pi_estimate = 4.0 * inside / n
+print('points inside :', inside)
+print('pi estimate   :', round(pi_estimate, 6))
+print('error         :', round(abs(pi_estimate - 3.14159265), 6))
+
+plt.figure(figsize=(5, 5))
+plt.scatter(inside_x, inside_y, s=1, color='seagreen', label='inside')
+plt.scatter(outside_x, outside_y, s=1, color='crimson', label='outside')
+t = [i / 200 for i in range(201)]
+plt.plot([__import__('math').cos(a * 3.14159 / 2) for a in t],
+         [__import__('math').sin(a * 3.14159 / 2) for a in t],
+         color='steelblue', linewidth=1.5)
+plt.axis('equal')
+plt.legend(markerscale=8, fontsize=8)
+plt.title('pi ≈ %.4f' % pi_estimate)
+plt.show()
+</script>
 </div>
 
 <p>That was also a part of homework of the Lab Class 3.</p>
@@ -180,8 +217,19 @@ y_i & y_{i+1}
     
 <p><b><i>Example 1.2</i></b>&nbsp;  If we want to estimate the $\pi$ by the Monte Carlo integration, we first estimate the area of a quarter unit circle. Let $X_1, X_2, ... , X_{10000}$ be a uniform $U[0,1]$ distribution sample, then $\hat{\alpha} = \frac{1}{10000} \sum_{i=1}^{n} \sqrt{1-X_i^2}$ and $\hat{\pi} = 4 \cdot \hat{\alpha}$. We can test it with the following code:</p>  
 
-<div align="center">
-<iframe width='80%' height='60%' src='https://rdrr.io/snippets/embed/?code=n%20%3C-%2010000%20%23%20Number%20of%20points%0Ax%20%3C-%20runif(n)%20%23%20Uniform%20distribution%20in%20%5B0%2C1%5D%0Aarea%20%3C-%20mean(sqrt(1-x%5E2))%20%23%20Area%20of%20quarter%20circle%0Api%20%3C-%204*area%0Acat(%22Pi%20is%20approximately%20%22%2C%20pi)' frameborder='0'></iframe>
+<div data-py-exercise data-height="200">
+<script type="text/plain" class="py-source">
+import random
+import math
+
+# Same idea, but by Monte Carlo integration instead of counting
+random.seed(2019)
+n = 10000
+xs = [random.uniform(0, 1) for _ in range(n)]
+area = sum(math.sqrt(1 - x * x) for x in xs) / n
+pi_estimate = 4 * area
+print('pi is approximately', round(pi_estimate, 6))
+</script>
 </div>
     
 <p>Using Monte Carlo integration looks faster and easier, but that's because we can find the upper bound of the quarter circle easily. If we want to apply this method to a random polygon, then it will be a huge challange to determine the bounds, or just impossible to find a good definition.</p>
