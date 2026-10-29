@@ -60,9 +60,10 @@ body {
 
 /* 手写页（index / monte_carlo / picks_theorem 等）没有 .main-container，
    正文直接挂在 body 下。用 padding 把内容限宽，导航用负边距撑满。
-   780px 是正文，两侧 padding 保证在窄屏也不贴边。 */
+   780 对这台屏太窄了，改 900；中文正文的舒适区是每行 30-40 个汉字，
+   英文 80-100 字符，900 减去内边距正好落在这区间。 */
 body {
-  max-width: 828px;
+  max-width: 948px;
   margin: 0 auto;
   padding: 0 24px 96px;
 }
@@ -326,16 +327,11 @@ pre code, code.hljs {
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  overflow-y: visible;
+  /* 菜单项现在能放下，不需要横向滚动；
+     万一窗口极窄，允许换行而不是冒出一根滚动条 */
+  flex-wrap: wrap;
+  row-gap: 2px;
   white-space: nowrap;
-  scrollbar-width: thin;
-}
-
-.navbar::-webkit-scrollbar { height: 4px; }
-.navbar::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 2px;
 }
 
 .navbar .subnav {
