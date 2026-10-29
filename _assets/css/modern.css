@@ -60,12 +60,18 @@ body {
 
 /* 手写页（index / monte_carlo / picks_theorem 等）没有 .main-container，
    正文直接挂在 body 下。用 padding 把内容限宽，导航用负边距撑满。
-   780 对这台屏太窄了，改 900；中文正文的舒适区是每行 30-40 个汉字，
-   英文 80-100 字符，900 减去内边距正好落在这区间。 */
+   1200 是这台屏的舒适上限：再宽一行字就超过 ~110 字符，眼睛容易串行；
+   同时这也是大多数笔记本全屏的宽度，不会显得空。 */
 body {
-  max-width: 948px;
+  max-width: 1248px;
   margin: 0 auto;
   padding: 0 24px 96px;
+}
+
+/* R Markdown 生成的页有自己的容器，body 就不用再限宽 */
+body:has(.main-container) {
+  max-width: none;
+  padding: 0 0 96px;
 }
 
 /* R Markdown 生成的页有自己的容器，body 就不用再限宽 */
@@ -78,7 +84,7 @@ body:has(.main-container) {
 .main-container,
 .container-fluid,
 .body {
-  max-width: 780px !important;
+  max-width: 1200px !important;
   margin: 0 auto !important;
   padding: 48px 24px 96px !important;
   background: transparent !important;
