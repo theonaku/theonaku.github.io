@@ -85,7 +85,7 @@
 
 <p>First of all, it is not easy to apply Monte Carlo method to all kind of polygons. Therefore we need to identify what is the type of the given polygon before we apply the Monte Carlo method. As the main research topic is to estimate the area of a convex polygon, the start point is to think about how to classify the convex and non-convex polygon in R.</p>
 <figure align="center">
-  <img src="convex.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/convex.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.1: Random convex octagon</figcaption>
 </figure>
 
@@ -94,7 +94,7 @@
 <p>But before we start, it is noticeable that any triangle is convex. As the sum of the interior angles of a triangle is $\frac{\pi}{2}$, all three angles should less than $\frac{\pi}{2}$ rad, which means it is a convex polygon.</p>
  
 <figure align="center">
-  <img src="sum_triangle.jpg" alt="graphy" style="width:50%">
+  <img src="_assets/img/sum_triangle.jpg" alt="graphy" style="width:50%">
   <figcaption>Figure 2.2: Sum of the angles of a triangle</figcaption>
 </figure>
 <p>For a triangle $ABC$, if we plot a line parallels to the line $AB$ and passes through vertex $C$ and point $D$, extend line $AC$ to point $E$, as shown in Figure 2.2. Then $\angle{BAC}$ has the same size as $\angle{DCE}$, $\angle{ABC}$ has the same size as $\angle{BCD}$. It is easy to show that $\angle{DCE} + \angle{BCD} + \angle{BCA} = \pi$, since $A$,$C$ and $E$ are in the same line, and a straight angle is $\pi$.</p>    
@@ -102,7 +102,7 @@
 <p>Furthermore, it is also easy to show that the sum of interior angles of a $n$-side simple polygon is $(n-2)\pi$, as we can divide the simple polygon into many triangles. For example:</p>
     
 <figure align="center">
-  <img src="convex_fan.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/convex_fan.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.3: Fan triangulation of a convex octagon</figcaption>
 </figure>
 
@@ -117,7 +117,7 @@
 <p>In mathematics, the scalar product or dot product, can be defined for two vectors $\mathbf{u}$ and $\mathbf{v}$ by $$\mathbf{u} \cdot \mathbf{v}=|\mathbf{u}||\mathbf{v}|\cos{\theta},$$ where $\theta$ is the angle between $\mathbf{u}$ and $\mathbf{v}$, and $|\mathbf{u}|$ is the magnitude of itself.</p>
 
 <figure align="center">
-  <img src="dotproduct.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/dotproduct.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.4: Dot product between two vectors</figcaption>
 </figure>
 
@@ -126,7 +126,7 @@
 <p>In a concave polygon, there exists at least one interior angle is more than $\frac{\pi}{2}$. But if we use the above formula to find out the angle $\theta$ larger than $\pi$, it will return $2\pi-\theta$. As $\cos{(2\pi-\theta)} = \cos{\theta}$, and the inverse cosine always return the smallest value of $\theta$.</p>
     
 <figure align="center">
-  <img src="concave_angle.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/concave_angle.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.5: Example of the case of concave polygon</figcaption>
 </figure>
 
@@ -146,7 +146,7 @@
 <p>For a polygon with more than 3 sides, this function will calculate the directions from the first vertex to the second vertex, the second to the third and so on. But to calculate the right angle, the second direction vector should change the direction, like <code>-1*direction[[i+1]]</code>. For example:</p>
 
 <figure align="center">
-  <img src="direction.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/direction.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.6: Find the right angle</figcaption>
 </figure>
     
@@ -202,14 +202,14 @@ print('y at x = 1.5 :', f(1.5))
 <p>The key point is to compare each line with the line not next to it. If intersection detects, then it is a self-intersecting polygon. But there are some cases that causes the function to return the incorrect result, like this one: </p>
     
 <figure align="center">
-  <img src="concave1.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/concave1.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.7: Case 1, concave polygon</figcaption>
 </figure>
 
 <p>Or this one:</p>
     
 <figure align="center">
-  <img src="concave2.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/concave2.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.8: Case 2, concave polygon</figcaption>
 </figure>
     
@@ -220,7 +220,7 @@ print('y at x = 1.5 :', f(1.5))
 <p>Because this function use <code>linen_equ</code> function, if there exists an edge with gradient is too large or infinity, then <code>type_of_polygon_v2</code> function will calculate the lower and upper bound of such edge, and use those as limits instead.</p>
     
 <figure align="center">
-  <img src="crossed1.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/crossed1.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.9: Case 3, self-intersecting polygon</figcaption>
 </figure>
 
@@ -229,7 +229,7 @@ print('y at x = 1.5 :', f(1.5))
 <p>What happens if the line needs to be compared with is with large gradient? They should never intersect, so no need to compare them. Like this one:</p>
     
 <figure align="center">
-  <img src="concave3.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/concave3.png" alt="graphy" style="width:50%">
   <figcaption>Figure 2.10: Case 4, concave polygon</figcaption>
 </figure>
     

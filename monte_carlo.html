@@ -85,7 +85,7 @@
 <p>If a point is inside a convex polygon, then there exists an upper bound and a lower bound, and the $y$-coordinate of the point is within the bounds.</p>
     
 <figure align="center">
-  <img src="bounds.jpeg" alt="graphy" style="width:65%">
+  <img src="_assets/img/bounds.jpeg" alt="graphy" style="width:65%">
   <figcaption>Figure 3.1: Lower bound and Upper bound</figcaption>
 </figure>
 
@@ -220,7 +220,7 @@ print(area_mc_method(xe3, ye3, 5000, 'ray'))
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
 
 <figure align="center">
-  <img src="concave4.png" alt="graphy" style="width:65%">
+  <img src="_assets/img/concave4.png" alt="graphy" style="width:65%">
   <figcaption>Figure 3.2: Monte Carlo Concave Polygon</figcaption>
 </figure>    
 
@@ -241,7 +241,7 @@ print(area_mc_method(xe5, ye5, 5000, 'wind'))
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
 
 <figure align="center">
-  <img src="concave5.png" alt="graphy" style="width:65%">
+  <img src="_assets/img/concave5.png" alt="graphy" style="width:65%">
   <figcaption>Figure 3.3: Monte Carlo Concave Polygon with wrong result</figcaption>
 </figure>
     
@@ -308,7 +308,7 @@ print(area_mc_method(xe5, ye5, 5000, 'wind'))
 <p>For a concave polygon, there always exists a circumscribe convex polygon that cover the polygon. For example:</p>
 
 <figure align="center">
-  <img src="concave6.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/concave6.png" alt="graphy" style="width:50%">
   <figcaption>Figure 3.4: Concave polygon with circumscribe convex polygon</figcaption>
 </figure>    
 
@@ -374,7 +374,7 @@ print(area_mc_method(xe5, ye5, 5000, 'wind'))
 <p>After we find the index of the convex hull, it is also possible to find the index of the vertices that's not on the convex hull. Just take out the index from <code>1:n</code>, where <code>n</code> is the number of vertices. So it would be <code>c((1:length(x))[-outbound_convex_index(x,y)])</code>, where <code>x</code> is the $x$-coordinate of the vertices, same as y.</p>
 
 <figure align="center">
-  <img src="concave7.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/concave7.png" alt="graphy" style="width:50%">
   <figcaption>Figure 3.5: Another concave polygon with convex hull</figcaption>
 </figure>
     
@@ -391,7 +391,7 @@ print(area_mc_method(xe5, ye5, 5000, 'wind'))
 <p>In Figure 3.5, vertices $B$, $D$ and $F$ are not on the convex hull, as they are not adjacent to each other, there must be three polygons between the convex hull and the polygon $ABCDEFG$, which are $\triangle{ABC}$, $\triangle{CDE}$ and $\triangle{EFG}$. What happens if there exist two or more vertices not on the convex hull? Then they will form a polygon with the vertices next to them on the convex hull. For example:</p>
 
 <figure align="center">
-  <img src="concave8.png" alt="graphy" style="width:50%">
+  <img src="_assets/img/concave8.png" alt="graphy" style="width:50%">
   <figcaption>Figure 3.6: One more concave polygon with convex hull</figcaption>
 </figure>
 
@@ -483,7 +483,7 @@ print(area_mc_method(xe5, ye5, 5000, 'wind'))
 <pre><code class="hljs">## [1] 6.2</code></pre>
     
     <figure align="center">
-  <img src="concave9.png" alt="graphy" style="width:65%">
+  <img src="_assets/img/concave9.png" alt="graphy" style="width:65%">
   <figcaption>Figure 3.7: Monte Carlo Concave</figcaption>
 </figure>
     
@@ -515,7 +515,7 @@ print(area_mc_method(xe7, ye7, 5000, 'wind'))
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
     
 <figure align="center">
-  <img src="concave12.png" alt="graphy" style="width:65%">
+  <img src="_assets/img/concave12.png" alt="graphy" style="width:65%">
   <figcaption>Figure 3.8: Monte Carlo Concave 2</figcaption>
 </figure>
     
@@ -531,7 +531,7 @@ print(area_mc_method(xe7, ye7, 5000, 'wind'))
 <pre><code class="hljs">## [1] "Concave Polygon"</code></pre>
 
 <figure align="center">
-  <img src="concave10.png" alt="graphy" style="width:65%">
+  <img src="_assets/img/concave10.png" alt="graphy" style="width:65%">
   <figcaption>Figure 3.9: Monte Carlo Concave 2</figcaption>
 </figure>
     

@@ -90,7 +90,7 @@
 <p>If there is a ray starting from a point $O$, the number of times that the point $O$ passing the edges of polygon can be used to decide whether the point $O$ is inside or outside. Imagime a convex polygon, and if a point is inside there, then whatever direction the ray is pointing, it will only pass the edge once. If not, it will pass none or twice.</p>
 
 <figure align="center">
-  <img src="ray_1.jpeg" alt="graphy" style="width:50%">
+  <img src="_assets/img/ray_1.jpeg" alt="graphy" style="width:50%">
   <figcaption>Figure 4.1: Point in Convex Polygon</figcaption>
 </figure>
 
@@ -99,7 +99,7 @@
 <p>For a point in concave polygon, there exists another situation: The ray passes one edge and through the polygon again.</p>
     
 <figure align="center">
-  <img src="ray_2.jpeg" alt="graphy" style="width:50%">
+  <img src="_assets/img/ray_2.jpeg" alt="graphy" style="width:50%">
   <figcaption>Figure 4.2: Point in Concave Polygon</figcaption>
 </figure>
 
@@ -108,7 +108,7 @@
 <p>For a point in self-intersecting polygon, the ray might just pass the intersection point of the polygon, which seems like the wrong result will occur. But it is possible to consider that in the code and get the correct result. Actually, that would be the same as passing the vertex but not enter the convex or concave polygon.</p>
 
 <figure align="center">
-  <img src="ray_3.jpeg" alt="graphy" style="width:50%">
+  <img src="_assets/img/ray_3.jpeg" alt="graphy" style="width:50%">
   <figcaption>Figure 4.3: Point in Self-intersecting Polygon</figcaption>
 </figure>
 
@@ -151,7 +151,7 @@ print('x at y = 1 :', g(1.0))
 <p>This function is another looks long but simple function, it just like actually casting a ray from a point $(x_0,y_0)$ toward the right, and counting the edges it passes. It works for all kind of polygon, and try to minimise the error. It will cast two rays, one leftward and one rightward. If the parity of the number of intersections are different, then it will cast another ray $\pi/4$ rad upward and take that as the final result. There's still possible that a point inside passes the polygon even number times after all, but the possibility is insignificant.</p>
     
 <figure align="center">
-  <img src="ray_4.jpeg" alt="graphy" style="width:50%">
+  <img src="_assets/img/ray_4.jpeg" alt="graphy" style="width:50%">
   <figcaption>Figure 4.4: Point in Concave Polygon with rays passing the vertices</figcaption>
 </figure>
     
@@ -160,7 +160,7 @@ print('x at y = 1 :', g(1.0))
 <p>The reason behind this problem is, the rays from point $A$ is "passing" the vertex and leaving the polygon, whereas the downward ray from point $C$ is leaving the polygon via the vertex, so we should only count it once. Similar to point $B$, as entering the polygon via a vertex should not be counted twice. </p>
     
 <figure align="center">
-  <img src="ray_bug1.jpeg" alt="bug1" style="width:50%">
+  <img src="_assets/img/ray_bug1.jpeg" alt="bug1" style="width:50%">
   <figcaption>Figure 4.5: Point in Convex Polygon with rays passing the vertices</figcaption>
 </figure>
     
@@ -171,7 +171,7 @@ print('x at y = 1 :', g(1.0))
 <p>Although it is still possible to meet the wrong result, it is not supposed to affect the estimate area too much, as explain before the insignificant of the possibility. More importantly, we are going to generate a number of points randomly and uniformly, which makes it harder to have a ray actually passing any vertex.</p>
     
 <figure align="center">
-  <img src="ray_bug2.jpeg" alt="bug1" style="width:50%">
+  <img src="_assets/img/ray_bug2.jpeg" alt="bug1" style="width:50%">
   <figcaption>Figure 4.6: Point in Convex Polygon with rays passing the vertices</figcaption>
 </figure>
     
@@ -184,7 +184,7 @@ print('x at y = 1 :', g(1.0))
 <p>We can calculate the winding number by measuring the angle winded. Remember the angle also have its direction: Anticlockwise rotation is positive, clockwise is negative. If we want to find the winding number of a point relate to a polygon, the best technique is to set the first vertex $\mathbf{C_1}$ as the starting point, and then find the angle between the point and vertices. For example:</p>
     
 <figure align="center">
-  <img src="wind1.png" alt="wind1" style="width:50%">
+  <img src="_assets/img/wind1.png" alt="wind1" style="width:50%">
   <figcaption>Figure 4.7: Wind around a point inside Convex Polygon</figcaption>
 </figure>
 
@@ -193,14 +193,14 @@ print('x at y = 1 :', g(1.0))
 <p>Since the angle of a complete rotation is $2\pi$ in anticlockwise, the winding number can be calculated as the angle rotated divided by $2\pi$. Let's see another example where the point is outside the polygon:</p>
     
 <figure align="center">
-  <img src="wind2.png" alt="wind2" style="width:50%">
+  <img src="_assets/img/wind2.png" alt="wind2" style="width:50%">
   <figcaption>Figure 4.8: Wind around a point outside Convex Polygon</figcaption>
 </figure>
     
 <p>If a point is outside the polygon, as Figure 4.8, the winding number will be $0$ as the angle rotated is $0$.</p>
 
 <figure align="center">
-  <img src="wind3.png" alt="wind3" style="width:50%">
+  <img src="_assets/img/wind3.png" alt="wind3" style="width:50%">
   <figcaption>Figure 4.9: Wind around a point inside Concave Polygon</figcaption>
 </figure>
 
@@ -215,7 +215,7 @@ print('x at y = 1 :', g(1.0))
 <p>The angle we want to find is relative to the given point $\mathbf{x}$, and that point is randomly generate later when applying the Monte Carlo method. Then we can write a function to find out the angle between vertices and the ray start from the given point rightward, and use that to figure out is the rotation angle is positive or negative, i.e. anticlockwise or clockwise rotation. </p>
     
 <figure align="center">
-  <img src="obtuseang.png" alt="obt1" style="width:65%">
+  <img src="_assets/img/obtuseang.png" alt="obt1" style="width:65%">
   <figcaption>Figure 4.10: Obtuse angle</figcaption>
 </figure>
     
@@ -232,7 +232,7 @@ print('x at y = 1 :', g(1.0))
 <p>Similarly, for the reflex angle between $\frac{3}{2}\pi$ and $0$, it will return the negative value, which we need to add $2\pi$ into it.</p>
     
 <figure align="center">
-  <img src="angle2.png" alt="obt1" style="width:65%">
+  <img src="_assets/img/angle2.png" alt="obt1" style="width:65%">
   <figcaption>Figure 4.11: Reflex angle</figcaption>
 </figure>
 
@@ -258,14 +258,14 @@ def angle(px, py, rx, ry):
 <p>In <code>angle</code> function, there are 4 variables: <code>x0,y0</code> means the coordinate of vertex, and <code>rx,ry</code> means the coordinate of randomly generated point. It will return the angle between the vertex and the rightward ray start from a given point.</p>
 
 <figure align="center">
-  <img src="clock1.png" alt="wind4" style="width:50%">
+  <img src="_assets/img/clock1.png" alt="wind4" style="width:50%">
   <figcaption>Figure 4.12: Clockwise angle</figcaption>
 </figure>      
 
 <p>In Figure 4.12, angle between $C_1$ and the line from $\mathbf{x}$ in positive $x$-direction is larger than angle between $C_2$ and the line from $\mathbf{x}$ in positive $x$-direction, which means it is clockwise rotation. But this is just a simple case, because if the point $C_2$ is under the line, then angle $\theta_{C_2\mathbf{x}}$ will be larger than angle $\theta_{C_1\mathbf{x}}$, but still in clockwise rotation.</p>
     
 <figure align="center">
-  <img src="wind4.png" alt="wind4" style="width:50%">
+  <img src="_assets/img/wind4.png" alt="wind4" style="width:50%">
   <figcaption>Figure 4.13: Wind around a point inside Self-intersecting Polygon</figcaption>
 </figure>
     
@@ -294,7 +294,7 @@ def angle(px, py, rx, ry):
 <p>If the point $(x_0,y_0)$ is at the vertex, then the direction vector between them is $\mathbf{0}$, also the norm is $0$. So if the norm of the direction vector is $0$, then the function will return the winding number $1$, in order to avoid the <code>NaN</code> appears. If not, then the function will use the technique of dot product to calculate the angle. If it is clockwise rotation, the function will subtract the angle from the cumulative sum of the angle, else the function will add the angle into the cumulative sum of the angle.</p>
     
 <figure align="center">
-  <img src="ray_wind.png" alt="ray+wind" style="width:50%">
+  <img src="_assets/img/ray_wind.png" alt="ray+wind" style="width:50%">
   <figcaption>Figure 4.14: Wind and Ray in the Pentagram</figcaption>
 </figure>
     
@@ -312,7 +312,7 @@ print(area_mc_method(xe0, ye0, 5000, 'wind'))
 <pre><code class="hljs">## [1] "Self-intersecting Polygon"</code></pre>
 
 <figure align="center">
-  <img src="wind5.png" alt="wind5" style="width:65%">
+  <img src="_assets/img/wind5.png" alt="wind5" style="width:65%">
   <figcaption>Figure 4.15: Area of the Pentagram, by the winding number algorithm</figcaption>
 </figure>
     
@@ -328,7 +328,7 @@ print(area_mc_method(xe0, ye0, 5000, 'ray'))
 <pre><code class="hljs">## [1] "Self-intersecting Polygon"</code></pre>
     
 <figure align="center">
-  <img src="ray_5.png" alt="ray5" style="width:65%">
+  <img src="_assets/img/ray_5.png" alt="ray5" style="width:65%">
   <figcaption>Figure 4.16: Area of the Pentagram, by the ray-casting algorithm</figcaption>
 </figure>
     
