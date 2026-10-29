@@ -207,17 +207,29 @@ img {
 }
 
 /* 深色模式下压一下图片亮度。
-   白底截图/线稿在深色页面里会晃眼，稍微压暗一档，正负反转的那种刺眼感就没了。
-   没有用 filter: invert()——那会把彩色图片的颜色全翻转，更难看。 */
+   白底截图/线稿在深色页面里会晃眼，压一档就没那么刺眼。
+   没有用 filter: invert()——那会把彩色图片的颜色全翻转，更难看。
+
+   这两个数的含义：
+     brightness(x)  亮度乘 x。0.7 = 只剩七成，数字越小越暗
+     contrast(y)    对比度乘 y。压暗之后容易发灰，稍微提一点补回来
+   想再暗就调小 brightness；嫌看着闷就调大 contrast。 */
 @media (prefers-color-scheme: dark) {
   img {
-    filter: brightness(0.87) contrast(1.02);
-    transition: filter .15s;
+    filter: brightness(0.72) contrast(1.08);
+    transition: filter .15s, box-shadow .15s;
+    /* 白底图在深色页里像一块发光板。
+       给个细边框 + 内凹阴影，让它看起来像「页面上贴着的一张纸」，
+       而不是光源本身。这一步比继续压亮度有效得多。 */
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .4),
+                inset 0 0 0 1px rgba(255, 255, 255, .04);
   }
 
   /* 鼠标移上去恢复原样，想看清细节时不用改系统设置 */
   img:hover {
     filter: brightness(1) contrast(1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .5);
   }
 
   /* 白色背景的图表/公式图，额外收一点亮度，因为它们在深色下最扎眼 */
