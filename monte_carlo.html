@@ -564,6 +564,30 @@ print(area_mc_method(xe7, ye7, 5000, 'wind'))
 <p>Remember, this function is not very efficiency, as the point in polygon algorithm above is laggy. In Part 2, we will refer some popular algorithms and rewrite the point in polygon function, to make it possible to detect a point inside whether convex, concave or self-intersecting polygon.</p>    
 
 <h4 id="mcm2end">You can try the function in the examples below.</h4>
+<div data-py-exercise data-height="260">
+<script type="text/plain" class="py-source">
+from geometry_module import point_inside, winding_number
+import matplotlib.pyplot as plt
+
+# The second point-in-polygon example on this page: convex case
+x = [0, 4, 4, 0]
+y = [0, 0, 4, 4]
+
+for px, py in [(2, 2), (5, 5), (0, 2)]:
+    print(f'({px}, {py})  ray={point_inside(x, y, px, py):&lt;12}'
+          f'winding={winding_number(x, y, px, py)}')
+
+plt.figure(figsize=(4, 4))
+plt.fill(x, y, alpha=0.25, edgecolor='darkorange', linewidth=2)
+plt.plot(x + [x[0]], y + [y[0]], 'o-', color='darkorange')
+for px, py in [(2, 2), (5, 5), (0, 2)]:
+    plt.plot(px, py, 'o', color='red', markersize=7)
+plt.axis('equal')
+plt.grid(alpha=0.3)
+plt.show()
+</script>
+</div>
+
 
 <h4 style="text-align:left;"><span style="float:right;"><a href="monte_carlo_2.html"><span>&#8594;</span>Section: Monte Carlo Method (Part 2)</a></span></h4>
 

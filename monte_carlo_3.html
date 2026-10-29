@@ -380,6 +380,32 @@ for _ in range(10):
 ## 10  -0.1912    -0.1174</code></pre>
     
 <h4 id="mcm4end">You can try the function in the examples below.</h4>
+<div data-py-exercise data-height="260">
+<script type="text/plain" class="py-source">
+import random
+from geometry_module import area_mc_method
+import matplotlib.pyplot as plt
+
+# The second example on this page: variance reduction by antithetic sampling
+xe2 = [4, 3, 2, 0, 1, 3]
+ye2 = [6, 7, 6, 0, -2, 1]
+
+random.seed(2019)
+estimates = [area_mc_method(xe2, ye2, 3000, 'wind')[0] for _ in range(30)]
+print('min :', round(min(estimates), 4))
+print('max :', round(max(estimates), 4))
+print('mean:', round(sum(estimates) / len(estimates), 4))
+
+plt.figure(figsize=(5, 3))
+plt.plot(range(1, 31), estimates, 'o-', color='steelblue', markersize=4)
+plt.title('30 independent estimates')
+plt.xlabel('run')
+plt.ylabel('area')
+plt.grid(alpha=0.3)
+plt.show()
+</script>
+</div>
+
 
 <h2 id="variate">Variance Reduction: Control Variates</h2>
     
