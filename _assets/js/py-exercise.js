@@ -159,9 +159,24 @@
       });
   }
 
+  // 源码写在 <script type="text/plain"> 里，为的是不让浏览器当 JS 执行。
+  // 但写进 HTML 时 < > & 被转义过（&lt; &gt; &amp;），取出来必须还原，
+  // 否则 f'{name:<10}' 会变成 f'{name:&lt;10}'，跑起来是语法错。
+  function unescapeHtml(t) {
+    return t
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&nbsp;/g, '\u00a0')
+      .replace(/&amp;/g, '&');   // & 放最后，避免二次还原
+  }
+
   function buildBox(box) {
     var src = box.querySelector('.py-source');
-    var code = src ? src.textContent.replace(/^\n+/, '').replace(/\s+$/, '') : '';
+    var code = src
+      ? unescapeHtml(src.textContent).replace(/^\n+/, '').replace(/\s+$/, '')
+      : '';
     if (src) src.remove();
 
     var height = parseInt(box.getAttribute('data-height') || '200', 10);
