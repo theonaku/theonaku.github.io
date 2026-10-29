@@ -26,18 +26,23 @@
     pyNotFound: 'Could not load Pyodide — check your connection.'
   };
 
-  // 跑完之后把 matplotlib 的图取出来
+  // 跑完之后把 matplotlib 的图取出来。
+  // 原来的写法只看 matplotlib 有没有被挂进 sys.modules，图没画出来时也会悄悄跳过；
+  // 现在只要 pyplot 里还有未关闭的 figure，就逐张转成 base64 PNG。
   var CAPTURE_PLOTS = [
-    'import io as _io, base64 as _b64, sys as _sys',
+    'import io as _io, base64 as _b64',
     '_plots = []',
-    "if 'matplotlib' in _sys.modules:",
+    'try:',
     '    import matplotlib.pyplot as _plt',
     '    for _num in _plt.get_fignums():',
     '        _fig = _plt.figure(_num)',
     '        _buf = _io.BytesIO()',
     "        _fig.savefig(_buf, format='png', bbox_inches='tight', dpi=110)",
     "        _plots.append(_b64.b64encode(_buf.getvalue()).decode('ascii'))",
-    '    _plt.close("all")'
+    '    _plt.close("all")',
+    'except Exception:',
+    '    pass',
+    'len(_plots)'
   ].join('\n');
 
   function el(tag, cls, text) {
@@ -108,15 +113,17 @@
       box.appendChild(host);
     }
     host.innerHTML = '';
-    return py.runPythonAsync(CAPTURE_PLOTS).then(function () {
+    return py.runPythonAsync(CAPTURE_PLOTS).then(function (count) {
+      var n = typeof count === 'number' ? count : 0;
+      if (!n) return 0;
       var arr = py.globals.get('_plots');
-      var n = arr.length;
       for (var i = 0; i < n; i++) {
         var img = el('img', 'py-plot');
         img.src = 'data:image/png;base64,' + arr.get(i);
         host.appendChild(img);
       }
       try { arr.destroy(); } catch (e) { /* 忽略 */ }
+      return n;
     });
   }
 
@@ -144,13 +151,20 @@
         py.setStdout({ batched: function (s) { out.textContent += s + '\n'; } });
         py.setStderr({ batched: function (s) { out.textContent += s + '\n'; } });
         return py.runPythonAsync(ta.value)
-          .then(function () { return showPlots(box, py); })
           .then(function () {
-            setStatus(box, TEXT.done, 'ok');
+            // 成功路径：抓图，然后把状态标成完成
+            return showPlots(box, py).then(function (n) {
+              setStatus(box, n ? TEXT.done : TEXT.done, 'ok');
+            });
           })
           .catch(function (err) {
+            // 出错也要试着抓图 —— 画到一半失败时，前面画好的那张还有用
             out.textContent += (out.textContent ? '\n' : '') + String(err.message || err);
-            setStatus(box, TEXT.error, 'err');
+            return showPlots(box, py).then(function () {
+              setStatus(box, TEXT.error, 'err');
+            }).catch(function () {
+              setStatus(box, TEXT.error, 'err');
+            });
           });
       })
       .catch(function (err) {
